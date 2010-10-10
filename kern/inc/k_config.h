@@ -6,6 +6,9 @@
  * affect kernel internal behaviour or data structures such as the 
  * size of memory buffers etc.
  */
+
 #define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
+
+#define MAX_NUM_PROCESSES 8
 
 #endif
