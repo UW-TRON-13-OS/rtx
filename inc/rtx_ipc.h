@@ -3,7 +3,12 @@
 
 #include <rtx_int.h>
 
-typedef struct MsgEnv MsgEnv;
+typedef struct MsgEnv {
+    uint32_t dest_pid;
+    uint32_t send_pid;
+    uint32_t msg_type;
+    char *   msg;
+} MsgEnv;
 
 typedef struct ipc_trace {
     uint32_t dest_pid;

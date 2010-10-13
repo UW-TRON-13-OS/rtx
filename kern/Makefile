@@ -6,9 +6,9 @@
 
 TOP_DIR := ..
 
-APP = kernel
+APP = kern
 
 LOCAL_CFLAGS = -g -pg
-LOCAL_LDFLAGS = -g
+LOCAL_LDFLAGS = -g -pg
 
 include $(TOP_DIR)/make/rules.mk
