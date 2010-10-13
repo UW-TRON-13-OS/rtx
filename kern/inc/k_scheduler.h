@@ -1,13 +1,16 @@
 #ifndef _KERN_SCHEDULER_H_
 #define _KERN_SCHEDULER_H_
 
-#include "rtx_thread.h"
+#include <rtx_thread.h>
+#include <rtx_int.h>
+
+#include <queue.h>
 
 // unix context switch simulation
 #include <setjmp.h>
 
 typedef enum p_status {
-    P_READY, P_EXECUTING, P_BLOCKED, P_SUSPENDED;
+    P_READY, P_EXECUTING, P_BLOCKED, P_SUSPENDED
 } p_status_t;
 
 typedef struct pcb {

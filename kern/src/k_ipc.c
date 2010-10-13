@@ -29,7 +29,7 @@ void k_ipc_init()
 /** 5.6  Interprocess Message Trace **/
 int get_trace_buffers( MsgEnv *message_envelope )
 {
-
+    return 0;
 }
 
 void _log_msg_event(trace_circle_buf_t *buf, MsgEnv *msg_env)
