@@ -4,6 +4,7 @@
 #include <rtx_int.h>
 #include <rtx_assert.h>
 
+#include "k_serialize.h"
 #include "k_config.h"
 
 // Internal data structs
@@ -17,6 +18,7 @@ trace_circle_buf_t _send_trace_buf = { 0 };
 trace_circle_buf_t _recv_trace_buf = { 0 };
 
 // Static functions
+int _find_trace_buf_head(trace_circle_buf_t *buf);
 void _log_msg_event(trace_circle_buf_t *buf, MsgEnv *msg_env);
 
 /** Kernel Only **/
@@ -29,7 +31,45 @@ void k_ipc_init()
 /** 5.6  Interprocess Message Trace **/
 int get_trace_buffers( MsgEnv *message_envelope )
 {
+    int i, send_head, recv_head;
+
+    // Find the heads of the trace buffers
+    send_head = _find_trace_buf_head(&_send_trace_buf);
+    recv_head = _find_trace_buf_head(&_recv_trace_buf);
+
+    // Dump the sent messages and received messages
+    ipc_trace_t *send_dump = (ipc_trace_t *) message_envelope->msg;
+    ipc_trace_t *recv_dump = (ipc_trace_t *) &message_envelope->msg[sizeof(ipc_trace_t) * 
+                                                    IPC_MESSAGE_TRACE_HISTORY_SIZE];
+    for (i = 0; i < IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
+    {
+        k_memcpy(send_dump, 
+                 &_send_trace_buf.buf[(send_head + i) % IPC_MESSAGE_TRACE_HISTORY_SIZE],
+                 sizeof(ipc_trace_t));
+        k_memcpy(recv_dump, 
+                 &_recv_trace_buf.buf[(recv_head + i) % IPC_MESSAGE_TRACE_HISTORY_SIZE],
+                 sizeof(ipc_trace_t));
+
+        send_dump++;
+        recv_dump++;
+    }
     return 0;
+}
+
+int _find_trace_buf_head(trace_circle_buf_t *tbuf)
+{
+    // Check for an emtpy trace buffer
+    if (tbuf->buf[tbuf->tail].time_stamp == 0)
+    {
+        return tbuf->tail;
+    }
+
+    int head = tbuf->tail;
+    while (tbuf->buf[head].time_stamp == 0) // while not initialized
+    {
+        head = (head + 1) % IPC_MESSAGE_TRACE_HISTORY_SIZE;
+    }
+    return head;
 }
 
 void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
@@ -39,6 +79,8 @@ void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
    elem->send_pid = msg_env->send_pid;
    elem->msg_type = msg_env->msg_type;
    elem->time_stamp = 0; // get time stamp
+
+   // update the head and tail
    tbuf->tail = (tbuf->tail + 1) % IPC_MESSAGE_TRACE_HISTORY_SIZE; 
 }
 
