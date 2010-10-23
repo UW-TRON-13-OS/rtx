@@ -5,7 +5,8 @@
 
 typedef struct msg_env_queue msg_env_queue_t;
 
-msg_env_queue_t msg_env_queue_create();
+msg_env_queue_t * msg_env_queue_create();
+void msg_env_queue_destroy(msg_env_queue_t * queue);
 MsgEnv* msg_env_queue_dequeue(msg_env_queue_t* queue);
 int msg_env_queue_enqueue(msg_env_queue_t* queue, MsgEnv* env);
 

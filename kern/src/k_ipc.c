@@ -1,8 +1,6 @@
 #include "k_ipc.h"
 
-#include <rtx_ipc.h>
-#include <rtx_int.h>
-#include <rtx_assert.h>
+#include <rtx.h>
 
 #include "k_serialize.h"
 #include "k_config.h"

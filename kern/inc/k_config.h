@@ -9,6 +9,6 @@
 
 #define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
 
-#define MAX_NUM_PROCESSES 8
+#define NUM_PROCESSES 8
 
 #endif

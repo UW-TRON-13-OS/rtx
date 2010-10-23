@@ -1,26 +1,33 @@
-#include <k_scheduler.h>
+#include "k_scheduler.h"
+#include "k_process.h"
+#include "k_globals.h"
+#include "proc_pq.h"
 
 #define RESUME_PROCESS 1
 
 // global variables
-pcb_t *current_process;
+proc_pq_t * ready_pq;
 
-void process_switch()
+void k_release_processor()
 {
-    // choose the next process to switch into
-    
-    //k_context_switch(next_process);
+    proc_pq_enqueue(ready_pq, current_process);
+    k_process_switch(P_READY);
 }
 
-void k_context_switch(pcb_t *next_process)
+void k_process_switch(p_status_t next_status)
 {
-    // Save the current context
-    if (setjmp(current_process->context) == 0)
-    {
-        // Switch the current process to the next process
-        current_process = next_process;
-        longjmp(next_process->context, RESUME_PROCESS);
-    }
+    pcb_t *old_proc = current_process;
+    old_proc->status = next_status;
 
-    // The context has now switched back to this process
+    current_process = proc_pq_dequeue(ready_pq);
+    current_process->status = P_EXECUTING;
+    k_context_switch(&old_proc->context, &current_process->context);
+}
+
+void k_context_switch(jmp_buf *old_context, jmp_buf *new_context)
+{
+    if (setjmp(*old_context) == 0)
+    {
+        longjmp(*new_context, RESUME_PROCESS);
+    }
 }
