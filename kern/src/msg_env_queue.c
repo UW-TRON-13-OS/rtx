@@ -1,15 +1,16 @@
-#include <msg_env_queue.h>
-#include <rtx.h>
+#include "msg_env_queue.h"
 
-msg_env_queue msg_env_queue_create()
+struct msg_env_queue {
+	MsgEnv* head;
+	MsgEnv* tail;
+};
+
+msg_env_queue_t msg_env_queue_create()
 {
-	msg_env_queue queue;
-	queue.head = NULL;
-	queue.tail = NULL;
-	return queue;
+	return (msg_env_queue_t) { NULL, NULL };
 }
 
-MsgEnv* msg_env_queue_dequeue(msg_env_queue* queue)
+MsgEnv* msg_env_queue_dequeue(msg_env_queue_t *queue)
 {
 	MsgEnv* returnEnv = queue->head;
 	if (queue->head == queue->tail)
@@ -26,14 +27,16 @@ MsgEnv* msg_env_queue_dequeue(msg_env_queue* queue)
 }
 
 
-int msg_env_queue_enqueue(msg_env_queue* queue, MsgEnv* env)
+int msg_env_queue_enqueue(msg_env_queue_t *queue, MsgEnv* env)
 {
 	if (env == NULL)
 	{
-		return ERROR_NULL_ARGUMENT;
+		return ERROR_NULL_ARG;
 	}
 	
 	queue->tail->next = env;
 	env->next = NULL;
 	queue->tail = env;
+
+    return CODE_SUCCESS;
 }

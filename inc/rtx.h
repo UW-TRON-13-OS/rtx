@@ -3,12 +3,14 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #define CODE_SUCCESS        0
 #define ERROR_NULL_ARG      1
 #define ERROR_ILLEGAL_ARG   2
 
 typedef struct MsgEnv {
+    struct MsgEnv *next;
     uint32_t dest_pid;
     uint32_t send_pid;
     uint32_t msg_type;
