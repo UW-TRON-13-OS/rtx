@@ -54,5 +54,5 @@ $(LIB): $(LIB_OBJ)
 	@$(RANLIB) $(LIB)
 
 clean:
-	@echo Clean $(APP)
+	@echo Clean $(MODULE)
 	@rm -fr $(OBJ_DIR)
