@@ -50,7 +50,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 $(TEST_DIR)/%: $(TEST_SRC)/%.c $(LIB)
 	@echo "Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
-	@$(CC) $(CFLAGS) -o $@ $<
+	@$(CC) $(CFLAGS) -o $@ $< $(LIB) 
 
 all: $(APP) $(LIB) $(TESTS)
 
