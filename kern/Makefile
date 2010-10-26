@@ -6,7 +6,7 @@
 
 TOP_DIR := ..
 
-APP = kern
+MODULE = kern
 
 LOCAL_CFLAGS = -g -pg
 LOCAL_LDFLAGS = -g -pg
