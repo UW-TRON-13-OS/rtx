@@ -42,10 +42,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 all: $(APP) $(LIB)
 
-$(APP): $(APP_OBJ) $(REQ_LIBS)
+$(APP): $(APP_OBJ) $(REQ_LIBS) $(LIB)
 	@echo "    Link application $(notdir $@)"
 	@$(MKDIR) $(BIN_DIR)
-	@$(CC) $(LDFLAGS) -o $(TOP_DIR)/$(OBJ_DIR)/$@ $(APP_OBJ) 
+	@$(CC) $(LDFLAGS) -o $(TOP_DIR)/$(OBJ_DIR)/$@ $(APP_OBJ)  -L$(LIB_DIR)
 
 $(LIB): $(LIB_OBJ)
 	@echo "    Building Library lib$(MODULE).a"
