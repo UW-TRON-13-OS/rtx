@@ -41,7 +41,7 @@ MsgEnv* msg_env_queue_dequeue(msg_env_queue_t *queue)
 
 int msg_env_queue_enqueue(msg_env_queue_t *queue, MsgEnv* env)
 {
-	if (env == NULL)
+	if (queue == NULL || env == NULL)
 	{
 		return ERROR_NULL_ARG;
 	}
