@@ -3,6 +3,7 @@ AR:=ar -r
 RANLIB:=ranlib
 RM:=rm -f
 MKDIR=mkdir -p
+CHMOD=chmod
 RUN_TESTS=./$(TOP_DIR)/make/run_tests.sh
 
 OBJ_DIR:=bin
@@ -56,7 +57,8 @@ $(TEST_DIR)/$(MODULE)/%: $(TEST_SRC)/%.c $(LIB)
 all: $(APP) $(LIB) $(TESTS)
 
 test: $(TESTS)
-	@$(RUN_TESTS) $(TESTS)
+	@$(CHMOD) 755 $(RUN_TESTS)
+	@$(RUN_TESTS) $(MODULE)
 
 $(APP): $(APP_OBJ) $(REQ_LIBS) $(LIB)
 	@echo "    Link application $(notdir $@)"
