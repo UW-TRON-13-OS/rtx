@@ -6,6 +6,8 @@ MKDIR=mkdir -p
 CHMOD=chmod
 RUN_TESTS=./$(TOP_DIR)/make/run_tests.sh
 
+MODULE=$(shell basename $(shell pwd))
+
 OBJ_DIR:=bin
 SRC_DIR:=src
 INC_DIR:=inc
@@ -29,7 +31,7 @@ TESTS := $(addprefix $(TEST_DIR)/$(MODULE)/, $(TEST_FILES))
 
 LIB_SRC= $(filter-out $(basename $(MAIN_FILE)), $(SRC_FILES))
 LIB_OBJ := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(LIB_SRC)))
-
+TEST_LIB:=$(LIB_DIR)/libutest.a
 
 ifeq ($(findstring $(MAIN_FILE), $(SRC_FILES)), $(MAIN_FILE))
 	APP=$(BIN_DIR)/$(MODULE)
@@ -49,10 +51,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(CC) $(CFLAGS) -c -o $@ $< 
 	@rm -f *.o
 
-$(TEST_DIR)/$(MODULE)/%: $(TEST_SRC)/%.c $(LIB)
+$(TEST_DIR)/$(MODULE)/%: $(TEST_SRC)/%.c $(LIB) $(TEST_LIB)
 	@echo "    +Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)/$(MODULE)
-	@$(CC) $(CFLAGS) -o $@ $< $(LIB) 
+	@$(CC) $(CFLAGS) -o $@ $< $(LIB) $(TEST_LIB)
 
 all: $(APP) $(LIB) $(TESTS)
 
