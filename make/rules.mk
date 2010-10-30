@@ -44,7 +44,7 @@ endif
 
 BIN_DIR := $(TOP_DIR)/bin
 
-.PHONY: clean all test $(TEST_DIR)
+.PHONY: clean all test FORCE
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "    Make $(notdir $<) -> $(notdir $@)"
@@ -59,7 +59,7 @@ $(TEST_DIR)/$(MODULE)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(TEST_LIB)
 
 $(LIB_DIR)/lib%.a : FORCE
 	@echo "    Make required library $*"
-	@$(MAKE) --no-print-directory -C $(TOP_DIR)/$*
+	@$(MAKE) --no-print-directory -C $(TOP_DIR)/$* 
 
 all: $(APP) $(LIB) $(TESTS)
 

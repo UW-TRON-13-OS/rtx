@@ -9,7 +9,7 @@ MODULE_NAME=$1
 MODULE_DIR=`dirname $0`/../tests/$MODULE_NAME
 
 if [ ! -d $MODULE_DIR ] ; then
-  echo "Error : Tests at $MODULE_DIR has not built yet. please run 'make test'"
+  echo "Error : Tests for $MODULE_DIR have not built yet or do not exist."
   exit 1
 fi
 
