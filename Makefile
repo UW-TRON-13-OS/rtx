@@ -17,4 +17,4 @@ clean:
 	@for dir in $(APP_SUBDIRS); do \
 		make --no-print-directory -C $$dir clean; \
 	done
-	@rm -rf bin lib test
+	@rm -rf bin lib tests

@@ -11,6 +11,7 @@ MODULE=$(shell basename $(shell pwd))
 OBJ_DIR:=bin
 SRC_DIR:=src
 INC_DIR:=inc
+TEST_SRC_DIR:=test
 
 MAIN_FILE=main
 
@@ -19,14 +20,14 @@ LIB_DIR=$(TOP_DIR)/lib
 TEST_DIR=$(TOP_DIR)/tests
 
 LIB=$(LIB_DIR)/lib$(MODULE).a
+LIBDEPS := $(addprefix $(LIB_DIR)/lib, $(addsuffix .a, $(APPDEPS)))
 
 CFLAGS=-Wall -I$(TOP_DIR)/inc -I$(INC_DIR) $(LOCAL_CFLAGS)
 LDFLAGS=$(LOCAL_LDFLAGS)
 
 SRC_FILES := $(notdir $(basename $(wildcard $(SRC_DIR)/*.c)))
 
-TEST_SRC := $(filter test, $(wildcard *))
-TEST_FILES := $(notdir $(basename $(wildcard $(TEST_SRC)/*.c)))
+TEST_FILES := $(notdir $(basename $(wildcard $(TEST_SRC_DIR)/*.c)))
 TESTS := $(addprefix $(TEST_DIR)/$(MODULE)/, $(TEST_FILES))
 
 LIB_SRC= $(filter-out $(basename $(MAIN_FILE)), $(SRC_FILES))
@@ -49,14 +50,20 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "    Make $(notdir $<) -> $(notdir $@)"
 	@$(MKDIR) $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c -o $@ $< 
-	@rm -f *.o
+	@$(RM) *.o
 
-$(TEST_DIR)/$(MODULE)/%: $(TEST_SRC)/%.c $(LIB) $(TEST_LIB)
+$(TEST_DIR)/$(MODULE)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(TEST_LIB)
 	@echo "    +Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)/$(MODULE)
-	@$(CC) $(CFLAGS) -o $@ $< $(LIB) $(TEST_LIB)
+	@$(CC) $(CFLAGS) -o $@ $< -L$(LIB_DIR) $(LIB) $(addprefix -l, $(APPDEPS)) -lutest
+
+$(LIB_DIR)/lib%.a : FORCE
+	@echo "    Make required library $*"
+	@$(MAKE) --no-print-directory -C $(TOP_DIR)/$*
 
 all: $(APP) $(LIB) $(TESTS)
+
+FORCE:
 
 test: $(TESTS)
 	@$(CHMOD) 755 $(RUN_TESTS)
@@ -65,7 +72,8 @@ test: $(TESTS)
 $(APP): $(APP_OBJ) $(REQ_LIBS) $(LIB)
 	@echo "    Link application $(notdir $@)"
 	@$(MKDIR) $(BIN_DIR)
-	@$(CC) $(LDFLAGS) -o $(TOP_DIR)/$(OBJ_DIR)/$@ $(APP_OBJ)  -L$(LIB_DIR)
+	@$(CC) $(LDFLAGS) -o $(TOP_DIR)/$(OBJ_DIR)/$@ $(APP_OBJ) \
+										-L$(LIB_DIR) $(addprefix -l, $(APPDEPS))
 
 $(LIB): $(LIB_OBJ)
 	@echo "    Building Library lib$(MODULE).a"
@@ -75,4 +83,7 @@ $(LIB): $(LIB_OBJ)
 
 clean:
 	@echo Clean $(MODULE)
-	@rm -fr $(OBJ_DIR)
+	@$(RM) -r $(OBJ_DIR)
+	#@$(RM) $(LIB_DIR)/lib$(MODULE).a
+	@$(RM) $(BIN_DIR)/$(MODULE)
+	@$(RM) -r $(TEST_DIR)/$(MODULE)

@@ -1,16 +1,21 @@
 #ifndef _UTEST_H_
 #define _UTEST_H_
 
+#include <stdio.h>
+
 extern int num_tests;
 extern int num_passed;
 
-#define utest_assert(condition, errMsgFmt, ...) do { \
+            //printf("%s:%s ", __FILE__, __LINE__ ); 
+#define utest_assert(condition, errMsg) do { \
         if (!(condition)) { \
-            printf("%s:%s %s", __FILE__, __LINE__, #condition); \
-            printf((errMsg), __VA_ARGS__); \
+            printf((errMsg)); \
+        } else { \
+            num_passed++; \
         } \
+        num_tests++; \
     } while (0)
 
-#define utest_test_results() (num_passed * 100 + num_tests)
+#define utest_test_results() (num_passed * 16 + num_tests)
 
 #endif
