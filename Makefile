@@ -14,9 +14,8 @@ $(APP_SUBDIRS):
 	@make --no-print-directory -C $@
 
 test:
-	@for dir in $(APP_SUBDIRS); do \
-		make --no-print-directory -C $$dir test; \
-	done
+	@chmod 755 make/run_all_tests.sh
+	@make/run_all_tests.sh $(APP_SUBDIRS)
 
 clean:
 	@for dir in $(APP_SUBDIRS); do \
