@@ -84,6 +84,6 @@ $(LIB): $(LIB_OBJ)
 clean:
 	@echo Clean $(MODULE)
 	@$(RM) -r $(OBJ_DIR)
-	#@$(RM) $(LIB_DIR)/lib$(MODULE).a
+	@$(RM) $(LIB_DIR)/lib$(MODULE).a
 	@$(RM) $(BIN_DIR)/$(MODULE)
 	@$(RM) -r $(TEST_DIR)/$(MODULE)
