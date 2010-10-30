@@ -26,14 +26,16 @@ do
 
   $test
   RESULT=$?
-  echo "result $RESULT"
-  TESTS_PASSED=`expr $RESULT / 100`
-  TESTS_TOTAL=`expr $RESULT % 100`
+  TESTS_PASSED=`expr $RESULT / 16`
+  TESTS_TOTAL=`expr $RESULT % 16`
+  test_name=`basename $test`
   if [ $TESTS_PASSED -eq $TESTS_TOTAL ] ; then
-    printf "    test %-30s ... \033[1;32m $TESTS_PASSED / $TESTS_TOTAL \033[0m\n" $test
+    printf "    %-30s ... \033[1;32m $TESTS_PASSED / $TESTS_TOTAL \033[0m\n" $test_name
   else
-    printf "    test %-30s ... \033[1;31m $TESTS_PASSED / $TESTS_TOTAL \033[0m\n" $test
-    printf "         %-30s \033[1;31mFAILED\033[0m . Aborting\n" $test
+    printf "    %-30s ... \033[1;31m $TESTS_PASSED / $TESTS_TOTAL \033[0m\n" $test_name
+    printf "    %s \033[1;31mFAILED\033[0m . Aborting\n" $test_name
     exit 1
   fi
 done
+
+echo "\033[1;32mALL TESTS PASSED\033[0m"

@@ -9,7 +9,7 @@ extern int num_passed;
             //printf("%s:%s ", __FILE__, __LINE__ ); 
 #define utest_assert(condition, errMsg) do { \
         if (!(condition)) { \
-            printf((errMsg)); \
+            printf(errMsg "\n"); \
         } else { \
             num_passed++; \
         } \
