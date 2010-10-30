@@ -10,7 +10,6 @@ typedef enum p_status {
     P_READY, P_EXECUTING, P_BLOCKED, P_SUSPENDED
 } p_status_t;
 
-typedef void (*start_pc)();
 typedef struct pcb {
     struct pcb *        next;
     uint32_t            pid;

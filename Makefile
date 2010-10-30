@@ -13,6 +13,11 @@ $(APP_SUBDIRS):
 	@echo Make module $@
 	@make --no-print-directory -C $@
 
+test:
+	@for dir in $(APP_SUBDIRS); do \
+		make --no-print-directory -C $$dir test; \
+	done
+
 clean:
 	@for dir in $(APP_SUBDIRS); do \
 		make --no-print-directory -C $$dir clean; \
