@@ -1,7 +1,10 @@
 #include <rtx.h>
 #include "k_atomic.h"
 #include "k_ipc.h"
+#include "k_storage.h"
 #include "k_process.h"
+#include "k_delay.h"
+#include "k_console.h"
 
 int send_message(int dest_pid, MsgEnv *msg_env)
 {

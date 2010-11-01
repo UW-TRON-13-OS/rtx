@@ -36,16 +36,6 @@ MsgEnv * k_receive_message()
     return NULL;
 }
 
-MsgEnv * k_request_msg_env()
-{
-    return NULL;
-}
-
-int k_release_msg_env(MsgEnv * msg_env)
-{
-    return -1;
-}
-
 /** 5.6  Interprocess Message Trace **/
 int get_trace_buffers( MsgEnv *message_envelope )
 {
