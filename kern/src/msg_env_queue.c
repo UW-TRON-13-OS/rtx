@@ -22,8 +22,23 @@ void msg_env_queue_destroy(msg_env_queue_t * queue)
     free(queue);
 }
 
+int msg_env_queue_is_empty(msg_env_queue_t* queue)
+{
+    if (queue == NULL)
+    {
+        return -1;
+    }
+
+    return queue->head == NULL;
+}
+
 MsgEnv* msg_env_queue_dequeue(msg_env_queue_t *queue)
 {
+    if (queue == NULL)
+    {
+        return NULL;
+    }
+
 	MsgEnv* returnEnv = queue->head;
 	if (queue->head == queue->tail)
 	{

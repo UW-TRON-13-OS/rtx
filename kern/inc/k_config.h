@@ -8,7 +8,10 @@
  */
 
 #define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
+#define IPC_NUM_FREE_MSG_ENVS 128
 
 #define NUM_PROCESSES 8
+#define NUM_PRIORITIES 3
+
 
 #endif
