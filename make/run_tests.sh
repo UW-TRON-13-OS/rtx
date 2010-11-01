@@ -26,7 +26,7 @@ do
   $test
   RESULT=$?
   test_name=`basename $test`
-  if [ $RESULT -eq -1 ] ; then
+  if [ $RESULT -ne 0 ] ; then
     printf "    %s \033[1;31mFAILED\033[0m . Aborting\n" $test_name
     exit 1
   fi

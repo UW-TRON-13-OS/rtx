@@ -20,11 +20,12 @@ extern int num_passed;
     if (num_passed == num_tests)  \
     { \
         printf("    %-30s ... \033[1;32m %d / %d \033[0m\n", argv[0]+2, num_passed, num_tests); \
+        return 0; \
     } \
     else \
     { \
-        printf("    %-30s ... \033[1;33m %d / %d \033[0m\n", argv[0]+2, num_passed, num_tests); \
+        printf("    %-30s ... \033[1;31m %d / %d \033[0m\n", argv[0]+2, num_passed, num_tests); \
+        return -1; \
     } \
-    return -1;
 
 #endif
