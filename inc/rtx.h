@@ -9,6 +9,7 @@
 #define ERROR_NULL_ARG      1
 #define ERROR_ILLEGAL_ARG   2
 
+typedef void (*start_pc)();
 typedef struct MsgEnv {
     struct MsgEnv *next;
     uint32_t dest_pid;
@@ -25,12 +26,12 @@ typedef struct ipc_trace {
 } ipc_trace_t;
 
 /** 5.1 Interprocess Communication **/
-//int send_message(int dest_pid, MsgEnv *msg_env);
-//MsgEnv * receive_message();
+int send_message(int dest_pid, MsgEnv *msg_env);
+MsgEnv * receive_message();
 
 /** 5.2 Storage Management **/
-//MsgEnv * request_msg_env();
-//int release_msg_env(MsgEnv * msg_env);
+MsgEnv * request_msg_env();
+int release_msg_env(MsgEnv * msg_env);
 
 /** 5.3 Processor Management **/
 int release_processor();
@@ -39,10 +40,10 @@ int terminate();
 int change_priority(int new_priority, int target_process_id);
 
 /** 5.4 Timing Servicies **/
-//int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
+int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
 
 /** 5.5 System Console I/O **/
-//int send_console_chars(MsgEnv *msg_env);
-//int get_console_chars(MsgEnv *msg_env);
+int send_console_chars(MsgEnv *msg_env);
+int get_console_chars(MsgEnv *msg_env);
 
 #endif

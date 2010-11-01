@@ -13,7 +13,6 @@ if [ ! -d $MODULE_DIR ] ; then
   exit 1
 fi
 
-echo ""
 echo "Running test suite for $MODULE_NAME"
 
 
