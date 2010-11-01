@@ -46,4 +46,7 @@ int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
 int send_console_chars(MsgEnv *msg_env);
 int get_console_chars(MsgEnv *msg_env);
 
+/** 5.6 Interprocess Message Trace **/
+int get_trace_buffers(MsgEnv* msg_env);
+
 #endif

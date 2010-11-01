@@ -90,3 +90,11 @@ int get_console_chars(MsgEnv *msg_env)
     // TODO implement get_console_chars
     return -1;
 }
+
+int get_trace_buffers(MsgEnv* msg_env)
+{
+    atomic(ON);
+    int ret_value = k_get_trace_buffers(msg_env);
+    atomic(OFF);
+    return ret_value;
+}

@@ -8,4 +8,6 @@ void k_ipc_init();
 int k_send_message(int dest_pid, MsgEnv *msg_env);
 MsgEnv * k_receive_message();
 
+int k_get_trace_buffers(MsgEnv *msg_env);
+
 #endif
