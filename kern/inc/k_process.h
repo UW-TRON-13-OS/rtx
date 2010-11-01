@@ -31,6 +31,7 @@ typedef struct proc_cfg {
 } proc_cfg_t;
 
 /** 5.3 Processor Management **/
+int k_release_processor();
 int k_request_process_status(MsgEnv *msg_env_ptr);
 int k_terminate();
 int k_change_priority(int new_priority, int target_process_id);

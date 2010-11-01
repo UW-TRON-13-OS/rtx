@@ -1,8 +1,17 @@
 #include "k_process.h"
 #include "k_config.h"
+#include "k_globals.h"
+#include "k_scheduler.h"
 
 pcb_t * current_process;
 pcb_t   p_table[NUM_PROCESSES];
+
+int k_release_processor()
+{
+    proc_pq_enqueue(ready_pq, current_process);
+    k_process_switch(P_READY);
+    return CODE_SUCCESS;
+}
 
 int k_request_process_status(MsgEnv *msg_env_ptr)
 {
