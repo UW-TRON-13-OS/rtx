@@ -40,10 +40,13 @@ pcb_t * proc_queue_dequeue(proc_queue_t* queue)
     }
 
     pcb_t * pcb = queue->head;
-    queue->head = queue->head->next;
     if (queue->head == NULL)
     {
         queue->tail = NULL;
+    }
+    else
+    {
+        queue->head = queue->head->next;
     }
     pcb->next = NULL;
     return pcb;
@@ -61,9 +64,12 @@ int proc_queue_enqueue(proc_queue_t* queue, pcb_t * pcb)
     {
         queue->head = pcb;
     }
-    queue->tail->next = pcb;
+    else
+    {
+        queue->tail->next = pcb;
+    }
     queue->tail = pcb;
-    queue->tail = NULL;
+    queue->tail->next = NULL;
 
     return CODE_SUCCESS;
 }
