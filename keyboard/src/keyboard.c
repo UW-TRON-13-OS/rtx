@@ -1,36 +1,61 @@
 #include "keyboard_process.h"
+#include "keyboard_shmem.h"
 #define SECONDARY_BUFFER_SIZE 128
 
 char secondaryBuffer[SECONDARY_BUFFER_SIZE];
+int secBufIndex;
 //Shared RX Memory
-char* kb_buffer;
-int* kb_wait_for_read;
 
 void start_keyboard_process(pid_t parent_pid)
 {
     char c;
-    int secBufIndex = 0;
-    int kbBufIndex = 0;
+    int i;
+    //int kbBufIndex = 0;
+    secBufIndex = 0;
+    recv_buf* kb_buffer;
+    
+    char* mmap_ptr;
+    int fid = open(KB_SHMEM_FILENAME, O_RDWR | O_CREAT | O_EXCL, (mode_t) 0755);
+    if (fid < 0)
+    {
+        printf("Bad open of a file");
+    }
+    mmap_ptr = mmap((char*) 0, KEYBOARD_BUF_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fid, (off_t) 0);
+    kb_buffer = (recv_buf*) mmap_ptr;
+    
+    kb_buffer->kb_wait_flag = '0';
+    kb_buffer->length = 0;
+    
     while (1)
     {
-        c = getchar();
-        if (kb_wait_for_read[0] == 1)
+        if (kb_buffer->kb_wait_flag == '1')
         {
             secondaryBuffer[secBufIndex] = c;
             secBufIndex++;
         }
         else
         {
-            move the characters from the secondary buffer into the shared RX memory
-            add the characters into the shared RX memory
+            for (i = 0; i < secBufIndex; i++)
+            {
+                kb_buffer->data[kb_buffer->length] = secondaryBuffer[i];
+                kb_buffer->length++;
+            }
+            secBufIndex = 0;
         }
-		check if any of the inputted characters are a carriage return, if so then
+        c = getchar();
+		if (c == '\n')
         {
-            move anything after the carriage return into the secondary buffer as
-            long as there is still space left in the buffer
-            send a signal to RTX
-            kb_wait_for_read[0] = 1;
+            kill(parent_pid, SIGUSR1); // send a signal to RTX
+            kb_buffer->kb_wait_flag = '1';
+            while (kb_buffer->kb_wait_flag == '1')
+            {
+                usleep(100000);
+            }
         }
-        usleep(100000);
+        else
+        {
+            kb_buffer->data[kb_buffer->length] = c;
+            kb_buffer->length++;
+        }
     }
 }
