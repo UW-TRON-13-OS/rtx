@@ -16,6 +16,15 @@ extern int num_passed;
         num_tests++; \
     } while (0)
 
-#define utest_test_results() (num_passed * 16 + num_tests)
+#define utest_test_results() \
+    if (num_passed == num_tests)  \
+    { \
+        printf("    %-30s ... \033[1;32m %d / %d \033[0m\n", argv[0]+2, num_passed, num_tests); \
+    } \
+    else \
+    { \
+        printf("    %-30s ... \033[1;33m %d / %d \033[0m\n", argv[0]+2, num_passed, num_tests); \
+    } \
+    return -1;
 
 #endif

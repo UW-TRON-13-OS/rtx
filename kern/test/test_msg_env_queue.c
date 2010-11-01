@@ -81,5 +81,5 @@ int main(int argc, char *argv[])
     test_enqueue_border_cases();
     test_dequeue_border_cases();
     test_queue();
-    return utest_test_results(); 
+    utest_test_results(); 
 }
