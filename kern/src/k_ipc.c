@@ -26,8 +26,17 @@ void k_ipc_init()
     _recv_trace_buf.tail = 0;
 }
 
-/** 5.6  Interprocess Message Trace **/
-int get_trace_buffers( MsgEnv *message_envelope )
+int k_send_message(int dest_pid, MsgEnv *msg_env)
+{
+    return -1;
+}
+
+MsgEnv * k_receive_message()
+{
+    return NULL;
+}
+
+int k_get_trace_buffers( MsgEnv *msg_env )
 {
     int i, send_head, recv_head;
 
@@ -36,8 +45,8 @@ int get_trace_buffers( MsgEnv *message_envelope )
     recv_head = _find_trace_buf_head(&_recv_trace_buf);
 
     // Dump the sent messages and received messages
-    ipc_trace_t *send_dump = (ipc_trace_t *) message_envelope->msg;
-    ipc_trace_t *recv_dump = (ipc_trace_t *) &message_envelope->msg[sizeof(ipc_trace_t) * 
+    ipc_trace_t *send_dump = (ipc_trace_t *) msg_env->msg;
+    ipc_trace_t *recv_dump = (ipc_trace_t *) &msg_env->msg[sizeof(ipc_trace_t) * 
                                                     IPC_MESSAGE_TRACE_HISTORY_SIZE];
     for (i = 0; i < IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
     {

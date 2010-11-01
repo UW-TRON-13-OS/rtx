@@ -9,5 +9,6 @@ extern pcb_t *  current_process;
 extern pcb_t    p_table[]; 
 
 extern proc_pq_t * ready_pq;
+extern proc_pq_t * env_blocked_pq;
 
 #endif

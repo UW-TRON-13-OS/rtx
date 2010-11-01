@@ -35,7 +35,7 @@ int release_msg_env(MsgEnv * msg_env);
 
 /** 5.3 Processor Management **/
 int release_processor();
-int request_process_status(MsgEnv *msg_env_ptr);
+int request_process_status(MsgEnv *msg_env);
 int terminate();
 int change_priority(int new_priority, int target_process_id);
 
@@ -45,5 +45,8 @@ int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
 /** 5.5 System Console I/O **/
 int send_console_chars(MsgEnv *msg_env);
 int get_console_chars(MsgEnv *msg_env);
+
+/** 5.6 Interprocess Message Trace **/
+int get_trace_buffers(MsgEnv* msg_env);
 
 #endif
