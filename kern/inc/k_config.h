@@ -13,5 +13,8 @@
 #define NUM_PROCESSES 8
 #define NUM_PRIORITIES 3
 
+#define STACK_SIZE 4096
+#define STACK_OFFSET 4
+
 
 #endif

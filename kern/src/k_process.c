@@ -3,6 +3,9 @@
 #include "k_globals.h"
 #include "k_scheduler.h"
 
+#include <stdlib.h>
+#include <setjmp.h>
+
 pcb_t * current_process;
 pcb_t   p_table[NUM_PROCESSES];
 
@@ -31,17 +34,41 @@ int k_change_priority(int new_priority, int target_process_id)
 
 void k_init_processes(proc_cfg_t init_table[])
 {
+    jmp_buf init_buf;
     int i;
     for (i = 0; i < NUM_PROCESSES; i++)
     {
         pcb_t *pcb = &p_table[i];
         proc_cfg_t *cfg = &init_table[i];
-        pcb->pid =      cfg->pid;
+        pcb->pid = cfg->pid;
         pcb->priority = cfg->priority;
-        pcb->name =     cfg->name;
-        pcb->is_i_process =    cfg->is_i_process;
-        pcb->start =    cfg->start;
+        pcb->name = cfg->name;
+        pcb->is_i_process = cfg->is_i_process;
+        pcb->start = cfg->start;
+        pcb->recv_msgs = msg_env_queue_create();
+        pcb->next = NULL;
+        pcb->status = P_READY;
+        pcb->stack_end = malloc(STACK_SIZE);
 
-        // TODO stack stuff and rpq
+        // Initialize the stack and start pc
+        if (setjmp(init_buf) ==  0)
+        {
+            char * stack_top = pcb->stack_end + STACK_SIZE - STACK_OFFSET;
+            __asm__("movl %0, %%esp":"=g" (stack_top));
+            if (setjmp(pcb->context) == 0)
+            {
+                longjmp(init_buf, 1);
+            }
+            else
+            {
+                current_process->start();
+            }
+        }
+
+        // If the process is not an i process place it on the ready queue
+        if (!pcb->is_i_process)
+        {
+            proc_pq_enqueue(ready_pq, pcb);
+        }
     }
 }

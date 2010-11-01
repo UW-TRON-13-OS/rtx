@@ -20,6 +20,7 @@ typedef struct pcb {
     msg_env_queue_t *   recv_msgs;
     uint32_t            is_i_process;
     start_pc            start;
+    char *              stack_end;
 } pcb_t;
 
 typedef struct proc_cfg {
