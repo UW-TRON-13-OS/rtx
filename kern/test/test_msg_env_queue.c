@@ -13,16 +13,33 @@ void test_enqueue_border_cases()
     MsgEnv env;
     msg_env_queue_t * q = msg_env_queue_create();
     utest_assert(msg_env_queue_enqueue(NULL, NULL) == ERROR_NULL_ARG, 
-            "Did not check for Null params");
+            "Did not check for Both Null");
     utest_assert(msg_env_queue_enqueue(q, NULL) == ERROR_NULL_ARG, 
-            "Did not check for Null params");
+            "Did not check for Null msg env");
     utest_assert(msg_env_queue_enqueue(NULL, &env) == ERROR_NULL_ARG, 
-            "Did not check for Null params");
+            "Did not check for Null queue");
+    msg_env_queue_destroy(q);
+}
+
+void test_dequeue_border_cases()
+{
+    msg_env_queue_t * q = msg_env_queue_create();
+    utest_assert(msg_env_queue_dequeue(NULL) == NULL, 
+            "Did not check for Null");
+    msg_env_queue_destroy(q);
+}
+
+void test_queue()
+{
+    msg_env_queue_t * q = msg_env_queue_create();
+    msg_env_queue_destroy(q);
 }
 
 int main(int argc, char *argv[])
 {
     test_create();
     test_enqueue_border_cases();
+    test_dequeue_border_cases();
+    test_queue();
     return utest_test_results(); 
 }
