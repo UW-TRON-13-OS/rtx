@@ -6,10 +6,6 @@
 #include <rtx.h>
 #include "msg_env_queue.h"
 
-typedef enum p_status {
-    P_READY, P_EXECUTING, P_BLOCKED_ON_ENV_REQUEST, P_BLOCKED_ON_RECEIVE
-} p_status_t;
-
 typedef struct pcb {
     struct pcb *        next;
     uint32_t            pid;
