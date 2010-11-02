@@ -1,36 +1,54 @@
 #include "keyboard_process.h"
+#include "keyboard_shmem.h"
+
+#include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
+
 #define SECONDARY_BUFFER_SIZE 128
 
 char secondaryBuffer[SECONDARY_BUFFER_SIZE];
-//Shared RX Memory
-char* kb_buffer;
-int* kb_wait_for_read;
+int secBufIndex;
 
-void start_keyboard_process(pid_t parent_pid)
+void start_keyboard_process(pid_t parent_pid, recv_buf_t * kb_buffer)
 {
     char c;
-    int secBufIndex = 0;
-    int kbBufIndex = 0;
+    int i;
+    secBufIndex = 0;
+    
+    kb_buffer->kb_wait_flag = '0';
+    kb_buffer->length = 0;
+    
     while (1)
     {
-        c = getchar();
-        if (kb_wait_for_read[0] == 1)
+        if (kb_buffer->kb_wait_flag == '1')
         {
             secondaryBuffer[secBufIndex] = c;
             secBufIndex++;
         }
         else
         {
-            move the characters from the secondary buffer into the shared RX memory
-            add the characters into the shared RX memory
+            for (i = 0; i < secBufIndex; i++)
+            {
+                kb_buffer->data[kb_buffer->length] = secondaryBuffer[i];
+                kb_buffer->length++;
+            }
+            secBufIndex = 0;
         }
-		check if any of the inputted characters are a carriage return, if so then
+        c = getchar();
+		if (c == '\n')
         {
-            move anything after the carriage return into the secondary buffer as
-            long as there is still space left in the buffer
-            send a signal to RTX
-            kb_wait_for_read[0] = 1;
+            kill(parent_pid, SIGUSR1); // send a signal to RTX
+            kb_buffer->kb_wait_flag = '1';
+            while (kb_buffer->kb_wait_flag == '1')
+            {
+                usleep(100000);
+            }
         }
-        usleep(100000);
+        else
+        {
+            kb_buffer->data[kb_buffer->length] = c;
+            kb_buffer->length++;
+        }
     }
 }
