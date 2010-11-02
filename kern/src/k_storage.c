@@ -31,13 +31,12 @@ void k_storage_cleanup()
 
 MsgEnv * k_request_msg_env()
 {
-    if (msg_env_queue_is_empty(free_env_q) && current_process->is_i_process)
-    {
-        return NULL;
-    }
-
     while (msg_env_queue_is_empty(free_env_q))
     {
+        if (current_process->is_i_process)
+        {
+            return NULL;
+        }
         proc_pq_enqueue(env_blocked_pq, current_process);
         k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
     }
