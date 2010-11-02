@@ -17,10 +17,9 @@ void test_enqueue_boundary_cases()
 {
     pcb_t pcb;
     proc_pq_t *q = proc_pq_create(4);
-    utest_assert(proc_pq_enqueue(NULL, NULL) == ERROR_NULL_ARG, "Dequeue did not handle NULL,NULL");
-    utest_assert(proc_pq_enqueue(q, NULL) == ERROR_NULL_ARG, "Dequeue did not handle q,NULL");
-    utest_assert(proc_pq_enqueue(NULL, &pcb) == ERROR_NULL_ARG, "Dequeue did not handle NULL,pcb");
-    utest_assert(proc_pq_enqueue(NULL, &pcb) == ERROR_NULL_ARG, "Dequeue did not handle NULL,pcb");
+    utest_assert(proc_pq_enqueue(NULL, NULL) == ERROR_NULL_ARG, "Enqueue did not handle NULL,NULL");
+    utest_assert(proc_pq_enqueue(q, NULL) == ERROR_NULL_ARG, "Enqueue did not handle q,NULL");
+    utest_assert(proc_pq_enqueue(NULL, &pcb) == ERROR_NULL_ARG, "Enqueue did not handle NULL,pcb");
     proc_pq_destroy(q);
 }
 
@@ -32,21 +31,35 @@ void test_dequeue_boundary_cases()
     proc_pq_destroy(q);
 }
 
+void test_remove_boundary_cases()
+{
+    pcb_t pcb;
+    proc_pq_t *q = proc_pq_create(4);
+    utest_assert(proc_pq_remove(NULL, NULL) == NULL, "Remove did not handle NULL,NULL");
+    utest_assert(proc_pq_remove(q, NULL) == NULL, "Remove did not handle q,NULL");
+    utest_assert(proc_pq_remove(NULL, &pcb) == NULL, "Remove did not handle NULL,pcb");
+    proc_pq_destroy(q);
+}
+
 void test_queue()
 {
     proc_pq_t *q = proc_pq_create(4);
     
-#define N_PCBS 6
+#define N_PCBS 9
     pcb_t pcbs[] = { { NULL, 0, "a", 3 }, { NULL, 0, "b", 0 }, { NULL, 0, "c", 2 }, 
-                     { NULL, 0, "d", 1 }, { NULL, 0, "e", 0 }, { NULL, 0, "f", 3 } };
+                     { NULL, 0, "d", 1 }, { NULL, 0, "e", 0 }, { NULL, 0, "f", 3 },
+                     { NULL, 0, "g", 1 }, { NULL, 0, "h", 0 }, { NULL, 0, "i", 3 } };
     int i;
     for (i = 0; i < N_PCBS; i++)
     {
         utest_assert(proc_pq_enqueue(q, &pcbs[i]) == CODE_SUCCESS, "Inserting pcb did not succed");
     }
 
-    char results[] = "bedcaf";
-    for (i = 0; i < N_PCBS; i++)
+    char results[] = "begcfi";
+    utest_assert(proc_pq_remove(q, &pcbs[3]) == &pcbs[3], "Did not remove 'd' proc properly");
+    utest_assert(proc_pq_remove(q, &pcbs[7]) == &pcbs[7], "Did not remove 'h' proc properly");
+    utest_assert(proc_pq_remove(q, &pcbs[0]) == &pcbs[0], "Did not remove 'a' proc properly");
+    for (i = 0; i < N_PCBS-3; i++)
     {
         pcb_t *proc = proc_pq_dequeue(q);
         utest_assert(proc != NULL, "Dequeue didn't dequeue the proper pcb, gave null");
@@ -54,6 +67,7 @@ void test_queue()
                 "Dequeue didn't dequeue the proper pcb, gave wrong pcb");
         utest_assert(proc->next == NULL, "Dequeue did not unlink dequeued pcb");
     }
+    utest_assert(proc_pq_dequeue(q) == NULL, "Did not return NULL on an empty queue");
 
     proc_pq_destroy(q);
 }

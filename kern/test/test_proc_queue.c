@@ -11,13 +11,13 @@ void test_create()
 
 void test_enqueue_border_cases()
 {
-    pcb_t env;
+    pcb_t pcb;
     proc_queue_t * q = proc_queue_create();
     utest_assert(proc_queue_enqueue(NULL, NULL) == ERROR_NULL_ARG, 
             "Did not check for Both Null");
     utest_assert(proc_queue_enqueue(q, NULL) == ERROR_NULL_ARG, 
-            "Did not check for Null proc env");
-    utest_assert(proc_queue_enqueue(NULL, &env) == ERROR_NULL_ARG, 
+            "Did not check for Null pcb");
+    utest_assert(proc_queue_enqueue(NULL, &pcb) == ERROR_NULL_ARG, 
             "Did not check for Null queue");
     proc_queue_destroy(q);
 }
@@ -49,18 +49,41 @@ void test_is_empty()
     proc_queue_destroy(q);
 }
 
+void test_remove()
+{
+    pcb_t p1;
+    proc_queue_t * q = proc_queue_create();
+
+    utest_assert(proc_queue_remove(NULL, NULL) == NULL, 
+            "Did not check for Both Null");
+    utest_assert(proc_queue_remove(q, NULL) == NULL, 
+            "Did not check for Null env in remove");
+    utest_assert(proc_queue_remove(NULL, &p1) == NULL, 
+            "Did not check for Null queue in remove");
+    utest_assert(proc_queue_remove(q, &p1) == NULL, 
+            "Did not return NULL for empty queue on remove");
+
+    proc_queue_destroy(q);
+}
+
 void test_queue()
 {
     proc_queue_t * q = proc_queue_create();
     pcb_t proc_a = { NULL, 0, "a" };
     pcb_t proc_b = { NULL, 0, "b" };
     pcb_t proc_c = { NULL, 0, "c" };
+    pcb_t proc_d = { NULL, 0, "d" };
+    pcb_t proc_e = { NULL, 0, "e" };
 
-    char results[] = { 'a', 'b', 'c' };
+    char results[] = { 'a', 'b', 'd' };
 
     proc_queue_enqueue(q, &proc_a);
     proc_queue_enqueue(q, &proc_b);
     proc_queue_enqueue(q, &proc_c);
+    proc_queue_enqueue(q, &proc_d);
+
+    utest_assert(proc_queue_remove(q, &proc_e) == NULL, "Did not return NULL for non existant process");
+    utest_assert(proc_queue_remove(q, &proc_c) == &proc_c, "Did not return proc c for remove");
 
     int i = 0;
     while (!proc_queue_is_empty(q))

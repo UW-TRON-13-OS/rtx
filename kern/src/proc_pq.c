@@ -99,7 +99,7 @@ uint32_t proc_pq_get_num_prorities(proc_pq_t *ppq)
 
 pcb_t * proc_pq_remove(proc_pq_t * ppq, pcb_t *pcb)
 {
-    if (ppq != NULL && pcb != NULL && pcb->priority < 0 && pcb->priority >= ppq->num_priorities)
+    if (ppq != NULL && pcb != NULL && pcb->priority >= 0 && pcb->priority < ppq->num_priorities)
     {
         return proc_queue_remove(ppq->priority_queues[pcb->priority], pcb);
     }
