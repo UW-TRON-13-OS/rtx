@@ -69,6 +69,9 @@ MsgEnv * k_receive_message()
         {
             return NULL;
         }
+#ifdef DEBUG_KERN
+        printf("%s blocked on receive\n", current_process->name);
+#endif
         k_process_switch(P_BLOCKED_ON_RECEIVE);
     }
 

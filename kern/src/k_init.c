@@ -2,6 +2,7 @@
 #include "k_config.h"
 #include "k_process.h"
 #include "k_storage.h"
+#include "k_scheduler.h"
 #include "k_ipc.h"
 #include "rtx.h"
 #include "k_globals.h"
@@ -121,8 +122,5 @@ void k_init()
     }
 
     // Jump to the first process
-    pcb_t * first_pcb = proc_pq_dequeue(ready_pq);
-    current_process = first_pcb;
-    first_pcb->status = P_EXECUTING;
-    longjmp(first_pcb->context, 1);
+    k_enter_scheduler();
 }
