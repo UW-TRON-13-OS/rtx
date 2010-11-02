@@ -4,6 +4,7 @@
 
 #include "k_serialize.h"
 #include "k_config.h"
+#include "k_process.h"
 
 // Internal data structs
 typedef struct trace_circle_buf {
