@@ -1,5 +1,10 @@
 #include "keyboard_process.h"
 #include "keyboard_shmem.h"
+
+#include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
+
 #define SECONDARY_BUFFER_SIZE 128
 
 char secondaryBuffer[SECONDARY_BUFFER_SIZE];
