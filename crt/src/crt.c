@@ -1,11 +1,21 @@
 #include "crt_process.h"
+#include "crt_shmem.h"
 
 void start_crt_process(pid_t parent_pid, send_buf_t * crt_buffer)
 {
-    // setup shared memory
+    int i;
     
     while (1)
     {
-        // do stuff
+        if (crt_buffer->i_process_wait_flag == '1')
+        {
+            for (i = 0; i < crt_buffer->length; i++)
+            {
+                putchar(crt_buffer->data[i]);   // make it print better later
+            }
+            crt_buffer->length = 0;
+            crt_buffer->i_process_wait_flag = '0';
+        }
+        usleep(100000);
     }
 }
