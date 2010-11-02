@@ -6,4 +6,5 @@ bin/*
 lib/*
 tests/*
 *.swp
-
+*.exe
+*.stackdump
