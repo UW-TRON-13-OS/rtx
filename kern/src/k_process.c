@@ -38,7 +38,33 @@ int k_terminate()
 
 int k_change_priority(int new_priority, int target_process_id)
 {
-    return -1;
+    if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
+            target_process_id < 0 || target_process_id >= NUM_PROCESSES)
+    {
+        return ERROR_ILLEGAL_ARG;
+    }
+
+    pcb_t *pcb = &p_table[target_process_id];
+    switch (pcb->status)
+    {
+        case P_READY:
+            proc_pq_remove(ready_pq, pcb);
+            pcb->priority = new_priority;
+            proc_pq_enqueue(ready_pq, pcb);
+            break;
+
+        case P_BLOCKED_ON_ENV_REQUEST:
+            proc_pq_remove(env_blocked_pq, pcb);
+            pcb->priority = new_priority;
+            proc_pq_enqueue(env_blocked_pq, pcb);
+            break;
+
+        default:
+            pcb->priority = new_priority;
+            break;
+    }
+
+    return CODE_SUCCESS;
 }
 
 void k_init_processes(proc_cfg_t init_table[])

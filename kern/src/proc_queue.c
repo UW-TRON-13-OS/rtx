@@ -52,7 +52,7 @@ pcb_t * proc_queue_dequeue(proc_queue_t* queue)
     return pcb;
 }
 
-int proc_queue_enqueue(proc_queue_t* queue, pcb_t * pcb)
+int proc_queue_enqueue(proc_queue_t * queue, pcb_t * pcb)
 {
     if (queue == NULL || pcb == NULL)
     {
@@ -74,3 +74,31 @@ int proc_queue_enqueue(proc_queue_t* queue, pcb_t * pcb)
     return CODE_SUCCESS;
 }
 
+pcb_t * proc_queue_remove(proc_queue_t * queue, pcb_t *pcb)
+{
+    if (queue == NULL || pcb == NULL || proc_queue_is_empty(queue))
+    {
+        return NULL;
+    }
+
+    if (queue->head == pcb)
+    {
+        return proc_queue_dequeue(queue);
+    }
+
+    pcb_t *prev_node = queue->head;
+    pcb_t *curr_node = queue->head->next;
+    while (curr_node)
+    {
+        if (curr_node == pcb)
+        {
+            prev_node->next = curr_node->next;
+            curr_node->next = NULL;
+            return curr_node;
+        }
+        prev_node = curr_node;
+        curr_node = curr_node->next;
+    }
+
+    return NULL;
+}
