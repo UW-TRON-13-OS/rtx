@@ -37,7 +37,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
         return ERROR_NULL_ARG;
     }
 
-    if(dest_pid < 0 || dest_pid >= NUM_PROCESSES)
+    if(dest_pid < 0 || dest_pid >= k_get_num_processes())
     {
         return ERROR_ILLEGAL_ARG;
     }

@@ -27,8 +27,9 @@ void k_init()
     k_ipc_init();
     k_storage_init();
 
-    proc_cfg_t init_table[NUM_PROCESSES] = { };
-    k_init_processes(init_table);
+#define N  4
+    proc_cfg_t init_table[N] = { };
+    k_init_processes(N, init_table);
 
     // Register for the appropriate unix signals
     // TODO register for die
