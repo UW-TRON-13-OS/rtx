@@ -8,12 +8,6 @@
 // global variables
 proc_pq_t * ready_pq;
 
-void k_release_processor()
-{
-    proc_pq_enqueue(ready_pq, current_process);
-    k_process_switch(P_READY);
-}
-
 void k_process_switch(p_status_t next_status)
 {
     pcb_t *old_proc = current_process;

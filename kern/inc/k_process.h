@@ -6,10 +6,6 @@
 #include <rtx.h>
 #include "msg_env_queue.h"
 
-typedef enum p_status {
-    P_READY, P_EXECUTING, P_BLOCKED, P_SUSPENDED
-} p_status_t;
-
 typedef struct pcb {
     struct pcb *        next;
     uint32_t            pid;
@@ -20,6 +16,7 @@ typedef struct pcb {
     msg_env_queue_t *   recv_msgs;
     uint32_t            is_i_process;
     start_pc            start;
+    char *              stack_end;
 } pcb_t;
 
 typedef struct proc_cfg {
@@ -31,6 +28,7 @@ typedef struct proc_cfg {
 } proc_cfg_t;
 
 /** 5.3 Processor Management **/
+int k_release_processor();
 int k_request_process_status(MsgEnv *msg_env_ptr);
 int k_terminate();
 int k_change_priority(int new_priority, int target_process_id);

@@ -10,6 +10,11 @@ struct proc_pq {
 
 proc_pq_t * proc_pq_create(uint32_t num_priorities)
 {
+    if (num_priorities == 0)
+    {
+        return NULL;
+    }
+
     proc_pq_t * ppq = malloc(sizeof(*ppq));
     if (ppq)
     {
@@ -28,6 +33,7 @@ proc_pq_t * proc_pq_create(uint32_t num_priorities)
             free(ppq);
             ppq = NULL;
         }
+        ppq->num_priorities = num_priorities;
     }
     return ppq;
 }
@@ -79,4 +85,24 @@ int proc_pq_enqueue(proc_pq_t *ppq, pcb_t * pcb)
     }
 
     return proc_queue_enqueue(ppq->priority_queues[pcb->priority], pcb);
+}
+
+uint32_t proc_pq_get_num_prorities(proc_pq_t *ppq)
+{
+    if (ppq == NULL)
+    {
+        return -1;
+    }
+
+    return ppq->num_priorities;
+}
+
+pcb_t * proc_pq_remove(proc_pq_t * ppq, pcb_t *pcb)
+{
+    if (ppq != NULL && pcb != NULL && pcb->priority >= 0 && pcb->priority < ppq->num_priorities)
+    {
+        return proc_queue_remove(ppq->priority_queues[pcb->priority], pcb);
+    }
+
+    return NULL;
 }

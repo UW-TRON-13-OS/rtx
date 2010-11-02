@@ -25,13 +25,8 @@ do
 
   $test
   RESULT=$?
-  TESTS_PASSED=`expr $RESULT / 16`
-  TESTS_TOTAL=`expr $RESULT % 16`
   test_name=`basename $test`
-  if [ $TESTS_PASSED -eq $TESTS_TOTAL ] ; then
-    printf "    %-30s ... \033[1;32m $TESTS_PASSED / $TESTS_TOTAL \033[0m\n" $test_name
-  else
-    printf "    %-30s ... \033[1;31m $TESTS_PASSED / $TESTS_TOTAL \033[0m\n" $test_name
+  if [ $RESULT -ne 0 ] ; then
     printf "    %s \033[1;31mFAILED\033[0m . Aborting\n" $test_name
     exit 1
   fi

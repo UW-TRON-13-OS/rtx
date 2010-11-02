@@ -22,8 +22,23 @@ void msg_env_queue_destroy(msg_env_queue_t * queue)
     free(queue);
 }
 
+int msg_env_queue_is_empty(msg_env_queue_t* queue)
+{
+    if (queue == NULL)
+    {
+        return -1;
+    }
+
+    return queue->head == NULL;
+}
+
 MsgEnv* msg_env_queue_dequeue(msg_env_queue_t *queue)
 {
+    if (queue == NULL)
+    {
+        return NULL;
+    }
+
 	MsgEnv* returnEnv = queue->head;
 	if (queue->head == queue->tail)
 	{
@@ -32,9 +47,9 @@ MsgEnv* msg_env_queue_dequeue(msg_env_queue_t *queue)
 	if (queue->head != NULL)
 	{
 		queue->head = queue->head->next;
+        returnEnv->next = NULL;
 	}
 	
-	returnEnv->next = NULL;
 	return returnEnv;
 }
 
@@ -46,9 +61,17 @@ int msg_env_queue_enqueue(msg_env_queue_t *queue, MsgEnv* env)
 		return ERROR_NULL_ARG;
 	}
 	
-	queue->tail->next = env;
-	env->next = NULL;
-	queue->tail = env;
+    if (queue->head == NULL)
+    {
+        queue->head = env;
+    }
+    else
+    {
+        queue->tail->next = env;
+    }
+
+    queue->tail = env;
+    queue->tail->next = NULL;
 
     return CODE_SUCCESS;
 }
