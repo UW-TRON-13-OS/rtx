@@ -11,6 +11,11 @@
 
 #define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
 
+#define DISPLAY_ACK    -1
+#define CONSOLE_OUTPUT -2
+#define CONSOLE_INPUT  -3
+#define REQUEST_CHAR   -4
+
 typedef void (*start_pc)();
 typedef struct MsgEnv {
     struct MsgEnv *next;
