@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
+#define NULL_PROCESS 1
+
 static int _num_processes;
 pcb_t * current_process;
 pcb_t   p_table[MAX_NUM_PROCESSES];
@@ -73,7 +75,7 @@ void k_init_processes(int num_processes, proc_cfg_t init_table[])
     jmp_buf init_buf;
     int i;
     _num_processes = num_processes;
-    ready_pq = proc_pq_create(NUM_PRIORITIES);
+    ready_pq = proc_pq_create(NUM_PRIORITIES+NULL_PROCESS);
     for (i = 0; i < num_processes; i++)
     {
         pcb_t *pcb = &p_table[i];
