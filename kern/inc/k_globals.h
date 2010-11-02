@@ -2,6 +2,7 @@
 #define _KERN_GLOBALS_H_
 
 #include <rtx.h>
+#include <sys/types.h>
 #include "k_process.h"
 #include "proc_pq.h"
 
@@ -20,5 +21,9 @@ extern proc_pq_t * env_blocked_pq;
 
 extern recv_buf_t * kb_buf;
 extern send_buf_t * crt_buf;
+
+extern pid_t rtx_pid;
+extern pid_t kb_child_pid;
+extern pid_t crt_child_pid;
 
 #endif

@@ -6,8 +6,11 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
+#define NULL_PROCESS 1
+
+static int _num_processes;
 pcb_t * current_process;
-pcb_t   p_table[NUM_PROCESSES];
+pcb_t   p_table[MAX_NUM_PROCESSES];
 
 int k_release_processor()
 {
@@ -20,8 +23,8 @@ int k_request_process_status(MsgEnv *msg_env)
 {
     uint32_t * data = (uint32_t *) msg_env->msg;
     int i;
-    *data++ = NUM_PROCESSES;
-    for (i = 0; i < NUM_PROCESSES; i++)
+    *data++ = _num_processes;
+    for (i = 0; i < _num_processes; i++)
     {
         *data++ = p_table[i].pid;
         *data++ = p_table[i].status;
@@ -30,16 +33,10 @@ int k_request_process_status(MsgEnv *msg_env)
     return CODE_SUCCESS;
 }
 
-int k_terminate()
-{
-    assert(0);
-    return -1;
-}
-
 int k_change_priority(int new_priority, int target_process_id)
 {
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
-            target_process_id < 0 || target_process_id >= NUM_PROCESSES)
+            target_process_id < 0 || target_process_id >= _num_processes)
     {
         return ERROR_ILLEGAL_ARG;
     }
@@ -67,11 +64,13 @@ int k_change_priority(int new_priority, int target_process_id)
     return CODE_SUCCESS;
 }
 
-void k_init_processes(proc_cfg_t init_table[])
+void k_init_processes(int num_processes, proc_cfg_t init_table[])
 {
     jmp_buf init_buf;
     int i;
-    for (i = 0; i < NUM_PROCESSES; i++)
+    _num_processes = num_processes;
+    ready_pq = proc_pq_create(NUM_PRIORITIES+NULL_PROCESS);
+    for (i = 0; i < num_processes; i++)
     {
         pcb_t *pcb = &p_table[i];
         proc_cfg_t *cfg = &init_table[i];
@@ -106,4 +105,9 @@ void k_init_processes(proc_cfg_t init_table[])
             proc_pq_enqueue(ready_pq, pcb);
         }
     }
+}
+
+int k_get_num_processes()
+{
+    return _num_processes;
 }
