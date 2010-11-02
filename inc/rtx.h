@@ -8,6 +8,7 @@
 #define CODE_SUCCESS        0
 #define ERROR_NULL_ARG      -1
 #define ERROR_ILLEGAL_ARG   -2
+#define ERROR_ERROR_ARG     -3
 
 typedef void (*start_pc)();
 typedef struct MsgEnv {
