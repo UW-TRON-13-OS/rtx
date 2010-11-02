@@ -5,6 +5,7 @@
 #include "k_serialize.h"
 #include "k_config.h"
 #include "k_process.h"
+#include "k_scheduler.h"
 #include "k_globals.h"
 #include "msg_env_queue.h"
 
@@ -36,7 +37,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     else if(dest_pid < 0 || dest_pid > NUM_PROCESSES)
         return ERROR_ILLEGAL_ARG;
 
-    pcb_t *dest_pcb = p_table[dest_pid];
+    pcb_t *dest_pcb = &p_table[dest_pid];
 
     if (msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env) != 0)
         return ERROR_ERROR_ARG;
@@ -45,7 +46,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     // Don't need to do this now as it will make stuff more complicated.
     dest_pcb->status = P_READY;
     proc_pq_enqueue(ready_pq, dest_pcb );
-    _log_msg_event(_send_trace_buf, msg_env);
+    _log_msg_event(&_send_trace_buf, msg_env);
     return CODE_SUCCESS;
 }
 
@@ -57,7 +58,7 @@ MsgEnv * k_receive_message()
         k_process_switch(P_BLOCKED_ON_RECEIVE);
     }
     MsgEnv *msg_env = msg_env_queue_dequeue(current_process->recv_msgs);
-    _log_msg_event(_recv_trace_buf, msg_env);
+    _log_msg_event(&_recv_trace_buf, msg_env);
     return msg_env;
 }
 
