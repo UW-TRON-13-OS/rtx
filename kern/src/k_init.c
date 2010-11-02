@@ -5,6 +5,7 @@
 #include "k_ipc.h"
 #include "rtx.h"
 #include "k_globals.h"
+#include "k_signal_handler.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,6 +14,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "keyboard_process.h"
 #include "crt_process.h"
@@ -27,6 +29,26 @@ void k_init()
 
     proc_cfg_t init_table[NUM_PROCESSES] = { };
     k_init_processes(init_table);
+
+    // Register for the appropriate unix signals
+    // TODO register for die
+    //struct sigaction die_sig;
+    //die_sig.sa_handler = handle_signal;
+    //sigaddset(&i_process_mask, SIGINT);  // Ctrl-C
+    
+    //struct sigaction i_process_action;
+    //sigset_t i_process_mask;
+    //sigemptyset(&i_process_mask);
+    //sigaddset(&i_process_mask, SIGALRM); // Timeout signal
+    //sigaddset(&i_process_mask, SIGUSR1); // CRT signal
+    //sigaddset(&i_process_mask, SIGUSR2); // KB signal
+    //i_process_action.sa_handler = handle_signal;
+    //i_process_action.sa_mask = i_process_mask;
+    //i_process_action.sa_flags = 0;
+    sigset(SIGALRM, handle_signal);
+    sigset(SIGUSR1, handle_signal);
+    sigset(SIGUSR2, handle_signal);
+
 
     // Initialize memory mapped files
     int kb_fid, crt_fid, status;
