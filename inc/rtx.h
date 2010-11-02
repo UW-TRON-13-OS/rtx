@@ -9,6 +9,8 @@
 #define ERROR_NULL_ARG      1
 #define ERROR_ILLEGAL_ARG   2
 
+#define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
+
 typedef void (*start_pc)();
 typedef struct MsgEnv {
     struct MsgEnv *next;
