@@ -10,6 +10,13 @@
 #define ERROR_ILLEGAL_ARG   -2
 #define ERROR_ERROR_ARG     -3
 
+#define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
+
+#define DISPLAY_ACK    -1
+#define CONSOLE_OUTPUT -2
+#define CONSOLE_INPUT  -3
+#define REQUEST_CHAR   -4
+
 typedef void (*start_pc)();
 typedef struct MsgEnv {
     struct MsgEnv *next;

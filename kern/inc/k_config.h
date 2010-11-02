@@ -7,7 +7,6 @@
  * size of memory buffers etc.
  */
 
-#define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
 #define IPC_NUM_FREE_MSG_ENVS 128
 
 #define MAX_NUM_PROCESSES 8
