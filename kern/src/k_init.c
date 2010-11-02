@@ -120,8 +120,8 @@ void k_init()
     }
 
     // Jump to the first process
-    pcb_t * first_pcb = proc_pq_dequeue(first_pcb);
+    pcb_t * first_pcb = proc_pq_dequeue(ready_pq);
     current_process = first_pcb;
     first_pcb->status = P_EXECUTING;
-    longjmp(first_pcb->context);
+    longjmp(first_pcb->context, 1);
 }
