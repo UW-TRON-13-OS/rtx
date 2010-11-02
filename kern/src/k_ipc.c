@@ -51,7 +51,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
 
 MsgEnv * k_receive_message()
 {
-    while (msg_env_queue_is_empty(current_process->recv_msgs)
+    while (msg_env_queue_is_empty(current_process->recv_msgs))
     {
         current_process->status = P_BLOCKED_ON_RECEIVE;
         k_process_switch(P_BLOCKED_ON_RECEIVE);
