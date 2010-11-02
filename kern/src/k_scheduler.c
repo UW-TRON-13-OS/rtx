@@ -5,7 +5,6 @@
 
 #define RESUME_PROCESS 1
 
-// global variables
 proc_pq_t * ready_pq;
 
 void k_process_switch(p_status_t next_status)

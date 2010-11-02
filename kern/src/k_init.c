@@ -7,6 +7,8 @@
 #include "rtx.h"
 #include "k_globals.h"
 #include "k_signal_handler.h"
+#include "msg_env_queue.h"
+#include "proc_pq.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -22,6 +24,10 @@
 
 #define KEYBOARD_SHMEM_FILE "keyboard.dat"
 #define CRT_SHMEM_FILE "crt.dat"
+
+pid_t rtx_pid;
+pid_t kb_child_pid;
+pid_t crt_child_pid;
 
 void k_init()
 {
@@ -76,7 +82,7 @@ void k_init()
         exit(1);
     }
 
-    status = ftruncate(kb_fid, sizeof(send_buf_t));
+    status = ftruncate(crt_fid, sizeof(send_buf_t));
     if (status != 0) 
     {
         printf("Could not truncate the file %s to %d bytes. status %d\n", 
@@ -84,7 +90,7 @@ void k_init()
         exit(1);
     }
     
-    pid_t parent_pid = getpid();
+    pid_t rtx_pid = getpid();
 
     // Setup mmap file for keyboard and fork it
     void *  mmap_ptr = mmap(NULL, sizeof(recv_buf_t), PROT_READ | PROT_WRITE, MAP_SHARED, kb_fid, 0);
@@ -94,12 +100,13 @@ void k_init()
         exit(1);
     }
     kb_buf = (recv_buf_t *) mmap_ptr;
+    close(kb_fid);
 
     int kb_child_pid = fork();
     if (kb_child_pid == 0)
     {
         // TODO uncomment when keyboard process is done
-        //start_keyboard_process(parent_pid, kb_buf);
+        //start_keyboard_process(rtx_pid, kb_buf);
         exit(0);
     }
     
@@ -112,15 +119,40 @@ void k_init()
         exit(1);
     }
     crt_buf = (send_buf_t *)mmap_ptr;
+    close(crt_fid);
 
     int crt_child_pid = fork();
     if (crt_child_pid == 0)
     {
         //TODO uncomment when crt process is done
-        //start_crt_process(parent_pid, crt_buf);
+        //start_crt_process(rtx_pid, crt_buf);
         exit(0);
     }
 
     // Jump to the first process
     k_enter_scheduler();
+}
+
+int k_terminate()
+{
+    printf("Shutting down...\n");
+    // kill children
+    kill(kb_child_pid, SIGKILL);
+    kill(crt_child_pid, SIGKILL);
+
+    // close shared memory
+
+    // Delete shared memory file
+
+
+    // Free allocated memory
+    int pid;
+    for (pid = 0; pid < k_get_num_processes(); pid++)
+    {
+        msg_env_queue_destroy(p_table[pid].recv_msgs);
+    }
+    proc_pq_destroy(ready_pq);
+    proc_pq_destroy(env_blocked_pq);
+    exit(0);
+    return -1;
 }
