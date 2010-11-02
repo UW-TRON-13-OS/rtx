@@ -51,7 +51,14 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
 
 MsgEnv * k_receive_message()
 {
-    return NULL;
+    while (msg_env_queue_is_empty(current_process->recv_msgs)
+    {
+        current_process->status = P_BLOCKED_ON_RECEIVE;
+        k_process_switch(P_BLOCKED_ON_RECEIVE);
+    }
+    MsgEnv *msg_env = msg_env_queue_dequeue(current_process->recv_msgs);
+    _log_msg_event(_recv_trace_buf, msg_env);
+    return msg_env;
 }
 
 int k_get_trace_buffers( MsgEnv *msg_env )
