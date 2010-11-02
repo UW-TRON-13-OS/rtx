@@ -81,14 +81,18 @@ int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
 
 int send_console_chars(MsgEnv *msg_env)
 {
-    // TODO implement send_console_chars
-    return -1;
+    atomic(ON);
+    int ret_value = k_send_console_chars(msg_env);
+    atomic(OFF);
+    return ret_value;
 }
 
 int get_console_chars(MsgEnv *msg_env)
 {
-    // TODO implement get_console_chars
-    return -1;
+    atomic(ON);
+    int ret_value = k_get_console_chars(msg_env);
+    atomic(OFF);
+    return ret_value;
 }
 
 int get_trace_buffers(MsgEnv* msg_env)
