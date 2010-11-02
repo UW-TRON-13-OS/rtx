@@ -27,6 +27,16 @@ typedef struct ipc_trace {
     uint64_t time_stamp;
 } ipc_trace_t;
 
+typedef enum p_status {
+    P_READY, P_EXECUTING, P_BLOCKED_ON_ENV_REQUEST, P_BLOCKED_ON_RECEIVE
+} p_status_t;
+
+typedef struct process_status {
+    uint32_t    pid;
+    p_status_t  status;
+    uint32_t priority;
+} process_status_t;
+
 /** 5.1 Interprocess Communication **/
 int send_message(int dest_pid, MsgEnv *msg_env);
 MsgEnv * receive_message();

@@ -13,9 +13,18 @@ int k_release_processor()
     return CODE_SUCCESS;
 }
 
-int k_request_process_status(MsgEnv *msg_env_ptr)
+int k_request_process_status(MsgEnv *msg_env)
 {
-    return -1;
+    uint32_t * data = (uint32_t *) msg_env->msg;
+    int i;
+    *data++ = NUM_PROCESSES;
+    for (i = 0; i < NUM_PROCESSES; i++)
+    {
+        *data++ = p_table[i].pid;
+        *data++ = p_table[i].status;
+        *data++ = p_table[i].priority;
+    }
+    return CODE_SUCCESS;
 }
 
 int k_terminate()
