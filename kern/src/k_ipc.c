@@ -28,7 +28,25 @@ void k_ipc_init()
 
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
-    return -1;
+    if(msg_env == NULL)
+        return ERROR_NULL_ARGUMENT
+    else if(dest_pid < 0 || dest_pid > NUM_PROCESSES)
+        return ERROR_ILLEGAL_ARGUMENT
+
+    int send_pid = current_process->pid;
+    msg_env->send_pid = send_pid;
+    msg_env->dest_pid = dest_pid;
+
+    pcb_t *dest_pcb =  p_table[dest_pid]; 
+    if (msg_env_queue_enqueue(dest_pcb->recv_msgs, msg_env) != 0)
+        return ERROR_ERROR_ARGUMENT
+
+    //if the destination process is blocked waiting for message then
+    // Don't need to do this now as it will make stuff more complicated.
+    p_table[dest_pid]->status = P_READY;
+    proc_pq_enqueue(ready_pq, p_table[dest_pid]);
+    _log_msg_event(_send_trace_buf, msg_env);
+    return CODE_SUCCESS
 }
 
 MsgEnv * k_receive_message()
