@@ -7,7 +7,7 @@
 
 #define WAKEUP_CODE 123
 
-//FUNCTION DECLARATIONS
+/** FUNCTION DECLARATIONS **/
 //gets and prints process statuses
 int CCI_printProcessStatuses (char* data);
 
@@ -17,16 +17,19 @@ int CCI_setClock (char* timeParam, int* time);
 //prints trace buffers on console given the envelope message data
 int CCI_printTraceBuffers (char* data);
 
-//strcmp
-//int strcmp (char* str1, char* str2);
-
 //set process priority based on params given provided
 int CCI_setNewPriority (char* param);
+
+//strcmp
+int CCI_strcmp (char* str1, char* str2);
+
+//converts string into int
+int CCI_atoi (char* str)
 
 //Splits input into the first word (retStr1) and the remainder (retStr2)
 int splitFirstWord (char* input, char* retStr1, char* retStr2);
 
-//CCI entry point and main loop
+/** CCI entry point and main loop **/
 void start_cci()
 {
     // initialise 
@@ -55,10 +58,12 @@ void start_cci()
             status = request_delay ( 10, WAKEUP_CODE, env);
             if (status != CODE_SUCCESS)
                 printf("request_delay failed with status %d\n",status);
-            clock_time++;
+            clock_time = (clock_time+1)%86400; //86400 = 24hrs in secs
             if (clock_display_en)
             {
-                //show clock somehow
+                //show clock somehow...TODO? change this later
+                printf("%d:%d:%d",clock_time/3600,(clock_time%3600)/60,
+                                  clock_time%60);
             }
             else
             {
@@ -73,7 +78,7 @@ void start_cci()
             char rem [20];
             splitFirstWord (env->msg, cmd, rem);
             //send empty envelope to process A
-            if (strcmp(cmd,"s") == 0)
+            if (strcmp(cmd,"s") == 0) //TODO rmv strcmp
             {
                     MsgEnv* tmpEnv = request_msg_env();
                     status = send_message (PROCESS_A_PID, tmpEnv);
@@ -81,7 +86,7 @@ void start_cci()
                         printf("send_message failed with status %d\n",status);
             }
             //displays process statuses
-            else if (strcmp(cmd,"ps") == 0)
+            else if (strcmp(cmd,"ps") == 0) //TODO rmv strcmp
             {
                 MsgEnv* tmpEnv = request_msg_env();
                 status = request_process_status(tmpEnv);
@@ -92,7 +97,7 @@ void start_cci()
                     printf("CCI_printProcessStatuses failed with status %d\n",status);
             }
             //set clock
-            else if (strcmp(cmd,"c") == 0)
+            else if (strcmp(cmd,"c") == 0) //TODO rmv strcmp
             {
                 status = CCI_setClock(rem, &clock_time);
                 if (status == ERROR_ILLEGAL_ARG)
@@ -103,17 +108,17 @@ void start_cci()
                     printf("CCI_setClock failed with status %d\n",status);
             }
             //show clock
-            else if (strcmp(cmd,"cd") == 0)
+            else if (strcmp(cmd,"cd") == 0) //TODO rmv strcmp
             {
                 clock_display_en = 1;
             }
             //hide clock
-            else if (strcmp(cmd,"ct") == 0)
+            else if (strcmp(cmd,"ct") == 0) //TODO rmv strcmp 
             {
                 clock_display_en = 0;
             }
             //show send/receive trace buffers
-            else if (strcmp(cmd,"b") == 0)
+            else if (strcmp(cmd,"b") == 0) //TODO rmv strcmp
             {
                 MsgEnv* tmpEnv = request_msg_env();
                 status = get_trace_buffers (tmpEnv);
@@ -124,12 +129,12 @@ void start_cci()
                     printf("CCI_printTraceBuffers failed with status %d\n",status);
             }
             //terminate RTX
-            else if (strcmp(cmd,"t") == 0)
+            else if (strcmp(cmd,"t") == 0) //TODO rmv strcmp
             {
                 terminate();
             }
             //change process priority
-            else if (strcmp(cmd,"n") == 0)
+            else if (strcmp(cmd,"n") == 0) //TODO rmv strcmp
             {
                 status = CCI_setNewPriority(rem);
                 if (status == ERROR_ILLEGAL_ARG)
@@ -157,7 +162,30 @@ void start_cci()
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* data)
 {
-    //TODO IMPLEMENT ME
+    if (data == NULL)
+        return ERROR_NULL_ARG;
+    int num_processes = *data++;
+    int i;
+    printf ("PID | STATUS                | PRIORITY\n");
+    for (i=0;i<num_processes;i++)
+    {
+        printf("  %d   ",*data++);
+        switch(*data)
+        {
+            case P_READY:
+                printf("ready                  ");
+            case P_EXECUTING:
+                printf("executing              ");
+            case P_BLOCKED_ON_ENV_REQUEST:
+                printf("blocked on env request ");
+            case P_BLOCKED_ON_RECEIVE:
+                printf("blocked on receive     ");
+            default :
+                printf("                       ");
+        }
+        *data++;
+        printf(" %d\n",*data++);
+    }
     return CODE_SUCCESS;
 }
 
@@ -169,21 +197,26 @@ int CCI_setClock (char* timeParam, int* time)
     if (timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != ':')
         return ERROR_ILLEGAL_ARG;
 
-    char hr [3];
-    char min [3];
-    char sec [3];
-    int i;
+    char hr_s [3];
+    char min_s [3];
+    char sec_s [3];
+    int i, hr, min, sec;
     for (i=0;i<2;i++)
     {
-        hr[i] =timeParam[i];
-        min[i]=timeParam[3+i];
-        sec[i]=timeParam[6+i];
+        hr_s[i] =timeParam[i];
+        min_s[i]=timeParam[3+i];
+        sec_s[i]=timeParam[6+i];
     }
-    hr[2]='\0';
-    min[2]='\0';
-    sec[2]='\0';
+    hr_s[2]='\0';
+    min_s[2]='\0';
+    sec_s[2]='\0';
 
-    *time = atoi(hr)*3600 + atoi(min)*60 + atoi(sec);
+    hr = atoi(hr_s); // TODO rmv atoi
+    min = atoi(min_s);
+    sec = atoi(sec_s);
+    if (hr>23 || min>59 || sec > 59)
+        return ERROR_ILLEGAL_ARG;
+    *time = hr*3600 + min*60 + sec;
     return CODE_SUCCESS;
 }
 
@@ -221,12 +254,6 @@ int CCI_printTraceBuffers (char* data)
     return CODE_SUCCESS;
 }
 
-//strcmp
-//int strcmp (char* str1, char* str2)
-//{
-    //dammit.
-//}
-
 //set process priority based on params given provided
 int CCI_setNewPriority (char* param)
 {
@@ -237,9 +264,47 @@ int CCI_setNewPriority (char* param)
     char pidStr [3];
     int priority, pid;
     splitFirstWord (param, priorityStr, pidStr);
-    priority = atoi(priorityStr);
-    pid = atoi(pidStr);
+    priority = atoi(priorityStr); //TODO rmv atoi
+    pid = atoi(pidStr); //TODO rmv atoi
     return change_priority(priority, pid);
+}
+
+//strcmp
+int CCI_strcmp (char* str1, char* str2)
+{
+    int i, diff;
+    do
+    {
+        diff = str1[i]-str2[i];
+    }
+    while (str1[i] != '\0' && str2[i] != '\0');
+
+    return diff;
+}
+
+//converts string into int
+int CCI_atoi (char* str)
+{
+    int sign = 1;
+    int value = 0;
+    int i = 0;
+
+    if (*str == '+')
+    {
+        *str++;
+    }
+    else if (*str == '-')
+    {
+        sign = -1;
+    }
+
+    while (*str != '\0')
+    {
+        value *= 10;
+        value += (int)*str++ - (int)'0';
+    }
+    
+    return value*sign;
 }
 
 //Splits input into the first word (retStr1) and the remainder (retStr2)
