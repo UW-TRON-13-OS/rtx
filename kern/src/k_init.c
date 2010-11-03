@@ -17,6 +17,7 @@
 #include "k_uart.h"
 #include "processes.h"
 #include "timeout_i_process.h"
+#include "null_process.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -37,7 +38,8 @@
 #define FAIL -1
 
 #define NUM_I_PROCESSES 3
-#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES)
+#define NULL_PROCESS 1
+#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES+NULL_PROCESS)
 
 pid_t rtx_pid;
 pid_t kb_child_pid;
@@ -53,19 +55,34 @@ void die()
 
 void k_init()
 {
+    printf("Intializing rtx\n");
+
+    printf("Intializing ipc...");
+    fflush(stdout);
     k_ipc_init();
+    printf("done\n");
+
+    printf("Intializing storage...");
+    fflush(stdout);
     k_storage_init();
+    printf("done\n");
 
     proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
     //  { pid, name, priority, is_i_process, start_fn}
         { KB_I_PROCESS_PID,      "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
         { CRT_I_PROCESS_PID,     "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
         { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
-        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci }
+        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci },
+        { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null }
     };
+    printf("Intializing processes...");
+    fflush(stdout);
     k_init_processes(TOTAL_NUM_PROCESSES, init_table);
+    printf("done\n");
 
     // Register for the appropriate unix signals
+    printf("Registering for signals...");
+    fflush(stdout);
     sigset(SIGALRM, handle_signal);
     sigset(SIGUSR1, handle_signal);
     sigset(SIGUSR2, handle_signal);
@@ -78,8 +95,9 @@ void k_init()
     sigset(SIGTERM, handle_signal);
     sigset(SIGABRT, handle_signal);
 
+    // Register for timeout alarm signal
     ualarm(DELAY_TIME, TIMEOUT_100MS);
-
+    printf("done\n");
 
     // Initialize memory mapped files
     int kb_fid, crt_fid, status;
@@ -151,6 +169,8 @@ void k_init()
         //start_crt_process(rtx_pid, crt_buf);
         exit(0);
     }
+
+    printf("Done Bootup...Starting RTX\n================================\n");
 
     // Jump to the first process
     k_enter_scheduler();
