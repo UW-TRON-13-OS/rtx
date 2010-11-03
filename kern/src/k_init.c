@@ -1,3 +1,6 @@
+// needed for sigset
+#define _XOPEN_SOURCE 500
+
 #include "k_init.h"
 #include "k_config.h"
 #include "k_process.h"
@@ -18,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -165,6 +169,10 @@ int k_terminate()
     // kill children
     kill(kb_child_pid, SIGINT);
     kill(crt_child_pid, SIGINT);
+
+    // Wait until they die first
+    waitpid(kb_child_pid, NULL, 0);
+    waitpid(crt_child_pid, NULL, 0);
 
     // close shared memory
     int status = munmap(kb_buf, sizeof(*kb_buf));
