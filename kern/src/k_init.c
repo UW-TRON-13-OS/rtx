@@ -11,6 +11,7 @@
 #include "proc_pq.h"
 #include "kb_i_process.h"
 #include "crt_i_process.h"
+#include "k_uart.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -27,9 +28,14 @@
 #define KEYBOARD_SHMEM_FILE "keyboard.dat"
 #define CRT_SHMEM_FILE "crt.dat"
 
+#define FAIL -1
+
 pid_t rtx_pid;
 pid_t kb_child_pid;
 pid_t crt_child_pid;
+
+recv_buf_t *kb_buf;
+send_buf_t *crt_buf;
 
 void k_init()
 {
@@ -101,8 +107,7 @@ void k_init()
         printf("Could not create mmap pointer to %s\n", KEYBOARD_SHMEM_FILE);
         exit(1);
     }
-    recv_buf_t *kb_buf = (recv_buf_t *) mmap_ptr;
-    kb_register_shmem(kb_buf);
+    kb_buf = (recv_buf_t *) mmap_ptr;
     close(kb_fid);
 
     int kb_child_pid = fork();
@@ -121,8 +126,7 @@ void k_init()
         printf("Could not create mmap pointer to %s\n", CRT_SHMEM_FILE);
         exit(1);
     }
-    send_buf_t *crt_buf = (send_buf_t *)mmap_ptr;
-    crt_register_shmem(crt_buf);
+    crt_buf = (send_buf_t *)mmap_ptr;
     close(crt_fid);
 
     int crt_child_pid = fork();
@@ -139,14 +143,39 @@ void k_init()
 
 int k_terminate()
 {
+#ifdef VERBOSE
     printf("Shutting down...\n");
+#endif
+
     // kill children
-    kill(kb_child_pid, SIGKILL);
-    kill(crt_child_pid, SIGKILL);
+    kill(kb_child_pid, SIGINT);
+    kill(crt_child_pid, SIGINT);
 
     // close shared memory
+    int status = munmap(kb_buf, sizeof(*kb_buf));
+    if (status == FAIL)
+    {
+        printf("Unmapping the keyboard shared memory failed\n");
+    }
+
+    status = munmap(crt_buf, sizeof(*crt_buf));
+    if (status == FAIL)
+    {
+        printf("Unmapping the keyboard shared memory failed\n");
+    }
 
     // Delete shared memory file
+    status = unlink(KEYBOARD_SHMEM_FILE);
+    if (status == FAIL)
+    {
+        printf("Deleting the keyboard shared memory file failed\n");
+    }
+
+    status = unlink(CRT_SHMEM_FILE);
+    if (status == FAIL)
+    {
+        printf("Deleting the crt shared memory file failed\n");
+    }
 
 
     // Free allocated memory
@@ -158,5 +187,4 @@ int k_terminate()
     proc_pq_destroy(ready_pq);
     proc_pq_destroy(env_blocked_pq);
     exit(0);
-    return -1;
 }
