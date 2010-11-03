@@ -5,4 +5,8 @@
 
 void handle_signal(int sig_num);
 
+void k_i_process_enter (pcb_t* i_process);
+void k_i_process_exit ();
+
 #endif
+
