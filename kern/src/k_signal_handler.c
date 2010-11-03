@@ -12,13 +12,25 @@ void handle_signal(int sig_num)
 
     switch (sig_num)
     {
-        //TODO handle any other specific signals?
+        case SIGINT: 
+        case SIGBUS: 
+        case SIGHUP: 
+        case SIGILL: 
+        case SIGQUIT: 
+        case SIGSEGV: 
+        case SIGTERM: 
+        case SIGABRT: 
+            k_terminate();
+            break;
         case SIGALRM: 
             k_i_process_enter(&p_table[TIMEOUT_I_PROCESS_PID]);
+            break;
         case SIGUSR1: 
             k_i_process_enter(&p_table[KB_I_PROCESS_PID]);
+            break;
         case SIGUSR2: 
             k_i_process_enter(&p_table[CRT_I_PROCESS_PID]);
+            break;
         default:
             printf("Unknown signal: %d/n",sig_num);
             k_terminate();
