@@ -7,6 +7,7 @@
 #include "k_process.h"
 #include "k_scheduler.h"
 #include "k_globals.h"
+#include "k_clock.h"
 #include "msg_env_queue.h"
 
 // Internal data structs
@@ -130,7 +131,7 @@ void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
    elem->dest_pid = msg_env->dest_pid;
    elem->send_pid = msg_env->send_pid;
    elem->msg_type = msg_env->msg_type;
-   elem->time_stamp = 0; // get time stamp
+   elem->time_stamp = k_clock_get_system_time();
 
    // update the head and tail
    tbuf->tail = (tbuf->tail + 1) % IPC_MESSAGE_TRACE_HISTORY_SIZE; 
