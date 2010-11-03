@@ -1,6 +1,7 @@
 #include "k_console.h"
 #include "rtx.h"
 #include "k_globals.h"
+#include "k_ipc.h"
 
 int k_send_console_chars(MsgEnv *msg_env)
 {
@@ -8,7 +9,7 @@ int k_send_console_chars(MsgEnv *msg_env)
         return ERROR_NULL_ARG;
     int ret;
     msg_env->msg_type = CONSOLE_OUTPUT;
-    ret = k_send_message(CRT_IPROCESS_PID, msg_env);
+    ret = k_send_message(CRT_I_PROCESS_PID, msg_env);
     // send SIGUSR2 signal to RTX process to trigger CRT i-process
     kill(rtx_pid, SIGUSR2);
     return ret;
