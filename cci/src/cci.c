@@ -38,12 +38,16 @@ void start_cci()
     uint32_t status;
     MsgEnv* env = request_msg_env();
 
+    printf ("received env\n");
     status = get_console_chars(env);
+    printf ("requested console chars\n");
     if (status != CODE_SUCCESS)
         printf("get_console_chars failed with status %d\n",status);
     env = request_msg_env();
     //we can add a periodic delay fcn instead
+    printf ("requesting a delay\n");
     status = request_delay ( 10, WAKEUP_CODE, env); //one second delay 
+    printf("finish requesting a delay\n");
     if (status != CODE_SUCCESS)
         printf("request_delay failed with status %d\n",status);
     //print CCI prompt
@@ -51,6 +55,7 @@ void start_cci()
 
     while (1)
     {
+        printf("receiving a message\n");
         env = receive_message(); 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)

@@ -221,6 +221,7 @@ int k_terminate()
     {
         msg_env_queue_destroy(p_table[pid].recv_msgs);
     }
+    k_storage_cleanup();
     proc_pq_destroy(ready_pq);
     proc_pq_destroy(env_blocked_pq);
     exit(0);
