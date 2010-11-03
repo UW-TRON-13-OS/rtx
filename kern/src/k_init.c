@@ -58,10 +58,10 @@ void k_init()
 
     proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
     //  { pid, name, priority, is_i_process, start_fn}
-        { 0, "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
-        { 1, "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
-        { 2, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
-        { 3, "cci",         0, IS_NOT_I_PROCESS, start_cci }
+        { KB_I_PROCESS_PID,      "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
+        { CRT_I_PROCESS_PID,     "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
+        { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
+        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci }
     };
     k_init_processes(TOTAL_NUM_PROCESSES, init_table);
 
