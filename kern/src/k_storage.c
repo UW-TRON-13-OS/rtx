@@ -26,6 +26,11 @@ void k_storage_init()
 
 void k_storage_cleanup()
 {
+    int i;
+    for (i = 0; i < IPC_NUM_FREE_MSG_ENVS; i++)
+    {
+        free(env_pool[i].msg);
+    }
     msg_env_queue_destroy(free_env_q);
     free(env_pool);
     proc_pq_destroy(env_blocked_pq);
