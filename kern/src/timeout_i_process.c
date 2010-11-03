@@ -20,7 +20,7 @@ msg_env_queue_t* timeout_queue;
 
 // called from the signal handler after every clock tick
 
-void timeout_i_process
+void timeout_i_process()
 
 {
 
@@ -32,28 +32,52 @@ void timeout_i_process
         while(msg_env != NULL)
 
         {
-            msg_env_queue_enqueue(timeout_queue, msg_env);
+            insert_into_timeout_queue(msg_env);
         }
 
         if(msg_env_queue_is_empty(timeout_queue) != 1)
         {
+           
+            MsgEnv *msg_head = timeout_queue->head;
+            msg_head->msg = int(msg_head->msg)--;
 
-            decrement the number of intervals of the head by 1
+            // decrement the number of intervals of the head by 1
 
-            while (the number of intervals at the head is zero)
-
+            while (msg_head->msg != "0")
             {
 
-                msg_env = dequeue head of timeout_queue
+                msg_env = msg_env_queue_dequeue(timeout_queue);  // dequeue head of timeout_queue
 
-                k_send_message(msg_env.send_pid, msg_env)
-
+		k_send_message(msg_env->send_pid, msg_env);
             }
-
         }
 
-        i_process_exit
+        k_i_process_exit();
 
     }
 
+}
+
+void insert_into_timeout_queue (MsgEnv* new_msg_env)
+{
+    if(new_msg_env != NULL)
+    {
+        int counter = 0;
+
+        MsgEnv* msg_env = timeout_queue->head;
+    
+        MsgEnv* prev_msg_env = NULL;
+
+
+        while((counter < int(msg_env->msg)) && (msg_env != NULL))
+        {
+            counter += int(msg_env->msg);
+            prev_msg_env = msg_env;
+            msg_env = msg_env->next;
+        }
+
+        if(prev_msg_env != NULL)
+            prev_msg_env->next = new_msg_env;
+        new_msg_env->next = msg_env;
+    }
 }
