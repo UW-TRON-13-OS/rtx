@@ -11,6 +11,9 @@
 #include "proc_pq.h"
 #include "kb_i_process.h"
 #include "crt_i_process.h"
+#include "k_uart.h"
+#include "processes.h"
+#include "timeout_i_process.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -27,18 +30,36 @@
 #define KEYBOARD_SHMEM_FILE "keyboard.dat"
 #define CRT_SHMEM_FILE "crt.dat"
 
+#define FAIL -1
+
+#define NUM_I_PROCESSES 3
+#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES)
+
 pid_t rtx_pid;
 pid_t kb_child_pid;
 pid_t crt_child_pid;
+
+recv_buf_t *kb_buf;
+send_buf_t *crt_buf;
+
+void die()
+{
+    k_terminate();
+}
 
 void k_init()
 {
     k_ipc_init();
     k_storage_init();
 
-#define N  4
-    proc_cfg_t init_table[N] = { };
-    k_init_processes(N, init_table);
+    proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
+    //  { pid, name, priority, is_i_process, start_fn}
+        { 0, "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
+        { 1, "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
+        { 2, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
+        { 3, "cci",         0, IS_NOT_I_PROCESS, start_cci }
+    };
+    k_init_processes(TOTAL_NUM_PROCESSES, init_table);
 
     // Register for the appropriate unix signals
     // TODO register for die
@@ -58,6 +79,8 @@ void k_init()
     sigset(SIGALRM, handle_signal);
     sigset(SIGUSR1, handle_signal);
     sigset(SIGUSR2, handle_signal);
+
+    ualarm(DELAY_TIME, TIMEOUT_100MS);
 
 
     // Initialize memory mapped files
@@ -101,8 +124,7 @@ void k_init()
         printf("Could not create mmap pointer to %s\n", KEYBOARD_SHMEM_FILE);
         exit(1);
     }
-    recv_buf_t *kb_buf = (recv_buf_t *) mmap_ptr;
-    kb_register_shmem(kb_buf);
+    kb_buf = (recv_buf_t *) mmap_ptr;
     close(kb_fid);
 
     int kb_child_pid = fork();
@@ -121,8 +143,7 @@ void k_init()
         printf("Could not create mmap pointer to %s\n", CRT_SHMEM_FILE);
         exit(1);
     }
-    send_buf_t *crt_buf = (send_buf_t *)mmap_ptr;
-    crt_register_shmem(crt_buf);
+    crt_buf = (send_buf_t *)mmap_ptr;
     close(crt_fid);
 
     int crt_child_pid = fork();
@@ -140,13 +161,36 @@ void k_init()
 int k_terminate()
 {
     printf("Shutting down...\n");
+
     // kill children
-    kill(kb_child_pid, SIGKILL);
-    kill(crt_child_pid, SIGKILL);
+    kill(kb_child_pid, SIGINT);
+    kill(crt_child_pid, SIGINT);
 
     // close shared memory
+    int status = munmap(kb_buf, sizeof(*kb_buf));
+    if (status == FAIL)
+    {
+        printf("Unmapping the keyboard shared memory failed\n");
+    }
+
+    status = munmap(crt_buf, sizeof(*crt_buf));
+    if (status == FAIL)
+    {
+        printf("Unmapping the keyboard shared memory failed\n");
+    }
 
     // Delete shared memory file
+    status = unlink(KEYBOARD_SHMEM_FILE);
+    if (status == FAIL)
+    {
+        printf("Deleting the keyboard shared memory file failed\n");
+    }
+
+    status = unlink(CRT_SHMEM_FILE);
+    if (status == FAIL)
+    {
+        printf("Deleting the crt shared memory file failed\n");
+    }
 
 
     // Free allocated memory
@@ -158,5 +202,4 @@ int k_terminate()
     proc_pq_destroy(ready_pq);
     proc_pq_destroy(env_blocked_pq);
     exit(0);
-    return -1;
 }
