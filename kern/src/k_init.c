@@ -80,6 +80,8 @@ void k_init()
     sigset(SIGUSR1, handle_signal);
     sigset(SIGUSR2, handle_signal);
 
+    ualarm(DELAY_TIME, TIMEOUT_100MS);
+
 
     // Initialize memory mapped files
     int kb_fid, crt_fid, status;
@@ -158,9 +160,7 @@ void k_init()
 
 int k_terminate()
 {
-#ifdef VERBOSE
     printf("Shutting down...\n");
-#endif
 
     // kill children
     kill(kb_child_pid, SIGINT);
