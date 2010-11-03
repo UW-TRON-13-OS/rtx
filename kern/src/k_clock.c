@@ -7,7 +7,7 @@ uint64_t k_clock_get_system_time()
     return clock;
 }
 
-uint64_t k_clock_incr_system_time()
+void k_clock_incr_system_time()
 {
     clock++;
 }
