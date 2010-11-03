@@ -12,6 +12,8 @@
 #include "kb_i_process.h"
 #include "crt_i_process.h"
 #include "k_uart.h"
+#include "processes.h"
+#include "timeout_i_process.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,6 +32,9 @@
 
 #define FAIL -1
 
+#define NUM_I_PROCESSES 3
+#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES)
+
 pid_t rtx_pid;
 pid_t kb_child_pid;
 pid_t crt_child_pid;
@@ -37,14 +42,24 @@ pid_t crt_child_pid;
 recv_buf_t *kb_buf;
 send_buf_t *crt_buf;
 
+void die()
+{
+    k_terminate();
+}
+
 void k_init()
 {
     k_ipc_init();
     k_storage_init();
 
-#define N  4
-    proc_cfg_t init_table[N] = { };
-    k_init_processes(N, init_table);
+    proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
+    //  { pid, name, priority, is_i_process, start_fn}
+        { 0, "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
+        { 1, "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
+        { 2, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
+        { 3, "cci",         0, IS_NOT_I_PROCESS, start_cci }
+    };
+    k_init_processes(TOTAL_NUM_PROCESSES, init_table);
 
     // Register for the appropriate unix signals
     // TODO register for die

@@ -69,7 +69,7 @@ test: $(TESTS)
 	@$(CHMOD) 755 $(RUN_TESTS)
 	@$(RUN_TESTS) $(MODULE)
 
-$(APP): $(APP_OBJ) $(REQ_LIBS) $(LIB)
+$(APP): $(APP_OBJ) $(REQ_LIBS) $(LIB) $(LIBDEPS)
 	@echo "    Link application $(notdir $@)"
 	@$(MKDIR) $(BIN_DIR)
 	@$(CC) $(LDFLAGS) -o $(TOP_DIR)/$(OBJ_DIR)/$@ $(APP_OBJ) \
