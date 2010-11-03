@@ -66,23 +66,17 @@ void k_init()
     k_init_processes(TOTAL_NUM_PROCESSES, init_table);
 
     // Register for the appropriate unix signals
-    // TODO register for die
-    //struct sigaction die_sig;
-    //die_sig.sa_handler = handle_signal;
-    //sigaddset(&i_process_mask, SIGINT);  // Ctrl-C
-    
-    //struct sigaction i_process_action;
-    //sigset_t i_process_mask;
-    //sigemptyset(&i_process_mask);
-    //sigaddset(&i_process_mask, SIGALRM); // Timeout signal
-    //sigaddset(&i_process_mask, SIGUSR1); // CRT signal
-    //sigaddset(&i_process_mask, SIGUSR2); // KB signal
-    //i_process_action.sa_handler = handle_signal;
-    //i_process_action.sa_mask = i_process_mask;
-    //i_process_action.sa_flags = 0;
     sigset(SIGALRM, handle_signal);
     sigset(SIGUSR1, handle_signal);
     sigset(SIGUSR2, handle_signal);
+    sigset(SIGINT, handle_signal);
+    sigset(SIGBUS, handle_signal);
+    sigset(SIGHUP, handle_signal);
+    sigset(SIGILL, handle_signal);
+    sigset(SIGQUIT, handle_signal);
+    sigset(SIGSEGV, handle_signal);
+    sigset(SIGTERM, handle_signal);
+    sigset(SIGABRT, handle_signal);
 
     ualarm(DELAY_TIME, TIMEOUT_100MS);
 
