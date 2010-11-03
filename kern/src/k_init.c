@@ -9,6 +9,8 @@
 #include "k_signal_handler.h"
 #include "msg_env_queue.h"
 #include "proc_pq.h"
+#include "kb_i_process.h"
+#include "crt_i_process.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -90,7 +92,7 @@ void k_init()
         exit(1);
     }
     
-    pid_t rtx_pid = getpid();
+    rtx_pid = getpid();
 
     // Setup mmap file for keyboard and fork it
     void *  mmap_ptr = mmap(NULL, sizeof(recv_buf_t), PROT_READ | PROT_WRITE, MAP_SHARED, kb_fid, 0);
@@ -99,7 +101,8 @@ void k_init()
         printf("Could not create mmap pointer to %s\n", KEYBOARD_SHMEM_FILE);
         exit(1);
     }
-    kb_buf = (recv_buf_t *) mmap_ptr;
+    recv_buf_t *kb_buf = (recv_buf_t *) mmap_ptr;
+    kb_register_shmem(kb_buf);
     close(kb_fid);
 
     int kb_child_pid = fork();
@@ -118,7 +121,8 @@ void k_init()
         printf("Could not create mmap pointer to %s\n", CRT_SHMEM_FILE);
         exit(1);
     }
-    crt_buf = (send_buf_t *)mmap_ptr;
+    send_buf_t *crt_buf = (send_buf_t *)mmap_ptr;
+    crt_register_shmem(crt_buf);
     close(crt_fid);
 
     int crt_child_pid = fork();
