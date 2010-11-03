@@ -3,6 +3,7 @@
 #include "k_globals.h"
 #include "msg_env_queue.h"
 #include "k_signal_handler.h"
+#include "k_clock.h"
 
 MsgEnv * timeout_queue = NULL;
 void timeout_queue_insert (MsgEnv* new_msg_env);
@@ -12,8 +13,8 @@ void start_timeout_i_process()
 {
     while(1)
     {
-
-        // TODO increment the rtx clock
+        // Record a tick
+        k_clock_incr_system_time();
 
         MsgEnv* msg_env = k_receive_message();
         while (msg_env != NULL)
