@@ -6,6 +6,9 @@
 #include <rtx.h>
 #include "msg_env_queue.h"
 
+#define IS_I_PROCESS 1
+#define IS_NOT_I_PROCESS 0
+
 typedef struct pcb {
     struct pcb *        next;
     uint32_t            pid;
