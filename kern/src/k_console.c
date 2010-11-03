@@ -2,6 +2,9 @@
 #include "rtx.h"
 #include "k_globals.h"
 #include "k_ipc.h"
+#include "k_uart.h"
+
+#include <signal.h>
 
 int k_send_console_chars(MsgEnv *msg_env)
 {
