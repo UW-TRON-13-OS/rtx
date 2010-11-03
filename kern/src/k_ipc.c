@@ -130,6 +130,7 @@ void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
    elem->dest_pid = msg_env->dest_pid;
    elem->send_pid = msg_env->send_pid;
    elem->msg_type = msg_env->msg_type;
+   // TODO get timestamp
    elem->time_stamp = 0; // get time stamp
 
    // update the head and tail
