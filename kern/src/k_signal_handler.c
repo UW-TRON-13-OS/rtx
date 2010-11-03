@@ -3,7 +3,7 @@
 #include <k_atomic.h>
 #include "stdio.h"
 
-pcb_t* interrupted_process;
+static pcb_t* interrupted_process;
 
 void handle_signal(int sig_num)
 {

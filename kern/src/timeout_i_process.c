@@ -2,6 +2,7 @@
 #include "k_ipc.h"
 #include "k_globals.h"
 #include "msg_env_queue.h"
+#include "k_signal_handler.h"
 
 MsgEnv * timeout_queue = NULL;
 void timeout_queue_insert (MsgEnv* new_msg_env);
