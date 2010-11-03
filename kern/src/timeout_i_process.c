@@ -3,81 +3,101 @@
 #include "k_globals.h"
 #include "msg_env_queue.h"
 
+MsgEnv * timeout_queue = NULL;
+void timeout_queue_insert (MsgEnv* new_msg_env);
+int timeout_queue_is_empty();
+
 void start_timeout_i_process()
 {
-
-}
-
-
-int k_request_delay (int time_delay, int wakeup_code, MsgEnv* msg_env)
-{
-    msg_env->msg_type = wakeup_code;
-    msg_env->msg = time_delay;
-    k_send_message(TIMEOUT_I_PROCESS_PID, msg_env);
-}
-
-msg_env_queue_t* timeout_queue;
-
-// called from the signal handler after every clock tick
-
-void timeout_i_process()
-
-{
-
-    while(true)
+    while(1)
     {
 
-        MsgEnv* msg_env = k_receive_envelope()
+        // TODO increment the rtx clock
 
-        while(msg_env != NULL)
-
+        MsgEnv* msg_env = k_receive_message();
+        while (msg_env != NULL)
         {
-            insert_into_timeout_queue(msg_env);
+            timeout_queue_insert(msg_env);
+            msg_env = k_receive_message();
         }
 
-        if(msg_env_queue_is_empty(timeout_queue) != 1)
+        if(!timeout_queue_is_empty(timeout_queue))
         {
-           
-            MsgEnv *msg_head = timeout_queue->head;
-            msg_head->msg = int(msg_head->msg)--;
-
             // decrement the number of intervals of the head by 1
+            (*((int *)timeout_queue->msg))--;
 
-            while (msg_head->msg != "0")
+
+            while (timeout_queue && *((int *) timeout_queue->msg) == 0)
             {
+                // Dequeue the head
+                msg_env = timeout_queue;
+                timeout_queue = timeout_queue->next;
 
-                msg_env = msg_env_queue_dequeue(timeout_queue);  // dequeue head of timeout_queue
-
-		k_send_message(msg_env->send_pid, msg_env);
+                // Send the envelope back
+                k_send_message(msg_env->send_pid, msg_env);
             }
         }
+
 
         k_i_process_exit();
 
     }
 
+
 }
 
-void insert_into_timeout_queue (MsgEnv* new_msg_env)
+void timeout_queue_insert (MsgEnv* new_msg_env)
 {
-    if(new_msg_env != NULL)
-    {
-        int counter = 0;
-
-        MsgEnv* msg_env = timeout_queue->head;
+    // assume new_msg_env != NULL
+    assert(new_msg_env != NULL);
     
-        MsgEnv* prev_msg_env = NULL;
-
-
-        while((counter < int(msg_env->msg)) && (msg_env != NULL))
-        {
-            counter += int(msg_env->msg);
-            prev_msg_env = msg_env;
-            msg_env = msg_env->next;
-        }
-
-        if(prev_msg_env != NULL)
-            prev_msg_env->next = new_msg_env;
-        new_msg_env->next = msg_env;
+    // Empty queue
+    if (timeout_queue == NULL)
+    {
+        timeout_queue = new_msg_env;
+        return;
     }
+
+    // Insert at head of queue
+    int timeout = *((int *) new_msg_env->msg);
+    MsgEnv* node = timeout_queue;
+    int timeout_so_far = *((int*)node->msg);
+    if (timeout <= *((int *) node->msg))
+    {
+        new_msg_env->next = node;
+        *((int *) node->msg) -= timeout;
+        timeout_queue = new_msg_env;
+        return;
+    }
+
+    // Find the insertion point
+    MsgEnv* prev_node = node;
+    timeout_so_far += *((int *) node->msg);
+    node = node->next;
+    timeout_so_far += *((int*)node->msg);
+    while(timeout_so_far < timeout && node != NULL)
+    {
+        prev_node = node;
+        node = node->next;
+        timeout_so_far += *((int*)node->msg);
+    }
+    
+    // If we are inserting before another node, adjust its timeout value
+    if (node != NULL)
+    {
+        timeout_so_far -= *((int*)node->msg);
+        *((int *)node->msg) -= (timeout - timeout_so_far);
+        assert(*((int *)node->msg) > 0);
+        assert(timeout > timeout_so_far);
+    }
+
+    // Insert into the queue
+    prev_node->next = new_msg_env;
+    *((int *) new_msg_env->msg) -= timeout_so_far;
+    new_msg_env->next = node;
+}
+
+int timeout_queue_is_empty()
+{
+    return timeout_queue == NULL;
 }
