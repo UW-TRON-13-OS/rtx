@@ -2,6 +2,7 @@
 #include "crt_shmem.h"
 
 #include <stdio.h>
+#include <unistd.h>
 
 #define TIME_100MS 100000
 

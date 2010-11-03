@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 500
 #include "keyboard_shmem.h"
 #include "keyboard_process.h"
 #include <unistd.h>
