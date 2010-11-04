@@ -41,8 +41,11 @@ void handle_signal(int sig_num)
     atomic(OFF);
 }
 
+int flag = 0;
 int k_i_process_enter (pcb_t* i_process)
 {
+    assert(flag == 0);
+    flag = 1;
     assert(i_process != NULL);
     if (!i_process->is_i_process)
     {
@@ -67,6 +70,8 @@ int k_i_process_enter (pcb_t* i_process)
 
 void k_i_process_exit ()
 {
+    assert(flag == 0);
+    flag = 1;
 #ifdef DEBUG_KERN
         printf("exiting i_process %s\n", current_process->name);
 #endif
