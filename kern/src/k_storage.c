@@ -3,6 +3,7 @@
 #include "k_config.h"
 #include "k_process.h"
 #include "k_scheduler.h"
+#include "k_config.h"
 
 #include <stdlib.h>
 
@@ -18,12 +19,18 @@ void k_storage_init()
     int i;
     for (i = 0; i < IPC_NUM_FREE_MSG_ENVS; i++)
     {
+        env_pool[i].msg = malloc(sizeof(*env_pool[i].msg) * MSG_ENV_MSG_SIZE);
         msg_env_queue_enqueue(free_env_q, &env_pool[i]);
     }
 }
 
 void k_storage_cleanup()
 {
+    int i;
+    for (i = 0; i < IPC_NUM_FREE_MSG_ENVS; i++)
+    {
+        free(env_pool[i].msg);
+    }
     msg_env_queue_destroy(free_env_q);
     free(env_pool);
     proc_pq_destroy(env_blocked_pq);

@@ -6,9 +6,9 @@
 #include "k_process.h"
 #include "proc_pq.h"
 
-#define KB_I_PROCESS_PID        4
-#define CRT_I_PROCESS_PID       5
-#define TIMEOUT_I_PROCESS_PID   6
+#define KB_I_PROCESS_PID        0
+#define CRT_I_PROCESS_PID       1
+#define TIMEOUT_I_PROCESS_PID   2
 
 extern pcb_t *  current_process;
 extern pcb_t    p_table[]; 

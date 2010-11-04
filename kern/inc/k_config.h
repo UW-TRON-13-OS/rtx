@@ -19,4 +19,6 @@
 #define DELAY_TIME              (500*USEC_TO_MS)
 #define TIMEOUT_100MS           (100*USEC_TO_MS)
 
+#define MSG_ENV_MSG_SIZE        256
+
 #endif
