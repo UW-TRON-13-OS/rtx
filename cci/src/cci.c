@@ -27,10 +27,10 @@ void start_cci()
      //   printf("request_delay failed with status %d\n",status);
     //print CCI prompt
     printf("CCI: ");
+    fflush(stdout);
 
     while (1)
     {
-        printf("cci receiving a message\n");
         env = receive_message(); 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
@@ -135,6 +135,7 @@ void start_cci()
                     printf("Invalid command '%s'\n", cmd);
             }
             printf("CCI: ");
+            fflush(stdout);
             get_console_chars(env);
         }
         //envelope from something else. discard
