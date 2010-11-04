@@ -273,6 +273,7 @@ int CCI_setNewPriority (char* param)
     splitFirstWord (param, priorityStr, pidStr);
     priority = atoi(priorityStr); //TODO rmv atoi
     pid = atoi(pidStr); //TODO rmv atoi
+    printf("%s=%d %s=%d\n", priorityStr, priority, pidStr, pid);
     return change_priority(priority, pid);
 }
 
