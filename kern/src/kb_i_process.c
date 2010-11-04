@@ -9,7 +9,6 @@
 
 void start_kb_i_process()
 {
-    printf("entered kb_i_process\n");
     int i;
     while (1)
     {
