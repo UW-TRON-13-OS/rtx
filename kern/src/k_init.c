@@ -57,12 +57,12 @@ void k_init()
         { KB_I_PROCESS_PID,      "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
         { CRT_I_PROCESS_PID,     "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
         { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
-        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci },
-        { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null }
+        { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null },
+        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci }
     };
     printf("Intializing processes...");
     fflush(stdout);
-    k_init_processes(TOTAL_NUM_PROCESSES, init_table);
+    k_process_init(TOTAL_NUM_PROCESSES, init_table);
     printf("done\n");
 
     // Register for the appropriate unix signals
