@@ -303,7 +303,7 @@ int CCI_atoi (char* str)
     else if (*str == '-')
     {
         sign = -1;
-        str++
+        str++;
     }
 
     while (*str != '\0')
