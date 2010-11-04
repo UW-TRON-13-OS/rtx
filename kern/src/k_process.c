@@ -4,6 +4,8 @@
 #include "k_scheduler.h"
 #include "k_atomic.h"
 
+#include "processes.h"
+
 #include <stdlib.h>
 #include <setjmp.h>
 
@@ -43,7 +45,7 @@ int k_change_priority(int new_priority, int target_process_id)
     }
 
     pcb_t *pcb = &p_table[target_process_id];
-    if (pcb->is_i_process)
+    if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
     {
         return ERROR_ILLEGAL_ARG;
     }
