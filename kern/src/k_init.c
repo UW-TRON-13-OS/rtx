@@ -1,3 +1,6 @@
+// needed for sigset
+#define _XOPEN_SOURCE 500
+
 #include "k_init.h"
 #include "k_config.h"
 #include "k_process.h"
@@ -14,10 +17,12 @@
 #include "k_uart.h"
 #include "processes.h"
 #include "timeout_i_process.h"
+#include "null_process.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -33,7 +38,8 @@
 #define FAIL -1
 
 #define NUM_I_PROCESSES 3
-#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES)
+#define NULL_PROCESS 1
+#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES+NULL_PROCESS)
 
 pid_t rtx_pid;
 pid_t kb_child_pid;
@@ -49,39 +55,49 @@ void die()
 
 void k_init()
 {
+    printf("Intializing rtx\n");
+
+    printf("Intializing ipc...");
+    fflush(stdout);
     k_ipc_init();
+    printf("done\n");
+
+    printf("Intializing storage...");
+    fflush(stdout);
     k_storage_init();
+    printf("done\n");
 
     proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
     //  { pid, name, priority, is_i_process, start_fn}
-        { 0, "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
-        { 1, "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
-        { 2, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
-        { 3, "cci",         0, IS_NOT_I_PROCESS, start_cci }
+        { KB_I_PROCESS_PID,      "kb-i",        0, IS_I_PROCESS,     start_kb_i_process },
+        { CRT_I_PROCESS_PID,     "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
+        { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
+        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci },
+        { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null }
     };
+    printf("Intializing processes...");
+    fflush(stdout);
     k_init_processes(TOTAL_NUM_PROCESSES, init_table);
+    printf("done\n");
 
     // Register for the appropriate unix signals
-    // TODO register for die
-    //struct sigaction die_sig;
-    //die_sig.sa_handler = handle_signal;
-    //sigaddset(&i_process_mask, SIGINT);  // Ctrl-C
-    
-    //struct sigaction i_process_action;
-    //sigset_t i_process_mask;
-    //sigemptyset(&i_process_mask);
-    //sigaddset(&i_process_mask, SIGALRM); // Timeout signal
-    //sigaddset(&i_process_mask, SIGUSR1); // CRT signal
-    //sigaddset(&i_process_mask, SIGUSR2); // KB signal
-    //i_process_action.sa_handler = handle_signal;
-    //i_process_action.sa_mask = i_process_mask;
-    //i_process_action.sa_flags = 0;
+    printf("Registering for signals...");
+    fflush(stdout);
     sigset(SIGALRM, handle_signal);
     sigset(SIGUSR1, handle_signal);
     sigset(SIGUSR2, handle_signal);
+    sigset(SIGINT, handle_signal);
+    sigset(SIGBUS, handle_signal);
+    sigset(SIGHUP, handle_signal);
+    sigset(SIGILL, handle_signal);
+    sigset(SIGQUIT, handle_signal);
+    sigset(SIGSEGV, handle_signal);
+    sigset(SIGTERM, handle_signal);
+    sigset(SIGABRT, handle_signal);
 
+    // Register for timeout alarm signal
     ualarm(DELAY_TIME, TIMEOUT_100MS);
-
+    printf("done\n");
 
     // Initialize memory mapped files
     int kb_fid, crt_fid, status;
@@ -154,6 +170,8 @@ void k_init()
         exit(0);
     }
 
+    printf("Done Bootup...Starting RTX\n================================\n");
+
     // Jump to the first process
     k_enter_scheduler();
 }
@@ -165,6 +183,10 @@ int k_terminate()
     // kill children
     kill(kb_child_pid, SIGINT);
     kill(crt_child_pid, SIGINT);
+
+    // Wait until they die first
+    waitpid(kb_child_pid, NULL, 0);
+    waitpid(crt_child_pid, NULL, 0);
 
     // close shared memory
     int status = munmap(kb_buf, sizeof(*kb_buf));
@@ -199,6 +221,7 @@ int k_terminate()
     {
         msg_env_queue_destroy(p_table[pid].recv_msgs);
     }
+    k_storage_cleanup();
     proc_pq_destroy(ready_pq);
     proc_pq_destroy(env_blocked_pq);
     exit(0);

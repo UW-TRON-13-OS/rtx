@@ -102,7 +102,7 @@ void k_init_processes(int num_processes, proc_cfg_t init_table[])
         // If the process is not an i process place it on the ready queue
         if (!pcb->is_i_process)
         {
-            proc_pq_enqueue(ready_pq, pcb);
+            assert(proc_pq_enqueue(ready_pq, pcb) == CODE_SUCCESS);
         }
     }
 }

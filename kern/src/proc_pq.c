@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 
+#ifdef DEBUG_KERN
+#include <stdio.h>
+#endif
+
 struct proc_pq {
     uint32_t num_priorities;
     proc_queue_t **priority_queues;
@@ -76,11 +80,17 @@ int proc_pq_enqueue(proc_pq_t *ppq, pcb_t * pcb)
 {
     if (ppq == NULL || pcb == NULL)
     {
+#ifdef DEBUG_KERN
+        printf("Error: ppq %p pcb %p\n", ppq, pcb);
+#endif
         return ERROR_NULL_ARG;
     }
 
     if (pcb->priority < 0 || pcb->priority >= ppq->num_priorities)
     {
+#ifdef DEBUG_KERN
+        printf("Error: pcb priority is not in range %d-%d: priority %d\n", 0, ppq->num_priorities, pcb->priority);
+#endif
         return ERROR_ILLEGAL_ARG;
     }
 

@@ -6,7 +6,7 @@
 
 TOP_DIR := ..
 
-LOCAL_CFLAGS = -g -pg
+LOCAL_CFLAGS = -g -pg # -DDEBUG_KERN
 LOCAL_LDFLAGS = -g -pg
 
 REQ_LIBS = 
