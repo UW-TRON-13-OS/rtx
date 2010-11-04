@@ -5,6 +5,8 @@
 #include "k_process.h"
 #include "k_delay.h"
 #include "k_console.h"
+#include "k_uart.h"
+#include <signal.h>
 
 int send_message(int dest_pid, MsgEnv *msg_env)
 {
@@ -84,6 +86,7 @@ int send_console_chars(MsgEnv *msg_env)
     atomic(ON);
     int ret_value = k_send_console_chars(msg_env);
     atomic(OFF);
+    kill(rtx_pid, SIGUSR2);
     return ret_value;
 }
 
