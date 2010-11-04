@@ -96,7 +96,7 @@ void k_init()
     sigset(SIGABRT, handle_signal);
 
     // Register for timeout alarm signal
-    ualarm(DELAY_TIME, TIMEOUT_100MS);
+    //ualarm(DELAY_TIME, TIMEOUT_100MS);
     printf("done\n");
 
     // Initialize memory mapped files
@@ -147,7 +147,8 @@ void k_init()
     if (kb_child_pid == 0)
     {
         // TODO uncomment when keyboard process is done
-        //start_keyboard_process(rtx_pid, kb_buf);
+        sigset(SIGINT, SIG_DFL);
+        start_keyboard_process(rtx_pid, kb_buf);
         exit(0);
     }
     
@@ -170,7 +171,9 @@ void k_init()
         exit(0);
     }
 
-    printf("Done Bootup...Starting RTX\n================================\n");
+    printf("Done Bootup...Starting RTX\n"
+           "rtx pid: %u keyboard pid: %u crt pid: %u\n"
+            "=============================================\n", rtx_pid, kb_child_pid, crt_child_pid);
 
     // Jump to the first process
     k_enter_scheduler();
@@ -178,15 +181,15 @@ void k_init()
 
 int k_terminate()
 {
-    printf("Shutting down...\n");
+    printf("Shutting down...%u\n", getpid());
 
     // kill children
     kill(kb_child_pid, SIGINT);
     kill(crt_child_pid, SIGINT);
 
     // Wait until they die first
-    waitpid(kb_child_pid, NULL, 0);
-    waitpid(crt_child_pid, NULL, 0);
+    //waitpid(kb_child_pid, NULL, 0);
+    //waitpid(crt_child_pid, NULL, 0);
 
     // close shared memory
     int status = munmap(kb_buf, sizeof(*kb_buf));
@@ -219,10 +222,9 @@ int k_terminate()
     int pid;
     for (pid = 0; pid < k_get_num_processes(); pid++)
     {
-        msg_env_queue_destroy(p_table[pid].recv_msgs);
+     //   msg_env_queue_destroy(p_table[pid].recv_msgs);
     }
-    k_storage_cleanup();
-    proc_pq_destroy(ready_pq);
-    proc_pq_destroy(env_blocked_pq);
+    //k_storage_cleanup();
+    //proc_pq_destroy(ready_pq);
     exit(0);
 }

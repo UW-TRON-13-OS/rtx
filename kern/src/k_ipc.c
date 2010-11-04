@@ -56,6 +56,8 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
         return ERROR_ILLEGAL_ARG;
     }
 
+    msg_env->send_pid = current_process->pid;
+    msg_env->dest_pid = dest_pid;
     pcb_t *dest_pcb = &p_table[dest_pid];
     if (msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env) != 0)
     {

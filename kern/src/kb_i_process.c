@@ -3,31 +3,30 @@
 #include "rtx.h"
 #include "k_signal_handler.h"
 #include "k_ipc.h"
+#include "k_uart.h"
 
-recv_buf_t * _kb_buf;
-
-void kb_register_shmem(recv_buf_t * kb_buf)
-{
-    _kb_buf = kb_buf;
-}
+#include <stdio.h>
 
 void start_kb_i_process()
 {
+    printf("entered kb_i_process\n");
     int i;
     while (1)
     {
-        MsgEnv* message = receive_message();
+        MsgEnv* message = k_receive_message();
+        printf("send_pid %u | dest_pid %u | msg_type %d\n", message->send_pid, message->dest_pid, message->msg_type);
         if (message != NULL)
         {
-            for (i = 0; i < _kb_buf->length; i++)
+            for (i = 0; i < kb_buf->length; i++)
             {
-                message->msg[i] = _kb_buf->data[i];
+                message->msg[i] = kb_buf->data[i];
             }
+            message->msg[i] = '\0';
             message->msg_type = CONSOLE_INPUT;
-            _kb_buf->kb_wait_flag = '0';
+            kb_buf->kb_wait_flag = '0';
             k_send_message(message->send_pid, message);
         }
-        _kb_buf->length = 0;
+        kb_buf->length = 0;
         k_i_process_exit();
     }
 }

@@ -63,6 +63,14 @@ $(LIB_DIR)/lib%.a : FORCE
 
 all: $(APP) $(LIB) $(TESTS)
 
+run: $(APP)
+	$(RM) *.dat
+	$(APP)
+	
+debug: $(APP)
+	$(RM) *.dat
+	gdb $(APP)
+
 FORCE:
 
 test: $(TESTS)

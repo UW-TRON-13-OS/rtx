@@ -1,18 +1,23 @@
 #include "k_atomic.h"
 #include <rtx.h> // NULL definition
+#include "k_globals.h"
 #include <signal.h>
+#include <stdio.h>
 
 #define FIRST_ON 1
 #define LAST_OFF 0
-static int atomic_count = 0;
 void atomic(int on_off)
 {
+    //if (1) return;
     static sigset_t oldmask;
     sigset_t newmask;
+    if (current_process->pid != 4)
+        printf("%s count %d on_off %d\n", current_process->name, current_process->atomic_count, on_off);
     if (on_off == ON)
     {
-        atomic_count++;
-        if (atomic_count == FIRST_ON) 
+        current_process->atomic_count++;
+        //assert(current_process->atomic_count < 2);
+        if (current_process->atomic_count == FIRST_ON) 
         {
             sigemptyset(&newmask);
             sigaddset(&newmask, SIGALRM); // Timeout signal
@@ -24,8 +29,9 @@ void atomic(int on_off)
     }
     else
     {
-        atomic_count--;
-        if (atomic_count == LAST_OFF)
+        current_process->atomic_count--;
+        assert(current_process->atomic_count >= 0);
+        if (current_process->atomic_count == LAST_OFF)
         {
             sigprocmask(SIG_SETMASK, &oldmask, NULL);
         }

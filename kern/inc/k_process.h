@@ -20,6 +20,7 @@ typedef struct pcb {
     uint32_t            is_i_process;
     start_pc            start;
     char *              stack_end;
+    int                 atomic_count;
 } pcb_t;
 
 typedef struct proc_cfg {

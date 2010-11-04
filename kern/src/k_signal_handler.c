@@ -10,6 +10,8 @@ void handle_signal(int sig_num)
 {
     atomic(ON);
 
+    printf("Got signal %d\n", sig_num);
+
     switch (sig_num)
     {
         case SIGINT: 
@@ -41,12 +43,23 @@ void handle_signal(int sig_num)
 
 int k_i_process_enter (pcb_t* i_process)
 {
+    assert(i_process != NULL);
     if (!i_process->is_i_process)
+    {
+#ifdef DEBUG_KERN
+        printf("i_process %s is not an i process!\n", i_process->name);
+#endif
+        assert(i_process->is_i_process);
         return ERROR_ILLEGAL_ARG;
+    }
+#ifdef DEBUG_KERN
+        printf("entering i_process %s\n", i_process->name);
+#endif
     interrupted_process = current_process;
     interrupted_process->status = P_INTERRUPTED;
     current_process = i_process;
     current_process->status = P_EXECUTING;
+    assert(interrupted_process);
     k_context_switch(&interrupted_process->context,
                      &current_process->context);
     return CODE_SUCCESS;
@@ -54,11 +67,18 @@ int k_i_process_enter (pcb_t* i_process)
 
 void k_i_process_exit ()
 {
+#ifdef DEBUG_KERN
+        printf("exiting i_process %s\n", current_process->name);
+#endif
     pcb_t* i_process = current_process;
     i_process->status = P_READY;
+    assert(interrupted_process);
     current_process = interrupted_process;
     interrupted_process = NULL;
     current_process->status = P_EXECUTING;
+#ifdef DEBUG_KERN
+        printf("switching i_process %s to %s\n", i_process->name, current_process->name);
+#endif
     k_context_switch(&i_process->context,
                      &current_process->context);
 }
