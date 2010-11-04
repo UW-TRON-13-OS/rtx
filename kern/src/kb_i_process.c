@@ -2,6 +2,7 @@
 #include "k_globals.h"
 #include "rtx.h"
 #include "k_signal_handler.h"
+#include "k_ipc.h"
 
 recv_buf_t * _kb_buf;
 
