@@ -26,7 +26,7 @@ typedef struct MsgEnv {
     struct MsgEnv *next;
     uint32_t dest_pid;
     uint32_t send_pid;
-    uint32_t msg_type;
+    int32_t  msg_type;
     char *   msg;
 } MsgEnv;
 
