@@ -34,7 +34,8 @@ typedef struct ipc_trace {
 } ipc_trace_t;
 
 typedef enum p_status {
-    P_READY, P_EXECUTING, P_BLOCKED_ON_ENV_REQUEST, P_BLOCKED_ON_RECEIVE
+    P_READY, P_EXECUTING, P_BLOCKED_ON_ENV_REQUEST, P_BLOCKED_ON_RECEIVE, 
+    P_INTERRUPTED
 } p_status_t;
 
 typedef struct process_status {

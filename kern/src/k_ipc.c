@@ -7,7 +7,12 @@
 #include "k_process.h"
 #include "k_scheduler.h"
 #include "k_globals.h"
+#include "k_clock.h"
 #include "msg_env_queue.h"
+
+#ifdef DEBUG_KERN
+#include <stdio.h>
+#endif
 
 // Internal data structs
 typedef struct trace_circle_buf {
@@ -32,19 +37,31 @@ void k_ipc_init()
 
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
+#ifdef DEBUG_KERN
+    printf("%s is sending %s a message of type %d\n", current_process->name, p_table[dest_pid].name, msg_env->msg_type);
+#endif
     if(msg_env == NULL)
     {
+#ifdef DEBUG_KERN
+        printf("Error: gave send_message a null envelope\n");
+#endif
         return ERROR_NULL_ARG;
     }
 
     if(dest_pid < 0 || dest_pid >= k_get_num_processes())
     {
+#ifdef DEBUG_KERN
+        printf("Error: gave send_message an invalid pid\n");
+#endif
         return ERROR_ILLEGAL_ARG;
     }
 
     pcb_t *dest_pcb = &p_table[dest_pid];
     if (msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env) != 0)
     {
+#ifdef DEBUG_KERN
+        printf("Error: gave send_message could not enqueue the message\n");
+#endif
         return ERROR_ERROR_ARG;
     }
 
@@ -52,6 +69,9 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     // Don't need to do this now as it will make stuff more complicated.
     if (dest_pcb->status == P_BLOCKED_ON_RECEIVE)
     {
+#ifdef DEBUG_KERN
+        printf("send_message found a process waiting for a receive. waking up %s\n", dest_pcb->name);
+#endif
         dest_pcb->status = P_READY;
         proc_pq_enqueue(ready_pq, dest_pcb );
     }
@@ -130,7 +150,7 @@ void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
    elem->dest_pid = msg_env->dest_pid;
    elem->send_pid = msg_env->send_pid;
    elem->msg_type = msg_env->msg_type;
-   elem->time_stamp = 0; // get time stamp
+   elem->time_stamp = k_clock_get_system_time();
 
    // update the head and tail
    tbuf->tail = (tbuf->tail + 1) % IPC_MESSAGE_TRACE_HISTORY_SIZE; 
