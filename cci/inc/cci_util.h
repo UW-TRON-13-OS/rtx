@@ -21,9 +21,6 @@ int CCI_strcmp (char* str1, char* str2);
 //converts string into int
 int CCI_atoi (char* str);
 
-//prints a string to the console
-int CCI_print(char * str);
-
 //Splits input into the first word (retStr1) and the remainder (retStr2)
 int splitFirstWord (char* input, char* retStr1, char* retStr2);
 

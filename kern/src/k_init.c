@@ -94,7 +94,6 @@ void k_init()
 
 int k_terminate()
 {
-    printf("\n");
     printf("Shutting down...%u\n", getpid());
     printf("Killing keyboard child...%u\n", kb_child_pid);
     printf("Killing crt child...%u\n", crt_child_pid);

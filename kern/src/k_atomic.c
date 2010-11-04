@@ -1,7 +1,6 @@
 #include "k_atomic.h"
 #include <rtx.h> // NULL definition
 #include "k_globals.h"
-#include "processes.h"
 #include <signal.h>
 #include <stdio.h>
 

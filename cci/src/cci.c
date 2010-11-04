@@ -26,7 +26,7 @@ void start_cci()
     //if (status != CODE_SUCCESS)
      //   printf("request_delay failed with status %d\n",status);
     //print CCI prompt
-    CCI_print("CCI: ");
+    printf("CCI: ");
     fflush(stdout);
 
     while (1)
