@@ -1,6 +1,7 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include <stdio.h> //for printf. TODO: rmv later
+#include <string.h>
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
@@ -154,6 +155,15 @@ int CCI_atoi (char* str)
     }
     
     return value*sign;
+}
+
+//prints a string to the console
+int CCI_print(char * str)
+{
+    MsgEnv *env = request_msg_env();
+    strcpy(env->msg, str);
+    int ret_val = send_console_chars(env);
+    return ret_val;
 }
 
 //Splits input into the first word (retStr1) and the remainder (retStr2)
