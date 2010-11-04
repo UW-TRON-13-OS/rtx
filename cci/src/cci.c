@@ -190,7 +190,7 @@ int CCI_printProcessStatuses (char* raw_data)
                 printf("                       ");
                 break;
         }
-        *data++;
+        data++;
         printf(" %d\n",*data++);
     }
     return CODE_SUCCESS;
@@ -243,7 +243,7 @@ int CCI_printTraceBuffers (char* data)
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && send_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %2u | %llu\n",i+1,send_dump[i].dest_pid,
+        printf("  %2u | %u | %u | %4d | %llu\n",i+1,send_dump[i].dest_pid,
                send_dump[i].send_pid, send_dump[i].msg_type,
                send_dump[i].time_stamp);
     }        
@@ -252,7 +252,7 @@ int CCI_printTraceBuffers (char* data)
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && recv_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %2u | %llu\n",i+1,recv_dump[i].dest_pid,
+        printf("  %2u | %u | %u | %4d | %llu\n",i+1,recv_dump[i].dest_pid,
                recv_dump[i].send_pid, recv_dump[i].msg_type,
                recv_dump[i].time_stamp);
     } 
@@ -281,6 +281,7 @@ int CCI_setNewPriority (char* param)
 int CCI_strcmp (char* str1, char* str2)
 {
     int i, diff;
+    i=0;
     do
     {
         diff = str1[i]-str2[i];
