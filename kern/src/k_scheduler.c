@@ -5,6 +5,11 @@
 
 #define RESUME_PROCESS 1
 
+#ifdef DEBUG_KERN
+#include <stdio.h>
+#include <string.h>
+#endif
+
 proc_pq_t * ready_pq;
 
 void k_process_switch(p_status_t next_status)
@@ -15,7 +20,8 @@ void k_process_switch(p_status_t next_status)
     current_process = proc_pq_dequeue(ready_pq);
 #ifdef DEBUG_KERN
     assert(current_process != NULL);
-    printf("%s now entering executing\n", current_process->name);
+    if (current_process->pid != PROCESS_NULL_PID)
+        printf("%s now entering executing\n", current_process->name);
 #endif
     current_process->status = P_EXECUTING;
     k_context_switch(&old_proc->context, &current_process->context);
@@ -28,7 +34,8 @@ void k_context_switch(jmp_buf *old_context, jmp_buf *new_context)
         longjmp(*new_context, RESUME_PROCESS);
     }
 #ifdef DEBUG_KERN
-    printf("%s context now loaded\n", current_process->name);
+    if (current_process->pid != PROCESS_NULL_PID)
+        printf("%s context now loaded\n", current_process->name);
 #endif
 }
 

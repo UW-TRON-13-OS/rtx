@@ -51,6 +51,7 @@ void start_cci()
 
     while (1)
     {
+        printf("receiving a message\n");
         env = receive_message(); 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
