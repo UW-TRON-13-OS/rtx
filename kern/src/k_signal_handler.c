@@ -56,7 +56,7 @@ int k_i_process_enter (pcb_t* i_process)
         return ERROR_ILLEGAL_ARG;
     }
 #ifdef DEBUG_KERN
-        printf("entering i_process %s\n", i_process->name);
+        printf("\tentering i_process %s\n", i_process->name);
 #endif
     interrupted_process = current_process;
     interrupted_process->status = P_INTERRUPTED;
@@ -70,11 +70,11 @@ int k_i_process_enter (pcb_t* i_process)
 
 void k_i_process_exit ()
 {
+#ifdef DEBUG_KERN
+        printf("\texiting i_process %s\n", current_process->name);
+#endif
     assert(flag == 1);
     flag = 0;
-#ifdef DEBUG_KERN
-        printf("exiting i_process %s\n", current_process->name);
-#endif
     pcb_t* i_process = current_process;
     i_process->status = P_READY;
     assert(interrupted_process);

@@ -89,6 +89,9 @@ MsgEnv * k_receive_message()
     {
         if (current_process->is_i_process)
         {
+#ifdef DEBUG_KERN
+        printf("%s finished reading. returning NULL env now\n", current_process->name);
+#endif
             return NULL;
         }
 #ifdef DEBUG_KERN

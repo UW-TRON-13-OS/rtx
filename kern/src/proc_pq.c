@@ -94,6 +94,15 @@ int proc_pq_enqueue(proc_pq_t *ppq, pcb_t * pcb)
         return ERROR_ILLEGAL_ARG;
     }
 
+    if (pcb->is_i_process)
+    {
+#ifdef DEBUG_KERN
+        printf("Error: i process %s was loaded into queue with %d priorities\n",
+                pcb->name, ppq->num_priorities);
+#endif
+        assert(!pcb->is_i_process);
+    }
+
     return proc_queue_enqueue(ppq->priority_queues[pcb->priority], pcb);
 }
 
