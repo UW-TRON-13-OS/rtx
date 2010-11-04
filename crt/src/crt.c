@@ -14,11 +14,12 @@ void start_crt_process(pid_t parent_pid, send_buf_t * crt_buffer)
     {
         if (crt_buffer->i_process_wait_flag == '1')
         {
-            for (i = 0; i < crt_buffer->length; i++)
+            i = 0;
+            while (crt_buffer->data[i] != '\0')
             {
                 putchar(crt_buffer->data[i]);   // make it print better later
+                i++;
             }
-            crt_buffer->length = 0;
             crt_buffer->i_process_wait_flag = '0';
         }
         usleep(TIME_100MS);
