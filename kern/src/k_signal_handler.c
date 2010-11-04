@@ -70,8 +70,8 @@ int k_i_process_enter (pcb_t* i_process)
 
 void k_i_process_exit ()
 {
-    assert(flag == 0);
-    flag = 1;
+    assert(flag == 1);
+    flag = 0;
 #ifdef DEBUG_KERN
         printf("exiting i_process %s\n", current_process->name);
 #endif
