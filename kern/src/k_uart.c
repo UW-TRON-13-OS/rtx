@@ -37,10 +37,10 @@ void k_uart_init()
 
     // Initialize memory mapped files
     int kb_fid, crt_fid, status;
-    kb_fid = open(KEYBOARD_SHMEM_FILE, O_RDWR | O_CREAT | O_EXCL, (mode_t) 0755);
+    kb_fid = open(KEYBOARD_SHMEM_FILE, O_RDWR | O_CREAT /*| O_EXCL*/, (mode_t) 0755);
     if (kb_fid < 0 )
     {
-        printf("Bad open on mmap file %s\n", KEYBOARD_SHMEM_FILE);
+        printf("Bad open on file %s\n", KEYBOARD_SHMEM_FILE);
         exit(1);
     }
 
@@ -52,7 +52,7 @@ void k_uart_init()
         exit(1);
     }
 
-    crt_fid = open(CRT_SHMEM_FILE, O_RDWR | O_CREAT | O_EXCL, (mode_t) 0755);
+    crt_fid = open(CRT_SHMEM_FILE, O_RDWR | O_CREAT /*| O_EXCL*/, (mode_t) 0755);
     if (crt_fid < 0 )
     {
         printf("Bad open on mmap file %s\n", CRT_SHMEM_FILE);
@@ -82,7 +82,6 @@ void k_uart_init()
     kb_child_pid = fork();
     if (kb_child_pid == 0)
     {
-        // TODO uncomment when keyboard process is done
         sigset(SIGINT, SIG_DFL);
         start_keyboard_process(rtx_pid, kb_buf);
         exit(0);
@@ -102,26 +101,21 @@ void k_uart_init()
     crt_child_pid = fork();
     if (crt_child_pid == 0)
     {
-        //TODO uncomment when crt process is done
-        //start_crt_process(rtx_pid, crt_buf);
+        sigset(SIGINT, SIG_DFL);
+        start_crt_process(rtx_pid, crt_buf);
         exit(0);
     }
 }
 
-int k_terminate()
+void k_uart_cleanup()
 {
-    printf("Shutting down...%u\n", getpid());
-
     // kill children
-    printf("Killing keyboard child...%u\n", kb_child_pid);
     kill(kb_child_pid, SIGINT);
-
-    //printf("Killing crt child...%u\n", crt_child_pid);
-    //kill(crt_child_pid, SIGINT);
+    kill(crt_child_pid, SIGINT);
 
     // Wait until they die first
     waitpid(kb_child_pid, NULL, 0);
-    //waitpid(crt_child_pid, NULL, 0);
+    waitpid(crt_child_pid, NULL, 0);
 
     // close shared memory
     int status = munmap(kb_buf, sizeof(*kb_buf));
@@ -148,15 +142,5 @@ int k_terminate()
     {
         printf("Deleting the crt shared memory file failed\n");
     }
-
-
-    // Free allocated memory
-    int pid;
-    for (pid = 0; pid < k_get_num_processes(); pid++)
-    {
-        msg_env_queue_destroy(p_table[pid].recv_msgs);
-    }
-    k_storage_cleanup();
-    proc_pq_destroy(ready_pq);
-    exit(0);
 }
+

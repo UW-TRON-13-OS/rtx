@@ -55,7 +55,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 $(TEST_DIR)/$(MODULE)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(TEST_LIB)
 	@echo "    +Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)/$(MODULE)
-	@$(CC) $(CFLAGS) -o $@ $< -L$(LIB_DIR) $(LIB) $(addprefix -l, $(APPDEPS)) -lutest
+	@$(CC) $(CFLAGS) -DQUIET -o $@ $< -L$(LIB_DIR) $(LIB) $(addprefix -l, $(APPDEPS)) -lutest
 
 $(LIB_DIR)/lib%.a : FORCE
 	@echo "    Make required library $*"
