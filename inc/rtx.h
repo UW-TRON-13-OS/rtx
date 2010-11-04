@@ -16,6 +16,10 @@
 #define CONSOLE_OUTPUT -2
 #define CONSOLE_INPUT  -3
 #define REQUEST_CHAR   -4
+#define COUNT_REPORT   -5
+
+// wakeup codes
+#define WAKEUP10       -10
 
 typedef void (*start_pc)();
 typedef struct MsgEnv {

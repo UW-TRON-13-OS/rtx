@@ -23,7 +23,7 @@ void start_timeout_i_process()
             msg_env = k_receive_message();
         }
 
-        if(!timeout_queue_is_empty(timeout_queue))
+        if(!timeout_queue_is_empty())
         {
             // decrement the number of intervals of the head by 1
             (*((int *)timeout_queue->msg))--;
@@ -74,7 +74,6 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
 
     // Find the insertion point
     MsgEnv* prev_node = node;
-    timeout_so_far += *((int *) node->msg);
     node = node->next;
     timeout_so_far += *((int*)node->msg);
     while(timeout_so_far < timeout && node != NULL)
