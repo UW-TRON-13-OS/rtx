@@ -9,7 +9,6 @@
 void start_crt_process(pid_t parent_pid, send_buf_t * crt_buffer)
 {
     int i;
-    
     while (1)
     {
         if (crt_buffer->i_process_wait_flag == '1')
@@ -20,6 +19,7 @@ void start_crt_process(pid_t parent_pid, send_buf_t * crt_buffer)
                 putchar(crt_buffer->data[i]);   // make it print better later
                 i++;
             }
+            fflush(stdout);
             crt_buffer->i_process_wait_flag = '0';
         }
         usleep(TIME_100MS);

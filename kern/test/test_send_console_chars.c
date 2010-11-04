@@ -13,14 +13,21 @@
 #include "processes.h"
 
 #include <setjmp.h>
+#include <unistd.h>
 
 jmp_buf test_buf;
 void start_test()
 {
+    char * msg = "Testing send console chars\n";
     MsgEnv * env = request_msg_env();
     utest_assert(env != NULL, "Could not allocate envelope");
     utest_assert(send_console_chars(NULL) == ERROR_NULL_ARG, "Send console chars did not handle null env");
+    if (env)
+    {
+        env->msg = msg; // note this actually causes a memory link
+    }
     utest_assert(send_console_chars(env) == CODE_SUCCESS, "Send console chars with env was not sucessful");
+    usleep(100 * 1000); // give some time for crt process to poll
     release_msg_env(env);
     longjmp(test_buf, 1);
 }
@@ -44,5 +51,6 @@ int main(int argc, char * argv[])
     {
         k_enter_scheduler();
     }
+    k_uart_cleanup();
     utest_test_results();
 }

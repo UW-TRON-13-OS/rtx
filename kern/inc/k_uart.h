@@ -14,5 +14,6 @@ extern pid_t kb_child_pid;
 extern pid_t crt_child_pid;
 
 void k_uart_init();
+void k_uart_cleanup();
 
 #endif
