@@ -2,7 +2,6 @@
 
 #include <rtx.h>
 
-#include "k_serialize.h"
 #include "k_config.h"
 #include "k_process.h"
 #include "k_scheduler.h"
@@ -10,6 +9,7 @@
 #include "k_clock.h"
 #include "msg_env_queue.h"
 
+#include <stdlib.h>
 #ifdef DEBUG_KERN
 #include <stdio.h>
 #endif
@@ -115,10 +115,10 @@ int k_get_trace_buffers( MsgEnv *msg_env )
                                                     IPC_MESSAGE_TRACE_HISTORY_SIZE];
     for (i = 0; i < IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
     {
-        k_memcpy(send_dump, 
+        memcpy(send_dump, 
                  &_send_trace_buf.buf[(send_head + i) % IPC_MESSAGE_TRACE_HISTORY_SIZE],
                  sizeof(ipc_trace_t));
-        k_memcpy(recv_dump, 
+        memcpy(recv_dump, 
                  &_recv_trace_buf.buf[(recv_head + i) % IPC_MESSAGE_TRACE_HISTORY_SIZE],
                  sizeof(ipc_trace_t));
 
