@@ -12,7 +12,7 @@
 int CCI_printProcessStatuses (char* data);
 
 //sets the clock 
-int CCI_setClock (char* timeParam, int* time);
+int CCI_setClock (char* timeParam, uint32_t* time);
 
 //prints trace buffers on console given the envelope message data
 int CCI_printTraceBuffers (char* data);
@@ -197,7 +197,7 @@ int CCI_printProcessStatuses (char* raw_data)
 }
 
 //sets the clock 
-int CCI_setClock (char* timeParam, int* time)
+int CCI_setClock (char* timeParam, uint32_t* time)
 {
     if (timeParam == NULL)
         return ERROR_NULL_ARG;
@@ -298,11 +298,12 @@ int CCI_atoi (char* str)
 
     if (*str == '+')
     {
-        *str++;
+        str++;
     }
     else if (*str == '-')
     {
         sign = -1;
+        str++
     }
 
     while (*str != '\0')
@@ -340,6 +341,7 @@ int splitFirstWord (char* input, char* retStr1, char* retStr2)
         retStr1[i] = '\0';
 
         //get remainder
+        int j = 0;
         if (ch == '\0')
             retStr2[0]='\0';
         else
@@ -352,11 +354,12 @@ int splitFirstWord (char* input, char* retStr1, char* retStr2)
 
             while (ch != '\0')
             {
-                retStr2[i]=ch;
+                retStr2[j]=ch;
                 i++;
+                j++;
                 ch = input[i];
             }
-            retStr2[i]='\0';
+            retStr2[j]='\0';
         }
     }
     return CODE_SUCCESS;
