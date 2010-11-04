@@ -2,7 +2,6 @@
 
 #include <rtx.h>
 
-#include "k_serialize.h"
 #include "k_config.h"
 #include "k_process.h"
 #include "k_scheduler.h"

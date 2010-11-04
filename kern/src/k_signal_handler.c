@@ -10,7 +10,9 @@ void handle_signal(int sig_num)
 {
     atomic(ON);
 
+#ifdef DEBUG_KERN
     printf("Got signal %d\n", sig_num);
+#endif
 
     switch (sig_num)
     {
