@@ -64,11 +64,10 @@ $(LIB_DIR)/lib%.a : FORCE
 all: $(APP) $(LIB) $(TESTS)
 
 run: $(APP)
-	@echo
-	@$(APP)
+	$(APP)
 	
 debug: $(APP)
-	@gdb $(APP)
+	gdb $(APP)
 
 FORCE:
 

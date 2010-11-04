@@ -13,15 +13,6 @@ $(APP_SUBDIRS):
 	@echo Make module $@
 	@make --no-print-directory -C $@
 
-
-
-run: bin/kern
-	@echo 
-	@bin/kern
-
-bin/kern:
-	@make --no-print-directory -C kern
-
 test:
 	@chmod 755 make/run_all_tests.sh
 	@make/run_all_tests.sh $(APP_SUBDIRS)
