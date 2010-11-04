@@ -1,5 +1,5 @@
-#ifndef _KERN_K_CONFIG_
-#define _KERN_K_CONFIG_
+#ifndef _KERN_CONFIG_H_
+#define _KERN_CONFIG_H_
 
 /**
  * This header file contains various configurable values which directly
