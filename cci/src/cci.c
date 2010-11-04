@@ -43,15 +43,15 @@ void start_cci()
         printf("get_console_chars failed with status %d\n",status);
     env = request_msg_env();
     //we can add a periodic delay fcn instead
-    status = request_delay ( 10, WAKEUP_CODE, env); //one second delay 
-    if (status != CODE_SUCCESS)
-        printf("request_delay failed with status %d\n",status);
+    //status = request_delay ( 10, WAKEUP_CODE, env); //one second delay 
+    //if (status != CODE_SUCCESS)
+     //   printf("request_delay failed with status %d\n",status);
     //print CCI prompt
     printf("CCI: ");
 
     while (1)
     {
-        printf("receiving a message\n");
+        printf("cci receiving a message\n");
         env = receive_message(); 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
@@ -147,7 +147,7 @@ void start_cci()
             }
             else
             {
-                    printf("Invalid command.\n");
+                    printf("Invalid command '%s'\n", cmd);
             }
             printf("CCI: ");
             get_console_chars(env);
@@ -161,10 +161,11 @@ void start_cci()
 }
 
 //prints process statuses on console given the envelope message data
-int CCI_printProcessStatuses (char* data)
+int CCI_printProcessStatuses (char* raw_data)
 {
-    if (data == NULL)
+    if (raw_data == NULL)
         return ERROR_NULL_ARG;
+    int * data = (int *) raw_data;
     int num_processes = *data++;
     int i;
     printf ("PID | STATUS                | PRIORITY\n");
@@ -175,14 +176,19 @@ int CCI_printProcessStatuses (char* data)
         {
             case P_READY:
                 printf("ready                  ");
+                break;
             case P_EXECUTING:
                 printf("executing              ");
+                break;
             case P_BLOCKED_ON_ENV_REQUEST:
                 printf("blocked on env request ");
+                break;
             case P_BLOCKED_ON_RECEIVE:
                 printf("blocked on receive     ");
+                break;
             default :
                 printf("                       ");
+                break;
         }
         *data++;
         printf(" %d\n",*data++);

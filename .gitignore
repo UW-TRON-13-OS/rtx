@@ -8,3 +8,4 @@ tests/*
 *.swp
 *.exe
 *.stackdump
+.fuse*

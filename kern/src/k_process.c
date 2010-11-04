@@ -2,6 +2,7 @@
 #include "k_config.h"
 #include "k_globals.h"
 #include "k_scheduler.h"
+#include "k_atomic.h"
 
 #include <stdlib.h>
 #include <setjmp.h>
@@ -83,6 +84,14 @@ void k_init_processes(int num_processes, proc_cfg_t init_table[])
         pcb->next = NULL;
         pcb->status = P_READY;
         pcb->stack_end = malloc(STACK_SIZE);
+        if (pcb->is_i_process)
+        {
+            pcb->atomic_count = 0;
+        }
+        else
+        {
+            pcb->atomic_count = 1;
+        }
 
         // Initialize the stack and start pc
         if (setjmp(init_buf) ==  0)
@@ -95,6 +104,8 @@ void k_init_processes(int num_processes, proc_cfg_t init_table[])
             }
             else
             {
+                if (!current_process->is_i_process)
+                    atomic(OFF);
                 current_process->start();
             }
         }
