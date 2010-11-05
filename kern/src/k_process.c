@@ -4,8 +4,11 @@
 #include "k_scheduler.h"
 #include "k_atomic.h"
 
+#include "processes.h"
+
 #include <stdlib.h>
 #include <setjmp.h>
+#include <stdio.h>
 
 #define NULL_PROCESS 1
 
@@ -43,7 +46,7 @@ int k_change_priority(int new_priority, int target_process_id)
     }
 
     pcb_t *pcb = &p_table[target_process_id];
-    if (pcb->is_i_process)
+    if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
     {
         return ERROR_ILLEGAL_ARG;
     }
@@ -69,7 +72,7 @@ int k_change_priority(int new_priority, int target_process_id)
     return CODE_SUCCESS;
 }
 
-void k_init_processes(int num_processes, proc_cfg_t init_table[])
+void k_process_init(int num_processes, proc_cfg_t init_table[])
 {
     jmp_buf init_buf;
     int i;
@@ -97,6 +100,12 @@ void k_init_processes(int num_processes, proc_cfg_t init_table[])
             pcb->atomic_count = 1;
         }
 
+        // If the process is not an i process place it on the ready queue
+        if (!pcb->is_i_process)
+        {
+            assert(proc_pq_enqueue(ready_pq, pcb) == CODE_SUCCESS);
+        }
+
         // Initialize the stack and start pc
         if (setjmp(init_buf) ==  0)
         {
@@ -111,13 +120,9 @@ void k_init_processes(int num_processes, proc_cfg_t init_table[])
                 if (!current_process->is_i_process)
                     atomic(OFF);
                 current_process->start();
+                printf("FATAL ERROR: Process <%s> stopped executingn", current_process->name);
+                k_terminate();
             }
-        }
-
-        // If the process is not an i process place it on the ready queue
-        if (!pcb->is_i_process)
-        {
-            assert(proc_pq_enqueue(ready_pq, pcb) == CODE_SUCCESS);
         }
     }
 }

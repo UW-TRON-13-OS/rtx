@@ -11,8 +11,10 @@ void atomic(int on_off)
     //if (1) return;
     static sigset_t oldmask;
     sigset_t newmask;
-    if (current_process->pid != 4)
+#ifdef DEBUG_KERN
+    if (current_process->pid != PROCESS_NULL_PID)
         printf("%s count %d on_off %d\n", current_process->name, current_process->atomic_count, on_off);
+#endif
     if (on_off == ON)
     {
         current_process->atomic_count++;

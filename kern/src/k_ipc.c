@@ -2,7 +2,6 @@
 
 #include <rtx.h>
 
-#include "k_serialize.h"
 #include "k_config.h"
 #include "k_process.h"
 #include "k_scheduler.h"
@@ -13,6 +12,8 @@
 #ifdef DEBUG_KERN
 #include <stdio.h>
 #endif
+
+#define circle_index(i) ((i)%IPC_MESSAGE_TRACE_HISTORY_SIZE)
 
 // Internal data structs
 typedef struct trace_circle_buf {
@@ -114,21 +115,42 @@ int k_get_trace_buffers( MsgEnv *msg_env )
     send_head = _find_trace_buf_head(&_send_trace_buf);
     recv_head = _find_trace_buf_head(&_recv_trace_buf);
 
+#ifdef DEBUG_KERN
+    printf("send head-tail %d-%d | recv head-tail %d-%d\n", send_head, _send_trace_buf.tail, 
+            recv_head, _recv_trace_buf.tail);
+#endif
+
     // Dump the sent messages and received messages
     ipc_trace_t *send_dump = (ipc_trace_t *) msg_env->msg;
-    ipc_trace_t *recv_dump = (ipc_trace_t *) &msg_env->msg[sizeof(ipc_trace_t) * 
-                                                    IPC_MESSAGE_TRACE_HISTORY_SIZE];
+    ipc_trace_t *recv_dump = (ipc_trace_t *) 
+        &msg_env->msg[sizeof(*recv_dump) * IPC_MESSAGE_TRACE_HISTORY_SIZE];
+
     for (i = 0; i < IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
     {
-        k_memcpy(send_dump, 
-                 &_send_trace_buf.buf[(send_head + i) % IPC_MESSAGE_TRACE_HISTORY_SIZE],
-                 sizeof(ipc_trace_t));
-        k_memcpy(recv_dump, 
-                 &_recv_trace_buf.buf[(recv_head + i) % IPC_MESSAGE_TRACE_HISTORY_SIZE],
-                 sizeof(ipc_trace_t));
-
+        ipc_trace_t *trace = &_send_trace_buf.buf[circle_index(send_head+i)];
+        send_dump->dest_pid = trace->dest_pid;
+        send_dump->send_pid = trace->send_pid;
+        send_dump->msg_type = trace->msg_type;
+        send_dump->time_stamp = trace->time_stamp;
         send_dump++;
+
+#ifdef DEBUG_KERN
+//        printf("\t%2d|Send_buf dest_pid %2d send_pid %2d msg_type %3d time_stamp %6llu\n",
+//                   i, trace->dest_pid, trace->send_pid, trace->msg_type, trace->time_stamp);
+#endif
+
+
+        trace = &_recv_trace_buf.buf[circle_index(recv_head+i)];
+        recv_dump->dest_pid = trace->dest_pid;
+        recv_dump->send_pid = trace->send_pid;
+        recv_dump->msg_type = trace->msg_type;
+        recv_dump->time_stamp = trace->time_stamp;
         recv_dump++;
+
+#ifdef DEBUG_KERN
+//        printf("\t  |Recv_buf dest_pid %2d send_pid %2d msg_type %3d time_stamp %6llu\n",
+//                    trace->dest_pid, trace->send_pid, trace->msg_type, trace->time_stamp);
+#endif
     }
     return 0;
 }
@@ -136,7 +158,7 @@ int k_get_trace_buffers( MsgEnv *msg_env )
 int _find_trace_buf_head(trace_circle_buf_t *tbuf)
 {
     // Check for an emtpy trace buffer
-    if (tbuf->buf[tbuf->tail].time_stamp == 0)
+    if (tbuf->buf[circle_index(tbuf->tail+IPC_MESSAGE_TRACE_HISTORY_SIZE-1)].time_stamp == 0)
     {
         return tbuf->tail;
     }
@@ -144,21 +166,19 @@ int _find_trace_buf_head(trace_circle_buf_t *tbuf)
     int head = tbuf->tail;
     while (tbuf->buf[head].time_stamp == 0) // while not initialized
     {
-        head = (head + 1) % IPC_MESSAGE_TRACE_HISTORY_SIZE;
+        head = circle_index(head + 1);
     }
     return head;
 }
 
 void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
 {
-   ipc_trace_t *elem = &tbuf->buf[tbuf->tail];
-   elem->dest_pid = msg_env->dest_pid;
-   elem->send_pid = msg_env->send_pid;
-   elem->msg_type = msg_env->msg_type;
-   elem->time_stamp = k_clock_get_system_time();
-
-   // update the head and tail
-   tbuf->tail = (tbuf->tail + 1) % IPC_MESSAGE_TRACE_HISTORY_SIZE; 
+    ipc_trace_t *elem = &tbuf->buf[tbuf->tail];
+    elem->dest_pid = msg_env->dest_pid;
+    elem->send_pid = msg_env->send_pid;
+    elem->msg_type = msg_env->msg_type;
+    elem->time_stamp = k_clock_get_system_time();
+    tbuf->tail = circle_index(tbuf->tail + 1);
 }
 
 

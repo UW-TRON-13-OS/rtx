@@ -38,7 +38,7 @@ int k_terminate();
 int k_change_priority(int new_priority, int target_process_id);
 
 /** Kernel Process Functions **/
-void k_init_processes(int num_processes, proc_cfg_t init_table[]);
+void k_process_init(int num_processes, proc_cfg_t init_table[]);
 int k_get_num_processes();
 
 #endif
