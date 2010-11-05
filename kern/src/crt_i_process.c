@@ -15,7 +15,7 @@ void start_crt_i_process()
     crt_buf->i_process_wait_flag = '0';
     while (1)
     {
-        message = receive_message();
+        message = k_receive_message();
         
         assert(message != NULL);
         
