@@ -9,14 +9,15 @@
 
 void start_kb_i_process()
 {
-    printf("entered kb_i_process\n");
     int i;
     while (1)
     {
         MsgEnv* message = k_receive_message();
-        printf("send_pid %u | dest_pid %u | msg_type %d\n", message->send_pid, message->dest_pid, message->msg_type);
         if (message != NULL)
         {
+#ifdef DEBUG_KERN
+            printf("send_pid %u | dest_pid %u | msg_type %d\n", message->send_pid, message->dest_pid, message->msg_type);
+#endif
             for (i = 0; i < kb_buf->length; i++)
             {
                 message->msg[i] = kb_buf->data[i];

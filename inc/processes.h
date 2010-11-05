@@ -3,8 +3,8 @@
 
 #define NUM_USER_PROCESSES 1
 
-#define PROCESS_CCI_PID 3
-#define PROCESS_NULL_PID 4
+#define PROCESS_NULL_PID 3
+#define PROCESS_CCI_PID 4
 #define PROCESS_A_PID 5
 #define PROCESS_B_PID 6
 #define PROCESS_C_PID 7

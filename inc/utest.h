@@ -2,6 +2,7 @@
 #define _UTEST_H_
 
 #include <stdio.h>
+#include <string.h>
 
 extern int num_tests;
 extern int num_passed;
@@ -9,6 +10,15 @@ extern int num_passed;
             //printf("%s:%s ", __FILE__, __LINE__ ); 
 #define utest_assert(condition, errMsg) do { \
         if (!(condition)) { \
+            printf(errMsg "\n"); \
+        } else { \
+            num_passed++; \
+        } \
+        num_tests++; \
+    } while (0)
+
+#define utest_assert_str(str1,str2,errMsg) do { \
+        if (!strcmp((str1), (str2)) == 0) { \
             printf(errMsg "\n"); \
         } else { \
             num_passed++; \

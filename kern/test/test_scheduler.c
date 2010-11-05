@@ -159,7 +159,7 @@ int main(int argc, char * argv[])
         { 5, "f", 2, 0, start_f },
     };
 
-    k_init_processes(6, itable);
+    k_process_init(6, itable);
 
     if (setjmp(test_buf) == 0)
     {
