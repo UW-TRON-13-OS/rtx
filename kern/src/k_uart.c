@@ -1,8 +1,6 @@
 #define _XOPEN_SOURCE 500
 #include "k_uart.h"
 #include "k_process.h"
-#include "keyboard_process.h"
-#include "crt_process.h"
 #include "k_signal_handler.h"
 #include "k_globals.h"
 #include "k_storage.h"
@@ -14,6 +12,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
+#include <errno.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,14 +77,17 @@ void k_uart_init()
         exit(1);
     }
     kb_buf = (recv_buf_t *) mmap_ptr;
-    close(kb_fid);
+
+    char arg1[32], arg2[32];
 
     kb_child_pid = fork();
     if (kb_child_pid == 0)
     {
-        sigset(SIGINT, SIG_DFL);
-        start_keyboard_process(rtx_pid, kb_buf);
-        exit(0);
+        sprintf(arg1, "%d", rtx_pid);
+        sprintf(arg2, "%d", kb_fid);
+        execl("./keyboard", "keyboard", arg1, arg2, NULL);
+        printf("SHOULD NOT REACH HERE keyboard %s\n", strerror(errno));
+        exit(1);
     }
     
     
@@ -96,15 +99,18 @@ void k_uart_init()
         exit(1);
     }
     crt_buf = (send_buf_t *)mmap_ptr;
-    close(crt_fid);
 
     crt_child_pid = fork();
     if (crt_child_pid == 0)
     {
-        sigset(SIGINT, SIG_DFL);
-        start_crt_process(rtx_pid, crt_buf);
-        exit(0);
+        sprintf(arg2, "%d", crt_fid);
+        execl("./crt", "crt", arg1, arg2, NULL);
+        printf("SHOULD NOT REACH HERE crt\n");
+        exit(1);
     }
+
+    close(kb_fid);
+    close(crt_fid);
 }
 
 void k_uart_cleanup()
