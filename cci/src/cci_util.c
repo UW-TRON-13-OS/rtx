@@ -60,9 +60,9 @@ int CCI_setClock (char* timeParam, uint32_t* time)
     min_s[2]='\0';
     sec_s[2]='\0';
 
-    hr = CCI_atoi(hr_s); 
-    min = CCI_atoi(min_s);
-    sec = CCI_atoi(sec_s);
+    hr = atoi(hr_s); 
+    min = atoi(min_s);
+    sec = atoi(sec_s);
     if (hr>23 || min>59 || sec > 59)
         return ERROR_ILLEGAL_ARG;
     *time = hr*3600 + min*60 + sec;
@@ -76,8 +76,7 @@ int CCI_printTraceBuffers (char* data)
         return ERROR_NULL_ARG;
     int i;
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
-    ipc_trace_t *recv_dump = (ipc_trace_t *) &data[sizeof(ipc_trace_t) * 
-                             IPC_MESSAGE_TRACE_HISTORY_SIZE];
+    ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
     printf("MESSAGE TRACE BUFFERS\n"
             "-----------------------------\n"
@@ -113,47 +112,9 @@ int CCI_setNewPriority (char* param)
     char pidStr [3];
     int priority, pid;
     splitFirstWord (param, priorityStr, pidStr);
-    priority = CCI_atoi(priorityStr); //TODO rmv atoi
-    pid = CCI_atoi(pidStr); //TODO rmv atoi
+    priority = atoi(priorityStr);
+    pid = atoi(pidStr);
     return change_priority(priority, pid);
-}
-
-//strcmp
-int CCI_strcmp (char* str1, char* str2)
-{
-    int i, diff;
-    do
-    {
-        diff = str1[i]-str2[i];
-    }
-    while (str1[i] != '\0' && str2[i] != '\0');
-
-    return diff;
-}
-
-//converts string into int
-int CCI_atoi (char* str)
-{
-    int sign = 1;
-    int value = 0;
-
-    if (*str == '+')
-    {
-        str++;
-    }
-    else if (*str == '-')
-    {
-        sign = -1;
-        str++;
-    }
-
-    while (*str != '\0')
-    {
-        value *= 10;
-        value += (int)*str++ - (int)'0';
-    }
-    
-    return value*sign;
 }
 
 //Splits input into the first word (retStr1) and the remainder (retStr2)
