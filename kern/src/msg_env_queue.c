@@ -85,15 +85,3 @@ int msg_env_queue_enqueue(msg_env_queue_t *queue, MsgEnv* env)
 
     return CODE_SUCCESS;
 }
-
-int msg_env_queue_length(msg_env_queue_t *queue)
-{
-    int len = 0;
-    MsgEnv *node = queue->head;
-    while (node)
-    {
-        len++;
-        node = node->next;
-    }
-    return len;
-}

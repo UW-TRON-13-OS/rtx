@@ -74,8 +74,3 @@ int k_release_msg_env(MsgEnv * msg_env)
     }
     return CODE_SUCCESS;
 }
-
-int k_get_num_free_envs()
-{
-    return msg_env_queue_length(free_env_q);
-}
