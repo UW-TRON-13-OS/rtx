@@ -2,6 +2,8 @@
 #include "rtx.h"
 #include <stdio.h> //for printf. TODO: rmv later
 
+#include <stdlib.h>
+
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
 {
@@ -32,7 +34,7 @@ int CCI_printProcessStatuses (char* raw_data)
                 printf("                       ");
                 break;
         }
-        *data++;
+        data++;
         printf(" %d\n",*data++);
     }
     return CODE_SUCCESS;
