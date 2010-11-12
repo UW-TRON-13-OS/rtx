@@ -1,7 +1,7 @@
 #ifndef _PROCESSES_H_
 #define _PROCESSES_H_
 
-#define NUM_USER_PROCESSES 1
+#define NUM_USER_PROCESSES 2
 
 #define PROCESS_NULL_PID 3
 #define PROCESS_CCI_PID 4
