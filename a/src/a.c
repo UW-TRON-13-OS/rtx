@@ -2,9 +2,10 @@
 #include "rtx.h"
 #include "processes.h"
 #include "a.h"
+//#include <stdlib.h>
 
 
-int number;
+int counter;
 void process_A()
 {
     MsgEnv *msg_env = request_msg_env();
@@ -22,7 +23,7 @@ void process_A()
     while(1)
     {
         received_msg->msg_type = COUNT_REPORT;
-        received_msg->msg = counter;
+        received_msg->msg = "" + counter;
 
         send_message(PROCESS_B_PID, received_msg);
         counter++;

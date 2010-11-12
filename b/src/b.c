@@ -1,6 +1,6 @@
 #include "rtx.h"
 #include "processes.h"
-#include "b.c"
+#include "b.h"
 
 
 void process_B()

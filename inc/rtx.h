@@ -19,7 +19,7 @@
 #define COUNT_REPORT   -5
 
 // wakeup codes
-#define WAKEUP10       -10
+#define WAKEUP_10       -10
 
 typedef void (*start_pc)();
 typedef struct MsgEnv {
