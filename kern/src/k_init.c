@@ -78,7 +78,7 @@ void k_init()
     sigset(SIGABRT, handle_signal);
 
     // Register for timeout alarm signal
-    //ualarm(DELAY_TIME, TIMEOUT_100MS);
+    ualarm(DELAY_TIME, TIMEOUT_100MS);
     printf("done\n");
 
     k_uart_init();
