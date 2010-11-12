@@ -16,4 +16,6 @@ extern pcb_t    p_table[];
 extern proc_pq_t * ready_pq;
 extern proc_pq_t * env_blocked_pq;
 
+extern MsgEnv * env_pool;
+
 #endif

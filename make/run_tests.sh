@@ -17,7 +17,7 @@ echo "Running test suite for $MODULE_NAME"
 
 
 cd $MODULE_DIR
-for test in `find . -executable -type f`
+for test in `find . -executable -type f -name "test_*"`
 do
   if [ "`basename $test`" = "gmon.out" ]; then
     continue

@@ -16,6 +16,7 @@ proc_pq_t * proc_pq_create(uint32_t num_priorities)
 {
     if (num_priorities == 0)
     {
+        assert(0);
         return NULL;
     }
 
@@ -29,6 +30,7 @@ proc_pq_t * proc_pq_create(uint32_t num_priorities)
             for (priority = 0; priority < num_priorities; priority++)
             {
                 ppq->priority_queues[priority] = proc_queue_create();
+                assert(ppq->priority_queues[priority]);
                 // TODO error handling
             }
         }

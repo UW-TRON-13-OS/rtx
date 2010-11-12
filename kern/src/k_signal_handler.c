@@ -24,6 +24,7 @@ void handle_signal(int sig_num)
         case SIGSEGV: 
         case SIGTERM: 
         case SIGABRT: 
+            printf("Terminating with signal %d\n", sig_num);
             k_terminate();
             break;
         case SIGALRM: 
