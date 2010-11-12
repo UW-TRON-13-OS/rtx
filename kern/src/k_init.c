@@ -99,13 +99,5 @@ int k_terminate()
 
     k_uart_cleanup();
 
-    // Free allocated memory
-    int pid;
-    for (pid = 0; pid < k_get_num_processes(); pid++)
-    {
-        msg_env_queue_destroy(p_table[pid].recv_msgs);
-    }
-    k_storage_cleanup();
-    proc_pq_destroy(ready_pq);
     exit(0);
 }
