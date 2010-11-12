@@ -4,6 +4,7 @@
 #include "k_signal_handler.h"
 #include "k_ipc.h"
 #include "k_uart.h"
+#include "k_storage.h" // TODO remove
 
 #include <stdio.h>
 
