@@ -87,6 +87,7 @@ void k_uart_init()
         sprintf(arg2, "%d", kb_fid);
         execl("./keyboard", "keyboard", arg1, arg2, NULL);
         printf("SHOULD NOT REACH HERE keyboard %s\n", strerror(errno));
+        kill(rtx_pid, SIGINT);
         exit(1);
     }
     
@@ -106,6 +107,7 @@ void k_uart_init()
         sprintf(arg2, "%d", crt_fid);
         execl("./crt", "crt", arg1, arg2, NULL);
         printf("SHOULD NOT REACH HERE crt\n");
+        kill(rtx_pid, SIGINT);
         exit(1);
     }
 
@@ -120,8 +122,8 @@ void k_uart_cleanup()
     kill(crt_child_pid, SIGINT);
 
     // Wait until they die first
-    waitpid(kb_child_pid, NULL, 0);
-    waitpid(crt_child_pid, NULL, 0);
+    //waitpid(kb_child_pid, NULL, 0);
+    //waitpid(crt_child_pid, NULL, 0);
 
     // close shared memory
     int status = munmap(kb_buf, sizeof(*kb_buf));

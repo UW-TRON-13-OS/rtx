@@ -4,6 +4,7 @@
 #include "k_signal_handler.h"
 #include "k_ipc.h"
 #include "k_uart.h"
+#include "k_storage.h" // TODO remove
 
 #include <stdio.h>
 
@@ -28,6 +29,7 @@ void start_kb_i_process()
             k_send_message(message->send_pid, message);
         }
         kb_buf->length = 0;
+        printf("num free envs %d\n", k_get_num_free_envs());
         k_i_process_exit();
     }
 }
