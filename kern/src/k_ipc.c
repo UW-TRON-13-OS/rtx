@@ -39,12 +39,12 @@ void k_ipc_init()
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
 #ifdef DEBUG_KERN
-    printf("%s is sending %s a message of type %d\n", current_process->name, p_table[dest_pid].name, msg_env->msg_type);
+    printf("ipc: %s is sending %s a message of type %d\n", current_process->name, p_table[dest_pid].name, msg_env->msg_type);
 #endif
     if(msg_env == NULL)
     {
 #ifdef DEBUG_KERN
-        printf("Error: gave send_message a null envelope\n");
+        printf("ipc: Error: gave send_message a null envelope\n");
 #endif
         return ERROR_NULL_ARG;
     }
@@ -52,7 +52,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     if(dest_pid < 0 || dest_pid >= k_get_num_processes())
     {
 #ifdef DEBUG_KERN
-        printf("Error: gave send_message an invalid pid\n");
+        printf("ipc: Error: gave send_message an invalid pid\n");
 #endif
         return ERROR_ILLEGAL_ARG;
     }
@@ -63,17 +63,20 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     if (msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env) != 0)
     {
 #ifdef DEBUG_KERN
-        printf("Error: gave send_message could not enqueue the message\n");
+        printf("ipc: Error: gave send_message could not enqueue the message\n");
 #endif
         return ERROR_ERROR_ARG;
     }
+#ifdef DEBUG_KERN
+        printf("ipc: %s sent env to %s\n", current_process->name, p_table[dest_pid].name);
+#endif
 
     //if the destination process is blocked waiting for message then
     // Don't need to do this now as it will make stuff more complicated.
     if (dest_pcb->status == P_BLOCKED_ON_RECEIVE)
     {
 #ifdef DEBUG_KERN
-        printf("send_message found a process waiting for a receive. waking up %s\n", dest_pcb->name);
+        printf("ipc: send_message found a process waiting for a receive. waking up %s\n", dest_pcb->name);
 #endif
         dest_pcb->status = P_READY;
         proc_pq_enqueue(ready_pq, dest_pcb );
@@ -91,17 +94,20 @@ MsgEnv * k_receive_message()
         if (current_process->is_i_process)
         {
 #ifdef DEBUG_KERN
-        printf("%s finished reading. returning NULL env now\n", current_process->name);
+        printf("ipc: %s finished reading. returning NULL env now\n", current_process->name);
 #endif
             return NULL;
         }
 #ifdef DEBUG_KERN
-        printf("%s blocked on receive\n", current_process->name);
+        printf("ipc: %s blocked on receive\n", current_process->name);
 #endif
         k_process_switch(P_BLOCKED_ON_RECEIVE);
     }
 
     MsgEnv *msg_env = msg_env_queue_dequeue(current_process->recv_msgs);
+#ifdef DEBUG_KERN
+        printf("ipc: %s received from %s\n", current_process->name, p_table[msg_env->send_pid].name);
+#endif
     _log_msg_event(&_recv_trace_buf, msg_env);
 
     return msg_env;
@@ -116,7 +122,7 @@ int k_get_trace_buffers( MsgEnv *msg_env )
     recv_head = _find_trace_buf_head(&_recv_trace_buf);
 
 #ifdef DEBUG_KERN
-    printf("send head-tail %d-%d | recv head-tail %d-%d\n", send_head, _send_trace_buf.tail, 
+    printf("ipc: send head-tail %d-%d | recv head-tail %d-%d\n", send_head, _send_trace_buf.tail, 
             recv_head, _recv_trace_buf.tail);
 #endif
 

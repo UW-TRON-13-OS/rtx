@@ -34,8 +34,8 @@ void start_test()
 
 int main(int argc, char * argv[])
 {
-    k_ipc_init();
     k_storage_init();
+    k_ipc_init();
 
 #define NUM_PROCESSES 5
     proc_cfg_t itable[] = {
