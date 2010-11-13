@@ -17,41 +17,39 @@ void process_C()
         else
         {
             MsgEnv* deq_msg = msg_env_queue_dequeue(messageQueue);
-            if((deq_msg->msg_type == COUNT_REPORT) && 
-               (*((int *)(deq_msg->msg)) % 20 == 0))
+        }
+        if((deq_msg->msg_type == COUNT_REPORT) && (*((int *)(deq_msg->msg)) % 20 == 0))
+        {
+            deq_msg->msg = "Process C";
+            send_console_chars(deq_msg);
+
+            while(1)
             {
-                deq_msg->msg = "Process C";
-                send_console_chars(deq_msg);
+               rec_msg = request_msg_env();
+               if(rec_msg->msg_type == DISPLAY_ACK)
+               {
+                   if(request_delay(100, WAKEUP_10, rec_msg) != CODE_SUCCESS)
+                   {
+                       printf("There was an error with the delay.");
+                   }
+                   break;
+               }
+               else
+               {
+                   msg_env_queue_enqueue(messageQueue, rec_msg);
+               }
+            }
 
-                while(1)
+            while(1)
+            {
+                MsgEnv *rec_msg = request_msg_env();
+                if(rec_msg->msg_type == WAKEUP_10)
                 {
-                   rec_msg = request_msg_env();
-                   if(rec_msg->msg_type == DISPLAY_ACK)
-                   {
-                       if(request_delay(10, WAKEUP_10, rec_msg) != 0)
-                       {
-                           // An error occured!!!
-                       }
-
-                       break;
-                   }
-                   else
-                   {
-                       msg_env_queue_enqueue(messageQueue, rec_msg);
-                   }
+                    break;
                 }
-
-                while(1)
+                else
                 {
-                    MsgEnv *rec_msg = request_msg_env();
-                    if(rec_msg->msg_type == WAKEUP_10)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        msg_env_queue_enqueue(messageQueue, rec_msg);
-                    }
+                    msg_env_queue_enqueue(messageQueue, rec_msg);
                 }
             }
         }
