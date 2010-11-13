@@ -50,14 +50,13 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
 
     msg_env->send_pid = current_process->pid;
     msg_env->dest_pid = dest_pid;
+
     pcb_t *dest_pcb = &p_table[dest_pid];
     if (msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env) != 0)
     {
         return ERROR_ERROR_ARG;
     }
 
-    // If the destination process is blocked waiting for message then
-    // Don't need to do this now as it will make stuff more complicated.
     if (dest_pcb->status == P_BLOCKED_ON_RECEIVE)
     {
         dest_pcb->status = P_READY;
@@ -96,8 +95,7 @@ int k_get_trace_buffers( MsgEnv *msg_env )
 
     // Dump the sent messages and received messages
     ipc_trace_t *send_dump = (ipc_trace_t *) msg_env->msg;
-    ipc_trace_t *recv_dump = (ipc_trace_t *) 
-        &msg_env->msg[sizeof(*recv_dump) * IPC_MESSAGE_TRACE_HISTORY_SIZE];
+    ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE;
 
     for (i = 0; i < IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
     {
@@ -115,19 +113,13 @@ int k_get_trace_buffers( MsgEnv *msg_env )
         recv_dump->time_stamp = trace->time_stamp;
         recv_dump++;
     }
-    return 0;
+    return CODE_SUCCESS;
 }
 
 int _find_trace_buf_head(trace_circle_buf_t *tbuf)
 {
-    // Check for an emtpy trace buffer
-    if (tbuf->buf[circle_index(tbuf->tail+IPC_MESSAGE_TRACE_HISTORY_SIZE-1)].time_stamp == 0)
-    {
-        return tbuf->tail;
-    }
-
-    int head = tbuf->tail;
-    while (tbuf->buf[head].time_stamp == 0) // while not initialized
+    int head = circle_index(tbuf->tail+1);
+    while (tbuf->buf[head].time_stamp == 0 && head != tbuf->tail) 
     {
         head = circle_index(head + 1);
     }
@@ -136,11 +128,10 @@ int _find_trace_buf_head(trace_circle_buf_t *tbuf)
 
 void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
 {
-    ipc_trace_t *elem = &tbuf->buf[tbuf->tail];
-    elem->dest_pid = msg_env->dest_pid;
-    elem->send_pid = msg_env->send_pid;
-    elem->msg_type = msg_env->msg_type;
-    elem->time_stamp = k_clock_get_system_time();
+    tbuf->buf[tbuf->tail].dest_pid = msg_env->dest_pid;
+    tbuf->buf[tbuf->tail].send_pid = msg_env->send_pid;
+    tbuf->buf[tbuf->tail].msg_type = msg_env->msg_type;
+    tbuf->buf[tbuf->tail].time_stamp = k_clock_get_system_time();
     tbuf->tail = circle_index(tbuf->tail + 1);
 }
 
