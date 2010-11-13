@@ -8,7 +8,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
-#include <sys/wait.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
@@ -111,8 +110,8 @@ void k_uart_init()
         exit(1);
     }
 
-    close(kb_fid);
     close(crt_fid);
+    close(kb_fid);
 }
 
 void k_uart_cleanup()
@@ -120,10 +119,6 @@ void k_uart_cleanup()
     // kill children
     kill(kb_child_pid, SIGINT);
     kill(crt_child_pid, SIGINT);
-
-    // Wait until they die first
-    //waitpid(kb_child_pid, NULL, 0);
-    //waitpid(crt_child_pid, NULL, 0);
 
     // close shared memory
     int status = munmap(kb_buf, sizeof(*kb_buf));

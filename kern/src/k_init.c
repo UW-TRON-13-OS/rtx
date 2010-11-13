@@ -39,7 +39,6 @@ void die()
 
 void k_init()
 {
-    k_ipc_init();
     k_storage_init();
 
     proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
