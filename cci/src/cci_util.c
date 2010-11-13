@@ -1,6 +1,8 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include <stdio.h> //for printf. TODO: rmv later
+#include <string.h>
+#include <stdlib.h>
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
@@ -108,10 +110,12 @@ int CCI_setNewPriority (char* param)
     if (param == NULL)
         return ERROR_NULL_ARG;
 
-    char priorityStr [3];
-    char pidStr [3];
+    char* priorityStr;
+    char* pidStr;
     int priority, pid;
-    splitFirstWord (param, priorityStr, pidStr);
+    //splitFirstWord (param, priorityStr, pidStr);
+    priorityStr = strtok (param," \t");
+    pidStr = strtok(NULL," \t");
     priority = atoi(priorityStr);
     pid = atoi(pidStr);
     return change_priority(priority, pid);
