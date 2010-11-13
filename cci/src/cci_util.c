@@ -59,7 +59,7 @@ int CCI_setClock (char* timeParam, uint32_t* time)
 {
     if (timeParam == NULL)
         return ERROR_NULL_ARG;
-    if (timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != ':')
+    if (timeParam[2] != ':' || timeParam[5] != ':')
         return ERROR_ILLEGAL_ARG;
 
     char hr_s [3];
