@@ -1,13 +1,14 @@
 #include "rtx.h"
 #include "processes.h"
-#include "c.c"
+#include "c.h"
 #include "msg_env_queue.h"
 
-msg_env_queue_t* messageQueue;
+msg_env_queue_t* messageQueue = NULL;
 void process_C()
 {
     while(1)
     {
+        MsgEnv *rec_msg = NULL;
         if(msg_env_queue_is_empty(messageQueue))
         {
             MsgEnv *received_msg = receive_message();
@@ -17,14 +18,14 @@ void process_C()
         {
             MsgEnv* deq_msg = msg_env_queue_dequeue(messageQueue);
             if((deq_msg->msg_type == COUNT_REPORT) && 
-               (int(deq_msg->msg) % 20 == 0))
+               (*((int *)(deq_msg->msg)) % 20 == 0))
             {
                 deq_msg->msg = "Process C";
                 send_console_chars(deq_msg);
 
                 while(1)
                 {
-                   MsgEnv *rec_msg = request_msg_env();
+                   rec_msg = request_msg_env();
                    if(rec_msg->msg_type == DISPLAY_ACK)
                    {
                        if(request_delay(10, WAKEUP_10, rec_msg) != 0)
