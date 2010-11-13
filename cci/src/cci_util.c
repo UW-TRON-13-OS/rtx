@@ -12,7 +12,7 @@ int CCI_printf (const char* format, ...)
         return ERROR_NULL_ARG;
     va_list args;
     va_start (args, format);
-    MsgEnv* env;
+    MsgEnv* env = request_msg_env();
     vsprintf(env->msg, format, args);
     va_end (args);
     return send_console_chars(env);
