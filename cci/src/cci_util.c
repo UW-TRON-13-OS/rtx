@@ -1,6 +1,8 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include <stdio.h> //for printf. TODO: rmv later
+#include <string.h>
+#include <stdlib.h>
 
 #include <stdlib.h>
 
@@ -45,7 +47,7 @@ int CCI_setClock (char* timeParam, uint32_t* time)
 {
     if (timeParam == NULL)
         return ERROR_NULL_ARG;
-    if (timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != ':')
+    if (timeParam[2] != ':' || timeParam[5] != ':')
         return ERROR_ILLEGAL_ARG;
 
     char hr_s [3];
@@ -110,10 +112,12 @@ int CCI_setNewPriority (char* param)
     if (param == NULL)
         return ERROR_NULL_ARG;
 
-    char priorityStr [3];
-    char pidStr [3];
+    char* priorityStr;
+    char* pidStr;
     int priority, pid;
-    splitFirstWord (param, priorityStr, pidStr);
+    //splitFirstWord (param, priorityStr, pidStr);
+    priorityStr = strtok (param," \t");
+    pidStr = strtok(NULL," \t");
     priority = atoi(priorityStr);
     pid = atoi(pidStr);
     return change_priority(priority, pid);
