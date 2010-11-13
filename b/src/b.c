@@ -9,6 +9,5 @@ void process_B()
     {
         MsgEnv *received_msg = receive_message();
         send_message(PROCESS_C_PID, received_msg);
-        //release_processor();
     }
 }
