@@ -1,19 +1,44 @@
+#define _XOPEN_SOURCE 500
 #include "keyboard_shmem.h"
 
 #include <stdio.h>
-#include <signal.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/wait.h>
+#include <signal.h>
 
-//void start_keyboard_process(pid_t parent_pid, recv_buf_t * kb_buffer)
+#define FAIL -1
+
+recv_buf_t * kb_buffer = NULL;
+
+void die(int sig_num)
+{
+    if (kb_buffer)
+    {
+        int status = munmap(kb_buffer, sizeof(*kb_buffer));
+        if (status == FAIL)
+        {
+            printf("Error: Unmapping shmem from keyboard helper process "
+                   "failed\n");
+        }
+    }
+    exit(0);
+}
+
 int main(int argc, char *argv[])
 {
     int fid; 
     pid_t parent_pid;
     char * mmap_ptr;
-    recv_buf_t * kb_buffer;
     char c;
+
+    if (argc < 2)
+    {
+        printf("Usage: crt <parent_pid> <shmem_fid>\n");
+        exit(1);
+    }
+    sigset(SIGINT, die); 
     
     sscanf(argv[1], "%d", &parent_pid);
     sscanf(argv[2], "%d", &fid);
