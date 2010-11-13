@@ -2,9 +2,8 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include "processes.h"
-#include <stdio.h> //for printf. TODO: rmv later
 #include <string.h>
-#include <stdlib.h> 
+//#include <stdlib.h> 
 
 #define WAKEUP_CODE 123
 
@@ -26,16 +25,15 @@ void start_cci()
 
     status = get_console_chars(env);
     if (status != CODE_SUCCESS)
-        printf("get_console_chars failed with status %d\n",status);
+        CCI_printf("get_console_chars failed with status %d\n",status);
     env = request_msg_env();
     //we can add a periodic delay fcn instead
     status = request_delay ( 10, WAKEUP_CODE, env); //one second delay 
     if (status != CODE_SUCCESS)
-        printf("request_delay failed with status %d\n",status);
+        CCI_printf("request_delay failed with status %d\n",status);
 
     //print CCI prompt
-    printf("CCI: ");
-    fflush(stdout);
+    CCI_printf("CCI: ");
 
     while (1)
     {
@@ -45,30 +43,27 @@ void start_cci()
         {
             status = request_delay ( 10, WAKEUP_CODE, env);
             if (status != CODE_SUCCESS)
-                printf("request_delay failed with status %d\n",status);
+                CCI_printf("request_delay failed with status %d\n",status);
             clock_time = (clock_time+1)%86400; //86400 = 24hrs in secs
             if (clock_display_en)
             {
                 //show clock somehow...TODO? change this later
-                printf( SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
+                CCI_printf( SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
                         clock_time/3600,(clock_time%3600)/60, clock_time%60);
-                fflush(stdout);
             }
         }
         //envelope with characters from console
         else if (env->msg_type == CONSOLE_INPUT)
         {
             //Handle the different CCI commands
-            char cmd [3];
-            char rem [20];
-            splitFirstWord (env->msg, cmd, rem);
+            char* cmd = strtok(env->msg," \t");
             //send empty envelope to process A
             if (strcmp(cmd,"s") == 0) 
             {
                     MsgEnv* tmpEnv = request_msg_env();
                     status = send_message (PROCESS_A_PID, tmpEnv);
                     if (status != CODE_SUCCESS)
-                        printf("send_message failed with status %d\n",status);
+                        CCI_printf("send_message failed with status %d\n",status);
             }
             //displays process statuses
             else if (strcmp(cmd,"ps") == 0) 
@@ -76,24 +71,29 @@ void start_cci()
                 MsgEnv* tmpEnv = request_msg_env();
                 status = request_process_status(tmpEnv);
                 if (status != CODE_SUCCESS)
-                    printf("request_process_status failed with status %d\n",status);
+                    CCI_printf("request_process_status failed with status %d\n",status);
                 status = CCI_printProcessStatuses(tmpEnv->msg);
                 if (status != CODE_SUCCESS)
-                    printf("CCI_printProcessStatuses failed with status %d\n",status);
+                    CCI_printf("CCI_printProcessStatuses failed with status %d\n",status);
                 status = release_msg_env(tmpEnv);
                 if (status != CODE_SUCCESS)
-                    printf("release_msg_env failed with status %d\n",status);
+                    CCI_printf("release_msg_env failed with status %d\n",status);
             }
             //set clock
             else if (strcmp(cmd,"c") == 0) 
             {
-                status = CCI_setClock(rem, &clock_time);
+                char* param = strtok(NULL," \t");
+                if (strtok(NULL," \t") != NULL)
+                    CCI_printf("c\n"
+                           "Sets the console clock.\n"
+                           "Usage: c <hh:mm:ss>\n");
+                status = CCI_setClock(param, &clock_time);
                 if (status == ERROR_ILLEGAL_ARG)
-                    printf("c\n"
+                    CCI_printf("c\n"
                            "Sets the console clock.\n"
                            "Usage: c <hh:mm:ss>\n");
                 else if (status != CODE_SUCCESS)
-                    printf("CCI_setClock failed with status %d\n",status);
+                    CCI_printf("CCI_setClock failed with status %d\n",status);
             }
             //show clock
             else if (strcmp(cmd,"cd") == 0) 
@@ -103,8 +103,7 @@ void start_cci()
             //hide clock
             else if (strcmp(cmd,"ct") == 0)  
             {
-                printf( SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR);
-                fflush(stdout);
+                CCI_printf( SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR);
                 clock_display_en = 0;
             }
             //show send/receive trace buffers
@@ -113,13 +112,13 @@ void start_cci()
                 MsgEnv* tmpEnv = request_msg_env();
                 status = get_trace_buffers (tmpEnv);
                 if (status != CODE_SUCCESS)
-                    printf("get_trace_buffers failed with status %d\n",status);
+                    CCI_printf("get_trace_buffers failed with status %d\n",status);
                 status = CCI_printTraceBuffers (tmpEnv->msg);
                 if (status != CODE_SUCCESS)
-                    printf("CCI_printTraceBuffers failed with status %d\n",status);
+                    CCI_printf("CCI_printTraceBuffers failed with status %d\n",status);
                 status = release_msg_env(tmpEnv);
                 if (status != CODE_SUCCESS)
-                    printf("release_msg_env failed with status %d\n",status);
+                    CCI_printf("release_msg_env failed with status %d\n",status);
             }
             //terminate RTX
             else if (strcmp(cmd,"t") == 0) 
@@ -129,18 +128,18 @@ void start_cci()
             //change process priority
             else if (strcmp(cmd,"n") == 0) 
             {
+                char* rem = strtok(NULL,"");
                 status = CCI_setNewPriority(rem);
                 if (status == ERROR_ILLEGAL_ARG)
-                    printf("Usage: n <priority> <processID>\n");
+                    CCI_printf("Usage: n <priority> <processID>\n");
                 if (status != CODE_SUCCESS)
-                    printf("CCI_setNewPriority failed with status %d\n",status);
+                    CCI_printf("CCI_setNewPriority failed with status %d\n",status);
             }
             else
             {
-                    printf("Invalid command '%s'\n", cmd);
+                    CCI_printf("Invalid command '%s'\n", cmd);
             }
-            printf("CCI: ");
-            fflush(stdout);
+            CCI_printf("CCI: ");
             get_console_chars(env);
         }
         //envelope from something else. discard

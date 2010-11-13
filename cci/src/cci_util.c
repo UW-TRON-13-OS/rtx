@@ -1,8 +1,22 @@
 #include "cci_util.h"
 #include "rtx.h"
-#include <stdio.h> //for printf. TODO: rmv later
+#include <stdio.h> 
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
+
+//like CCI_printf, except for the CCI. and possibly broken.
+int CCI_printf (const char* format, ...)
+{
+    if (format == NULL)
+        return ERROR_NULL_ARG;
+    va_list args;
+    va_start (args, format);
+    MsgEnv* env;
+    vsprintf(env->msg, format, args);
+    va_end (args);
+    return send_console_chars(env);
+}
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
@@ -12,30 +26,30 @@ int CCI_printProcessStatuses (char* raw_data)
     int * data = (int *) raw_data;
     int num_processes = *data++;
     int i;
-    printf ("PID | STATUS                | PRIORITY\n");
+    CCI_printf ("PID | STATUS                | PRIORITY\n");
     for (i=0;i<num_processes;i++)
     {
-        printf("  %d   ",*data++);
+        CCI_printf("  %d   ",*data++);
         switch(*data)
         {
             case P_READY:
-                printf("ready                  ");
+                CCI_printf("ready                  ");
                 break;
             case P_EXECUTING:
-                printf("executing              ");
+                CCI_printf("executing              ");
                 break;
             case P_BLOCKED_ON_ENV_REQUEST:
-                printf("blocked on env request ");
+                CCI_printf("blocked on env request ");
                 break;
             case P_BLOCKED_ON_RECEIVE:
-                printf("blocked on receive     ");
+                CCI_printf("blocked on receive     ");
                 break;
             default :
-                printf("                       ");
+                CCI_printf("                       ");
                 break;
         }
         *data++;
-        printf(" %d\n",*data++);
+        CCI_printf(" %d\n",*data++);
     }
     return CODE_SUCCESS;
 }
@@ -80,26 +94,26 @@ int CCI_printTraceBuffers (char* data)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    printf("MESSAGE TRACE BUFFERS\n"
+    CCI_printf("MESSAGE TRACE BUFFERS\n"
             "-----------------------------\n"
             "Send trace buffer:\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && send_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %3d | %6llu\n",i+1,send_dump[i].dest_pid,
+        CCI_printf("  %2u | %u | %u | %3d | %6llu\n",i+1,send_dump[i].dest_pid,
                send_dump[i].send_pid, send_dump[i].msg_type,
                send_dump[i].time_stamp);
     }        
     
-    printf("\nReceive trace buffer:\n");
+    CCI_printf("\nReceive trace buffer:\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && recv_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %3d | %6llu\n",i+1,recv_dump[i].dest_pid,
+        CCI_printf("  %2u | %u | %u | %3d | %6llu\n",i+1,recv_dump[i].dest_pid,
                recv_dump[i].send_pid, recv_dump[i].msg_type,
                recv_dump[i].time_stamp);
     } 
-    printf("\n");
+    CCI_printf("\n");
 
     return CODE_SUCCESS;
 }

@@ -3,6 +3,9 @@
 
 #include "rtx.h"
 
+//like CCI_printf, except for the CCI. and possibly broken.
+int CCI_printf (const char* format, ...);
+
 //gets and prints process statuses
 int CCI_printProcessStatuses (char* data);
 
