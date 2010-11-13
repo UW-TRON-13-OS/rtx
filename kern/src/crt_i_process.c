@@ -32,6 +32,11 @@ void start_crt_i_process()
             crt_buf->i_process_wait_flag = '1';
             k_send_message(message->send_pid, message);
         }
+        else
+        {
+            message->msg_type = DISPLAY_ACK;
+            k_send_message(message->send_pid, message);
+        }
         k_i_process_exit();
     }
 }
