@@ -2,21 +2,13 @@
 #include "rtx.h"
 #include "k_globals.h"
 #include "k_ipc.h"
-#include "k_uart.h"
-#include "k_signal_handler.h"
-
-#include <signal.h>
 
 int k_send_console_chars(MsgEnv *msg_env)
 {
     if (msg_env == NULL)
         return ERROR_NULL_ARG;
-    int ret;
     msg_env->msg_type = CONSOLE_OUTPUT;
-    ret = k_send_message(CRT_I_PROCESS_PID, msg_env);
-    // send SIGUSR2 signal to RTX process to trigger CRT i-process
-    //handle_signal(SIGUSR2);
-    return ret;
+    return k_send_message(CRT_I_PROCESS_PID, msg_env);
 }
 
 int k_get_console_chars(MsgEnv *msg_env)
