@@ -12,7 +12,7 @@
 #define MAX_NUM_PROCESSES       8
 #define NUM_PRIORITIES          3
 
-#define STACK_SIZE              (4096*4096)
+#define STACK_SIZE              (4*4096)
 #define STACK_OFFSET            16
 
 #define USEC_TO_MS              1000
