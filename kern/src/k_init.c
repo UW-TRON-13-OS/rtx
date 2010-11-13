@@ -30,8 +30,7 @@
 #include <signal.h>
 
 #define NUM_I_PROCESSES 3
-#define NULL_PROCESS 1
-#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES+NULL_PROCESS)
+#define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES)
 
 void die()
 {
@@ -60,7 +59,7 @@ void k_init()
         { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null },
         { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci }
     };
-    printf("Intializing processes...");
+    printf("Intializing %d processes...", TOTAL_NUM_PROCESSES);
     fflush(stdout);
     k_process_init(TOTAL_NUM_PROCESSES, init_table);
     printf("done\n");
@@ -90,4 +89,23 @@ void k_init()
 
     // Jump to the first process
     k_enter_scheduler();
+}
+
+int k_terminate()
+{
+    printf("Shutting down...%u\n", getpid());
+    printf("Killing keyboard child...%u\n", kb_child_pid);
+    printf("Killing crt child...%u\n", crt_child_pid);
+
+    k_uart_cleanup();
+
+    // Free allocated memory
+    int pid;
+    for (pid = 0; pid < k_get_num_processes(); pid++)
+    {
+        msg_env_queue_destroy(p_table[pid].recv_msgs);
+    }
+    k_storage_cleanup();
+    proc_pq_destroy(ready_pq);
+    exit(0);
 }

@@ -10,6 +10,6 @@ LOCAL_CFLAGS = -g #-DDEBUG_KERN
 LOCAL_LDFLAGS = -g
 
 REQ_LIBS = 
-APPDEPS = cci keyboard
+APPDEPS = cci keyboard crt
 
 include $(TOP_DIR)/make/rules.mk

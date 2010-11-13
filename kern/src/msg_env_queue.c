@@ -1,6 +1,10 @@
 #include "msg_env_queue.h"
+#include "k_globals.h"
+#include "k_config.h"
 
 #include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 struct msg_env_queue {
 	MsgEnv* head;
@@ -12,7 +16,8 @@ msg_env_queue_t * msg_env_queue_create()
     msg_env_queue_t * queue = malloc(sizeof(*queue));
     if (queue)
     {
-        queue->head = queue-> tail = NULL;
+        queue->head = NULL;
+        queue-> tail = NULL;
     }
     return queue;
 }
@@ -27,6 +32,11 @@ int msg_env_queue_is_empty(msg_env_queue_t* queue)
     if (queue == NULL)
     {
         return -1;
+    }
+
+    if (queue->head == NULL)
+    {
+        assert(queue->tail == NULL);
     }
 
     return queue->head == NULL;
@@ -60,7 +70,7 @@ int msg_env_queue_enqueue(msg_env_queue_t *queue, MsgEnv* env)
 	{
 		return ERROR_NULL_ARG;
 	}
-	
+
     if (queue->head == NULL)
     {
         queue->head = env;

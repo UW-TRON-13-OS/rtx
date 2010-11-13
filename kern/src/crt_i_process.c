@@ -6,13 +6,16 @@
 #include "k_uart.h"
 //#include "kern/inc/msg_env_queue.h"
 
+#include <stdio.h>
+
 void start_crt_i_process()
 {
     MsgEnv* message;
     int i = 0;
+    crt_buf->i_process_wait_flag = '0';
     while (1)
     {
-        message = receive_message();
+        message = k_receive_message();
         
         assert(message != NULL);
         
@@ -24,6 +27,7 @@ void start_crt_i_process()
                 crt_buf->data[i] = message->msg[i];
                 i++;
             }
+            crt_buf->data[i] = '\0';
             message->msg_type = DISPLAY_ACK;
             crt_buf->i_process_wait_flag = '1';
             k_send_message(message->send_pid, message);

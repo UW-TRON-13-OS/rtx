@@ -3,6 +3,7 @@
 #include "k_globals.h"
 #include "k_ipc.h"
 #include "k_uart.h"
+#include "k_signal_handler.h"
 
 #include <signal.h>
 
@@ -14,7 +15,7 @@ int k_send_console_chars(MsgEnv *msg_env)
     msg_env->msg_type = CONSOLE_OUTPUT;
     ret = k_send_message(CRT_I_PROCESS_PID, msg_env);
     // send SIGUSR2 signal to RTX process to trigger CRT i-process
-    kill(rtx_pid, SIGUSR2);
+    //handle_signal(SIGUSR2);
     return ret;
 }
 

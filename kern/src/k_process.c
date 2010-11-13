@@ -42,12 +42,20 @@ int k_change_priority(int new_priority, int target_process_id)
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
             target_process_id < 0 || target_process_id >= _num_processes)
     {
+#ifdef DEBUG_KERN
+        printf("Invalid process id <%d> or priority <%d>", 
+                new_priority, target_process_id);
+#endif
         return ERROR_ILLEGAL_ARG;
     }
 
     pcb_t *pcb = &p_table[target_process_id];
     if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
     {
+#ifdef DEBUG_KERN
+        printf("Cannot change the priority of process %d | %s\n", 
+                target_process_id, pcb->name);
+#endif
         return ERROR_ILLEGAL_ARG;
     }
     switch (pcb->status)
