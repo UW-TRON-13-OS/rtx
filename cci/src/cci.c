@@ -3,8 +3,8 @@
 #include "rtx.h"
 #include "processes.h"
 #include <stdio.h> //for printf. TODO: rmv later
-#include <string.h> //for strcmp. TODO: rmv later
-#include <stdlib.h> //for atoi. TODO: rmv later
+#include <string.h>
+#include <stdlib.h> 
 
 #define WAKEUP_CODE 123
 
