@@ -9,32 +9,18 @@
 #include "k_clock.h"
 #include "msg_env_queue.h"
 
-#ifdef DEBUG_KERN
-#include <stdio.h>
-#endif
-
 #define circle_index(i) ((i)%IPC_MESSAGE_TRACE_HISTORY_SIZE)
 
-// Internal data structs
 typedef struct trace_circle_buf {
     uint32_t tail;
     ipc_trace_t buf[IPC_MESSAGE_TRACE_HISTORY_SIZE];
 } trace_circle_buf_t;
 
-// Static variables
 trace_circle_buf_t _send_trace_buf = { 0 };
 trace_circle_buf_t _recv_trace_buf = { 0 };
 
-// Static functions
 int _find_trace_buf_head(trace_circle_buf_t *buf);
 void _log_msg_event(trace_circle_buf_t *buf, MsgEnv *msg_env);
-
-/** Kernel Only **/
-void k_ipc_init()
-{
-    _send_trace_buf.tail = 0;
-    _recv_trace_buf.tail = 0;
-}
 
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
@@ -52,11 +38,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     msg_env->dest_pid = dest_pid;
 
     pcb_t *dest_pcb = &p_table[dest_pid];
-    if (msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env) != 0)
-    {
-        return ERROR_ERROR_ARG;
-    }
-
+    msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env);
     if (dest_pcb->status == P_BLOCKED_ON_RECEIVE)
     {
         dest_pcb->status = P_READY;
