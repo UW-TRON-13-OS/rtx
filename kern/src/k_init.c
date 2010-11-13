@@ -39,17 +39,8 @@ void die()
 
 void k_init()
 {
-    printf("Intializing rtx\n");
-
-    printf("Intializing ipc...");
-    fflush(stdout);
     k_ipc_init();
-    printf("done\n");
-
-    printf("Intializing storage...");
-    fflush(stdout);
     k_storage_init();
-    printf("done\n");
 
     proc_cfg_t init_table[TOTAL_NUM_PROCESSES] = {
     //  { pid, name, priority, is_i_process, start_fn}
@@ -59,13 +50,9 @@ void k_init()
         { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null },
         { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci }
     };
-    printf("Intializing %d processes...", TOTAL_NUM_PROCESSES);
-    fflush(stdout);
     k_process_init(TOTAL_NUM_PROCESSES, init_table);
-    printf("done\n");
 
     // Register for the appropriate unix signals
-    printf("Registering for signals...");
     fflush(stdout);
     sigset(SIGALRM, handle_signal);
     sigset(SIGINT, handle_signal);
@@ -79,7 +66,6 @@ void k_init()
 
     // Register for timeout alarm signal
     ualarm(DELAY_TIME, TIMEOUT_100MS);
-    printf("done\n");
 
     k_uart_init();
 

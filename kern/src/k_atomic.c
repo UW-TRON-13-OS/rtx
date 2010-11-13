@@ -9,7 +9,6 @@
 #define LAST_OFF 0
 void atomic(int on_off)
 {
-    //if (1) return;
     if (current_process != NULL && current_process->is_i_process)
     {
         printf("ERROR atomic %d is being called from an i process %s\n", on_off, current_process->name);
@@ -17,18 +16,11 @@ void atomic(int on_off)
     }
     static sigset_t oldmask;
     sigset_t newmask;
-#ifdef DEBUG_KERN
-    //if (current_process->pid != PROCESS_NULL_PID)
-        //printf("%s count %d on_off %d\n", current_process->name, current_process->atomic_count, on_off);
-#endif
     if (on_off == ON)
     {
         current_process->atomic_count++;
-        //assert(current_process->atomic_count < 2);
         if (current_process->atomic_count == FIRST_ON) 
         {
-//            if (current_process->pid != PROCESS_NULL_PID)
- //               printf("Signal off \n");
             sigemptyset(&newmask);
             sigaddset(&newmask, SIGALRM);
             sigaddset(&newmask, SIGINT);
@@ -52,8 +44,6 @@ void atomic(int on_off)
         assert(current_process->atomic_count >= 0);
         if (current_process->atomic_count == LAST_OFF)
         {
-  //          if (current_process->pid != PROCESS_NULL_PID)
-   //             printf("Signal on \n");
             sigprocmask(SIG_SETMASK, &oldmask, NULL);
         }
     }

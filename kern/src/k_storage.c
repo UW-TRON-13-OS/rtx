@@ -6,7 +6,6 @@
 #include "k_config.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 static msg_env_queue_t * free_env_q;
 MsgEnv* env_pool;
@@ -17,10 +16,6 @@ void k_storage_init()
     env_blocked_pq = proc_pq_create(NUM_PRIORITIES);
     free_env_q = msg_env_queue_create();
     env_pool = malloc(sizeof(*env_pool) * IPC_NUM_FREE_MSG_ENVS);
-    assert(env_pool);
-#ifdef DEBUG_KERN
-    printf("env pool %p\n", env_pool);
-#endif
     int i;
     for (i = 0; i < IPC_NUM_FREE_MSG_ENVS; i++)
     {

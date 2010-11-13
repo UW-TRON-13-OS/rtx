@@ -10,7 +10,7 @@
 #include <setjmp.h>
 #include <stdio.h>
 
-#define NULL_PROCESS 1
+#define NULL_PRIORITY 1
 
 static int _num_processes;
 pcb_t * current_process;
@@ -40,22 +40,14 @@ int k_request_process_status(MsgEnv *msg_env)
 int k_change_priority(int new_priority, int target_process_id)
 {
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
-            target_process_id < 0 || target_process_id >= _num_processes)
+        target_process_id < 0 || target_process_id >= _num_processes)
     {
-#ifdef DEBUG_KERN
-        printf("Invalid process id <%d> or priority <%d>", 
-                new_priority, target_process_id);
-#endif
         return ERROR_ILLEGAL_ARG;
     }
 
     pcb_t *pcb = &p_table[target_process_id];
     if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
     {
-#ifdef DEBUG_KERN
-        printf("Cannot change the priority of process %d | %s\n", 
-                target_process_id, pcb->name);
-#endif
         return ERROR_ILLEGAL_ARG;
     }
     switch (pcb->status)
@@ -85,7 +77,7 @@ void k_process_init(int num_processes, proc_cfg_t init_table[])
     jmp_buf init_buf;
     int i;
     _num_processes = num_processes;
-    ready_pq = proc_pq_create(NUM_PRIORITIES+NULL_PROCESS);
+    ready_pq = proc_pq_create(NUM_PRIORITIES+NULL_PRIORITY);
     for (i = 0; i < num_processes; i++)
     {
         pcb_t *pcb = &p_table[i];
@@ -99,14 +91,7 @@ void k_process_init(int num_processes, proc_cfg_t init_table[])
         pcb->next = NULL;
         pcb->status = P_READY;
         pcb->stack_end = malloc(STACK_SIZE);
-        if (pcb->is_i_process)
-        {
-            pcb->atomic_count = 0;
-        }
-        else
-        {
-            pcb->atomic_count = 1;
-        }
+        pcb->atomic_count = pcb->is_i_process ? 0 : 1;
 
         // If the process is not an i process place it on the ready queue
         if (!pcb->is_i_process)
