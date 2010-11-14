@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 #define TIME_100MS 100000
 
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
             }
             fflush(stdout);
             crt_buffer->i_process_wait_flag = '0';
+            kill(parent_pid, SIGUSR2);
         }
         usleep(TIME_100MS);
     }
