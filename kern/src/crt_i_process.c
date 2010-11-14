@@ -4,10 +4,11 @@
 #include "k_signal_handler.h"
 #include "k_ipc.h"
 #include "k_uart.h"
-//#include "kern/inc/msg_env_queue.h"
+#include "kern/inc/msg_env_queue.h"
 
 #include <stdio.h>
 
+msg_env_queue_t* displayQueue = NULL;
 void start_crt_i_process()
 {
     MsgEnv* message;
@@ -16,11 +17,12 @@ void start_crt_i_process()
     while (1)
     {
         message = k_receive_message();
-        
         assert(message != NULL);
+        msg_env_queue_enqueue(displayQueue, message);
         
         if (crt_buf->i_process_wait_flag == '0')
         {
+            message = msg_env_queue_dequeue(displayQueue);
             i = 0;
             while (message->msg[i] != '\0')
             {
@@ -30,11 +32,6 @@ void start_crt_i_process()
             crt_buf->data[i] = '\0';
             message->msg_type = DISPLAY_ACK;
             crt_buf->i_process_wait_flag = '1';
-            k_send_message(message->send_pid, message);
-        }
-        else
-        {
-            message->msg_type = DISPLAY_ACK;
             k_send_message(message->send_pid, message);
         }
         k_i_process_exit();
