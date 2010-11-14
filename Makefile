@@ -3,7 +3,7 @@
 #
 #
 
-APP_SUBDIRS := kern utest keyboard crt
+APP_SUBDIRS := kern utest keyboard crt cci
 
 .PHONY: clean all $(APP_SUBDIRS)
 

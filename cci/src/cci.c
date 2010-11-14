@@ -47,7 +47,6 @@ void start_cci()
             clock_time = (clock_time+1)%86400; //86400 = 24hrs in secs
             if (clock_display_en)
             {
-                //show clock somehow...TODO? change this later
                 CCI_printf( SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
                         clock_time/3600,(clock_time%3600)/60, clock_time%60);
             }
