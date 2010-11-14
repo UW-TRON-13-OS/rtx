@@ -11,11 +11,21 @@ int CCI_printf (const char* format, ...)
     if (format == NULL)
         return ERROR_NULL_ARG;
     va_list args;
+    int status;
+
     va_start (args, format);
     MsgEnv* env = request_msg_env();
     vsprintf(env->msg, format, args);
     va_end (args);
-    return send_console_chars(env);
+    status = send_console_chars(env);
+    if (status == CODE_SUCCESS)
+    {
+        env = receive_message();
+        while (env->msg_type != DISPLAY_ACK)
+            send_message(4,env);//hard code send to CCI. TODO FIX ME!
+        status = release_msg_env(env);
+    }
+    return status;    
 }
 
 //prints process statuses on console given the envelope message data
@@ -94,26 +104,26 @@ int CCI_printTraceBuffers (char* data)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    CCI_printf("MESSAGE TRACE BUFFERS\n"
+    printf("MESSAGE TRACE BUFFERS\n"
             "-----------------------------\n"
             "Send trace buffer:\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && send_dump[i].time_stamp != 0;i++)
     {
-        CCI_printf("  %2u | %u | %u | %3d | %6llu\n",i+1,send_dump[i].dest_pid,
+        printf("  %2u | %u | %u | %3d | %6llu\n",i+1,send_dump[i].dest_pid,
                send_dump[i].send_pid, send_dump[i].msg_type,
                send_dump[i].time_stamp);
     }        
     
-    CCI_printf("\nReceive trace buffer:\n");
+    printf("\nReceive trace buffer:\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && recv_dump[i].time_stamp != 0;i++)
     {
-        CCI_printf("  %2u | %u | %u | %3d | %6llu\n",i+1,recv_dump[i].dest_pid,
+        printf("  %2u | %u | %u | %3d | %6llu\n",i+1,recv_dump[i].dest_pid,
                recv_dump[i].send_pid, recv_dump[i].msg_type,
                recv_dump[i].time_stamp);
     } 
-    CCI_printf("\n");
+    printf("\n");
 
     return CODE_SUCCESS;
 }
