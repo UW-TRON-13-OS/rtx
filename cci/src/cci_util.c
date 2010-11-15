@@ -52,7 +52,7 @@ int CCI_printProcessStatuses (char* raw_data)
                 CCI_printf("                       ");
                 break;
         }
-        *data++;
+        data++;
         CCI_printf(" %d\n",*data++);
     }
     return CODE_SUCCESS;
