@@ -19,19 +19,6 @@ int CCI_printf (const char* format, ...)
     vsprintf(env->msg, format, args);
     va_end (args);
     status = send_console_chars(env);
-    if (status == CODE_SUCCESS)
-    {
-        // TODO FIX ME! Should we really be dealing with this here?
-        // If we do then we delay other messages and mess around with
-        // the message order
-        env = receive_message();
-        while (env->msg_type != DISPLAY_ACK)
-        {
-            send_message(PROCESS_CCI_PID,env);
-            env = receive_message();
-        }
-        status = release_msg_env(env);
-    }
     return status;    
 }
 
@@ -111,26 +98,26 @@ int CCI_printTraceBuffers (char* data)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    printf("MESSAGE TRACE BUFFERS\n"
+    CCI_printf("MESSAGE TRACE BUFFERS\n"
             "-----------------------------\n"
             "Send trace buffer:\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && send_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %3d | %6lu\n",i+1,send_dump[i].dest_pid,
+        CCI_printf("  %2u | %u | %u | %3d | %6lu\n",i+1,send_dump[i].dest_pid,
                send_dump[i].send_pid, send_dump[i].msg_type,
                send_dump[i].time_stamp);
     }        
     
-    printf("\nReceive trace buffer:\n");
+    CCI_printf("\nReceive trace buffer:\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && recv_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %3d | %6lu\n",i+1,recv_dump[i].dest_pid,
+        CCI_printf("  %2u | %u | %u | %3d | %6lu\n",i+1,recv_dump[i].dest_pid,
                recv_dump[i].send_pid, recv_dump[i].msg_type,
                recv_dump[i].time_stamp);
     } 
-    printf("\n");
+    CCI_printf("\n");
 
     return CODE_SUCCESS;
 }
