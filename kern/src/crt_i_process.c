@@ -18,12 +18,12 @@ void start_crt_i_process()
     while (1)
     {
         message = k_receive_message();
-        assert(message != NULL);
         msg_env_queue_enqueue(displayQueue, message);
         
         if (crt_buf->i_process_wait_flag == '0' && msg_env_queue_is_empty(displayQueue) != 1)
         {
             message = msg_env_queue_dequeue(displayQueue);
+            assert(message != NULL);
             i = 0;
             while (message->msg[i] != '\0')
             {
