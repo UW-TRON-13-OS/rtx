@@ -1,10 +1,39 @@
 #include "cci_util.h"
 #include "rtx.h"
-#include <stdio.h> //for printf. TODO: rmv later
+#include "processes.h"
+#include <stdio.h> 
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
-#include <stdlib.h>
+//like CCI_printf, except for the CCI. and possibly broken.
+int CCI_printf (const char* format, ...)
+{
+    if (format == NULL)
+        return ERROR_NULL_ARG;
+    va_list args;
+    int status;
+
+    va_start (args, format);
+    MsgEnv* env = request_msg_env();
+    vsprintf(env->msg, format, args);
+    va_end (args);
+    status = send_console_chars(env);
+    if (status == CODE_SUCCESS)
+    {
+        // TODO FIX ME! Should we really be dealing with this here?
+        // If we do then we delay other messages and mess around with
+        // the message order
+        env = receive_message();
+        while (env->msg_type != DISPLAY_ACK)
+        {
+            send_message(PROCESS_CCI_PID,env);
+            env = receive_message();
+        }
+        status = release_msg_env(env);
+    }
+    return status;    
+}
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
@@ -14,30 +43,30 @@ int CCI_printProcessStatuses (char* raw_data)
     int * data = (int *) raw_data;
     int num_processes = *data++;
     int i;
-    printf ("PID | STATUS                | PRIORITY\n");
+    CCI_printf ("PID | STATUS                | PRIORITY\n");
     for (i=0;i<num_processes;i++)
     {
-        printf("  %d   ",*data++);
+        CCI_printf("  %d   ",*data++);
         switch(*data)
         {
             case P_READY:
-                printf("ready                  ");
+                CCI_printf("ready                  ");
                 break;
             case P_EXECUTING:
-                printf("executing              ");
+                CCI_printf("executing              ");
                 break;
             case P_BLOCKED_ON_ENV_REQUEST:
-                printf("blocked on env request ");
+                CCI_printf("blocked on env request ");
                 break;
             case P_BLOCKED_ON_RECEIVE:
-                printf("blocked on receive     ");
+                CCI_printf("blocked on receive     ");
                 break;
             default :
-                printf("                       ");
+                CCI_printf("                       ");
                 break;
         }
-        data++;
-        printf(" %d\n",*data++);
+        *data++;
+        CCI_printf(" %d\n",*data++);
     }
     return CODE_SUCCESS;
 }
@@ -88,7 +117,7 @@ int CCI_printTraceBuffers (char* data)
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && send_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %3d | %6llu\n",i+1,send_dump[i].dest_pid,
+        printf("  %2u | %u | %u | %3d | %6lu\n",i+1,send_dump[i].dest_pid,
                send_dump[i].send_pid, send_dump[i].msg_type,
                send_dump[i].time_stamp);
     }        
@@ -97,7 +126,7 @@ int CCI_printTraceBuffers (char* data)
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
              && recv_dump[i].time_stamp != 0;i++)
     {
-        printf("  %2u | %u | %u | %3d | %6llu\n",i+1,recv_dump[i].dest_pid,
+        printf("  %2u | %u | %u | %3d | %6lu\n",i+1,recv_dump[i].dest_pid,
                recv_dump[i].send_pid, recv_dump[i].msg_type,
                recv_dump[i].time_stamp);
     } 

@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
             }
             fflush(stdout);
             crt_buffer->i_process_wait_flag = '0';
+            kill(parent_pid, SIGUSR2);
         }
         usleep(TIME_100MS);
     }

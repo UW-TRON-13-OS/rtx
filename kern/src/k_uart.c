@@ -78,11 +78,11 @@ void k_uart_init()
     kb_buf = (recv_buf_t *) mmap_ptr;
 
     char arg1[32], arg2[32];
+    sprintf(arg1, "%d", rtx_pid);
 
     kb_child_pid = fork();
     if (kb_child_pid == 0)
     {
-        sprintf(arg1, "%d", rtx_pid);
         sprintf(arg2, "%d", kb_fid);
         execl("./keyboard", "keyboard", arg1, arg2, NULL);
         printf("SHOULD NOT REACH HERE keyboard %s\n", strerror(errno));
