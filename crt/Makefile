@@ -6,8 +6,8 @@
 
 TOP_DIR := ..
 
-LOCAL_CFLAGS = -g -pg
-LOCAL_LDFLAGS = -g -pg
+LOCAL_CFLAGS = -g
+LOCAL_LDFLAGS = -g
 
 REQ_LIBS = 
 APPDEPS = 
