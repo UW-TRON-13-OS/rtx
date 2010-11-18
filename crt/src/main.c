@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#define TIME_100MS 100000
+#define TIME_1MS 1000
 #define FAIL -1
 
 send_buf_t * crt_buffer = NULL;
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
             crt_buffer->i_process_wait_flag = '0';
             kill(parent_pid, SIGUSR2);
         }
-        usleep(TIME_100MS);
+        usleep(TIME_1MS);
     }
     
     return 0;
