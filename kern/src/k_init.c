@@ -11,12 +11,14 @@
 #include "k_globals.h"
 #include "msg_env_queue.h"
 #include "proc_pq.h"
+#include "k_uart.h"
+
+#include "processes.h"
 #include "kb_i_process.h"
 #include "crt_i_process.h"
-#include "k_uart.h"
-#include "processes.h"
 #include "timeout_i_process.h"
 #include "null_process.h"
+
 #include "k_signal_handler.h"
 
 #include <sys/types.h>
@@ -47,7 +49,10 @@ void k_init()
         { CRT_I_PROCESS_PID,     "crt-i",       0, IS_I_PROCESS,     start_crt_i_process },
         { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
         { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null },
-        { PROCESS_CCI_PID,       "cci",         0, IS_NOT_I_PROCESS, start_cci }
+        { PROCESS_CCI_PID,       "cci",         2, IS_NOT_I_PROCESS, start_cci },
+        { PROCESS_A_PID,         "a",           2, IS_NOT_I_PROCESS, process_A },
+        { PROCESS_B_PID,         "b",           1, IS_NOT_I_PROCESS, process_B },
+        { PROCESS_C_PID,         "c",           0, IS_NOT_I_PROCESS, process_C }
     };
     k_process_init(TOTAL_NUM_PROCESSES, init_table);
 
