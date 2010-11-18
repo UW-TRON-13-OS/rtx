@@ -2,10 +2,46 @@
 #include <k_signal_handler.h>
 #include <k_atomic.h>
 #include <k_scheduler.h>
-#include "stdio.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 static pcb_t* interrupted_process;
 
+void print_status_info()
+{
+    MsgEnv env;
+    env.msg = malloc(1024);
+    k_request_process_status(&env);
+    int * data = (int *) env.msg;
+    int num_processes = *data++;
+    int i;
+    printf ("PID | STATUS                | PRIORITY\n");
+    for (i=0;i<num_processes;i++)
+    {
+        printf("  %d   ",*data++);
+        switch(*data)
+        {
+            case P_READY:
+                printf("ready                  ");
+                break;
+            case P_EXECUTING:
+                printf("executing              ");
+                break;
+            case P_BLOCKED_ON_ENV_REQUEST:
+                printf("blocked on env request ");
+                break;
+            case P_BLOCKED_ON_RECEIVE:
+                printf("blocked on receive     ");
+                break;
+            default :
+                printf("                       ");
+                break;
+        }
+        data++;
+        printf(" %d\n",*data++);
+    }
+}
 void handle_signal(int sig_num)
 {
     atomic(ON);
@@ -17,6 +53,8 @@ void handle_signal(int sig_num)
     switch (sig_num)
     {
         case SIGINT: 
+            printf("Interrupted in process %s\n", current_process->name);
+            print_status_info();
         case SIGBUS: 
         case SIGHUP: 
         case SIGILL: 
