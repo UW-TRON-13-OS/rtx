@@ -8,17 +8,17 @@
 
 #include <stdio.h>
 
-msg_env_queue_t* displayQueue = NULL;
-MsgEnv* prev_msg = NULL;
 void start_crt_i_process()
 {
     displayQueue = msg_env_queue_create();
     MsgEnv* message;
+    MsgEnv* prev_msg = NULL;
+    msg_env_queue_t* displayQueue = NULL;
     int i = 0;
     crt_buf->i_process_wait_flag = '0';
     while (1)
     {
-        if (prev_msg != NULL)
+        if (prev_msg != NULL && crt_buf->i_process_wait_flag == 0)
         {
             prev_msg->msg_type = DISPLAY_ACK;
             k_send_message(prev_msg->send_pid, prev_msg);
