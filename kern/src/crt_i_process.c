@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 msg_env_queue_t* displayQueue = NULL;
+MsgEnv* prev_msg = NULL;
 void start_crt_i_process()
 {
     displayQueue = msg_env_queue_create();
@@ -17,6 +18,13 @@ void start_crt_i_process()
     crt_buf->i_process_wait_flag = '0';
     while (1)
     {
+        if (prev_msg != NULL)
+        {
+            prev_msg->msg_type = DISPLAY_ACK;
+            k_send_message(prev_msg->send_pid, prev_msg);
+            prev_msg = NULL;
+        }
+        
         message = k_receive_message();
         msg_env_queue_enqueue(displayQueue, message);
         
@@ -31,9 +39,8 @@ void start_crt_i_process()
                 i++;
             }
             crt_buf->data[i] = '\0';
-            message->msg_type = DISPLAY_ACK;
             crt_buf->i_process_wait_flag = '1';
-            k_send_message(message->send_pid, message);
+            prev_msg = message;
         }
         k_i_process_exit();
     }
