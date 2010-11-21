@@ -3,32 +3,28 @@
 #include "abc.h"
 #include "msg_env_queue.h"
 
-#include <stdio.h> // TODO remove later
+#include <stdio.h> // TODO remove when done
 #include <string.h>
 
 void process_C()
 {
-    MsgEnv* deq_msg;
     msg_env_queue_t* messageQueue = msg_env_queue_create();
     while(1)
     {
+        MsgEnv *deq_msg;
         MsgEnv *rec_msg = NULL;
         if(msg_env_queue_is_empty(messageQueue))
         {
             MsgEnv *received_msg = receive_message();
             msg_env_queue_enqueue(messageQueue, received_msg);
         }
-        else
-        {
-            deq_msg = msg_env_queue_dequeue(messageQueue);
-        }
-        printf("alksjdflsjflkdjfs %p\n", deq_msg);
+        deq_msg = msg_env_queue_dequeue(messageQueue);
+
         if(deq_msg->msg_type == COUNT_REPORT)
         { 
-            printf("count %d\n", *((int *)(deq_msg->msg)));
             if (*((int *)(deq_msg->msg)) % 20 == 0)
             {
-                strcpy(deq_msg->msg, "Process C");
+                strcpy(deq_msg->msg, "\nProcess C\n");
                 send_console_chars(deq_msg);
 
                 while(1)
@@ -42,7 +38,7 @@ void process_C()
                        }
                        break;
                    }
-                   else if (rec_msg->msg_type == WAKEUP_10)
+                   else if (rec_msg->msg_type == WAKEUP_10 || rec_msg->msg_type == COUNT_REPORT)
                    {
                        msg_env_queue_enqueue(messageQueue, rec_msg);
                    }

@@ -2,8 +2,6 @@
 #include "processes.h"
 #include "abc.h"
 
-#include <stdio.h>
-
 void process_A()
 {
     MsgEnv * start_msg = receive_message();
@@ -13,7 +11,7 @@ void process_A()
     {
         MsgEnv * count_msg = request_msg_env();
         count_msg->msg_type = COUNT_REPORT;
-        sprintf(count_msg->msg, "%d", counter);
+        *((int *) count_msg->msg) = counter;
         send_message(PROCESS_B_PID, count_msg);
         counter++;
         release_processor();
