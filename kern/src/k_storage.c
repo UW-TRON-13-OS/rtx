@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 
-static msg_env_queue_t * free_env_q;
+msg_env_queue_t * free_env_q;
 MsgEnv* env_pool;
 proc_pq_t *env_blocked_pq;
 
