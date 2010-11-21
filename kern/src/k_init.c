@@ -50,9 +50,9 @@ void k_init()
         { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
         { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null },
         { PROCESS_CCI_PID,       "cci",         2, IS_NOT_I_PROCESS, start_cci },
-        { PROCESS_A_PID,         "a",           2, IS_NOT_I_PROCESS, process_A },
+        { PROCESS_A_PID,         "a",           0, IS_NOT_I_PROCESS, process_A },
         { PROCESS_B_PID,         "b",           1, IS_NOT_I_PROCESS, process_B },
-        { PROCESS_C_PID,         "c",           0, IS_NOT_I_PROCESS, process_C }
+        { PROCESS_C_PID,         "c",           2, IS_NOT_I_PROCESS, process_C }
     };
     k_process_init(TOTAL_NUM_PROCESSES, init_table);
 
