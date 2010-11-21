@@ -10,10 +10,9 @@
 
 void start_crt_i_process()
 {
-    msg_env_queue_t* displayQueue = NULL;
-    displayQueue = msg_env_queue_create();
     MsgEnv* message;
     MsgEnv* prev_msg = NULL;
+    msg_env_queue_t* displayQueue = msg_env_queue_create();
     int i = 0;
     crt_buf->i_process_wait_flag = '0';
     while (1)
