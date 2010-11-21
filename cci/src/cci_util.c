@@ -7,20 +7,7 @@
 #include <stdarg.h>
 
 //like CCI_printf, except for the CCI. and possibly broken.
-int CCI_printf (const char* format, ...)
-{
-    if (format == NULL)
-        return ERROR_NULL_ARG;
-    va_list args;
-    int status;
-
-    va_start (args, format);
-    MsgEnv* env = request_msg_env();
-    vsprintf(env->msg, format, args);
-    va_end (args);
-    status = send_console_chars(env);
-    return status;    
-}
+int CCI_printf (const char* format, ...);
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
