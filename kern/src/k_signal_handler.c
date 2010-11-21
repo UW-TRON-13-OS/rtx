@@ -2,6 +2,7 @@
 #include <k_signal_handler.h>
 #include <k_atomic.h>
 #include <k_scheduler.h>
+#include "msg_env_queue.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,6 +55,7 @@ void handle_signal(int sig_num)
     {
         case SIGINT: 
             printf("Interrupted in process %s\n", current_process->name);
+            printf("Num free envelopes: %d\n", msg_env_queue_size(free_env_q));
             print_status_info();
         case SIGBUS: 
         case SIGHUP: 

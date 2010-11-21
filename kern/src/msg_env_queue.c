@@ -85,3 +85,20 @@ int msg_env_queue_enqueue(msg_env_queue_t *queue, MsgEnv* env)
 
     return CODE_SUCCESS;
 }
+
+int msg_env_queue_size(msg_env_queue_t *queue)
+{
+    if (queue == NULL)
+    {
+        return -1;
+    }
+
+    MsgEnv * env = queue->head;
+    int size = 0;
+    while (env != NULL)
+    {
+        env = env->next;
+        size++;
+    }
+    return size;
+}
