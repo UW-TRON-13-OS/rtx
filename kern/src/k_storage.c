@@ -37,7 +37,8 @@ MsgEnv * k_request_msg_env()
         k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
     }
 
-    return msg_env_queue_dequeue(free_env_q);
+    MsgEnv *env = msg_env_queue_dequeue(free_env_q);
+    return env;
 }
 
 int k_release_msg_env(MsgEnv * msg_env)
@@ -55,4 +56,9 @@ int k_release_msg_env(MsgEnv * msg_env)
         assert(proc_pq_enqueue(ready_pq, blocked_process) == CODE_SUCCESS);
     }
     return CODE_SUCCESS;
+}
+
+int k_is_msg_env_valid(MsgEnv *msg_env)
+{
+    return msg_env >= env_pool && msg_env < env_pool + IPC_NUM_FREE_MSG_ENVS;
 }
