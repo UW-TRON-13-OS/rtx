@@ -75,21 +75,24 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
     // Find the insertion point
     MsgEnv* prev_node = node;
     node = node->next;
-    timeout_so_far += *((int*)node->msg);
-    while(timeout_so_far < timeout && node != NULL)
+    if (node)
     {
-        prev_node = node;
-        node = node->next;
         timeout_so_far += *((int*)node->msg);
-    }
-    
-    // If we are inserting before another node, adjust its timeout value
-    if (node != NULL)
-    {
-        timeout_so_far -= *((int*)node->msg);
-        *((int *)node->msg) -= (timeout - timeout_so_far);
-        assert(*((int *)node->msg) > 0);
-        assert(timeout > timeout_so_far);
+        while(timeout_so_far < timeout && node != NULL)
+        {
+            prev_node = node;
+            node = node->next;
+            timeout_so_far += *((int*)node->msg);
+        }
+        
+        // If we are inserting before another node, adjust its timeout value
+        if (node != NULL)
+        {
+            timeout_so_far -= *((int*)node->msg);
+            *((int *)node->msg) -= (timeout - timeout_so_far);
+            assert(*((int *)node->msg) > 0);
+            assert(timeout > timeout_so_far);
+        }
     }
 
     // Insert into the queue
