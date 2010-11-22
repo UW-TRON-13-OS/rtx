@@ -17,7 +17,7 @@ void start_crt_i_process()
     crt_buf->i_process_wait_flag = '0';
     while (1)
     {
-        if (prev_msg != NULL && crt_buf->i_process_wait_flag == 0)
+        if (prev_msg != NULL && crt_buf->i_process_wait_flag == '0')
         {
             prev_msg->msg_type = DISPLAY_ACK;
             k_send_message(prev_msg->send_pid, prev_msg);
