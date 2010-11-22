@@ -113,7 +113,7 @@ void k_process_init(int num_processes, proc_cfg_t init_table[])
                 if (!current_process->is_i_process)
                     atomic(OFF);
                 current_process->start();
-                printf("FATAL ERROR: Process <%s> stopped executingn", current_process->name);
+                printf("FATAL ERROR: Process <%s> stopped executing! \n", current_process->name);
                 k_terminate();
             }
         }
