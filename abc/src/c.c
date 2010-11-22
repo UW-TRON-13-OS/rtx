@@ -38,7 +38,7 @@ void process_C()
                        }
                        break;
                    }
-                   else if (rec_msg->msg_type == WAKEUP_10 || rec_msg->msg_type == COUNT_REPORT)
+                   else if (rec_msg->msg_type == COUNT_REPORT)
                    {
                        msg_env_queue_enqueue(messageQueue, rec_msg);
                    }
