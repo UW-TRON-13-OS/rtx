@@ -1,10 +1,7 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include "processes.h"
-#include <stdio.h> 
-#include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 //like CCI_printf, except for the CCI. and possibly broken.
 int CCI_printf (const char* format, ...);
@@ -53,6 +50,7 @@ int CCI_setClock (char* timeParam, uint32_t* time)
     if (timeParam[2] != ':' || timeParam[5] != ':')
         return ERROR_ILLEGAL_ARG;
 
+    //parse timeParam string
     char hr_s [3];
     char min_s [3];
     char sec_s [3];
@@ -66,10 +64,10 @@ int CCI_setClock (char* timeParam, uint32_t* time)
     hr_s[2]='\0';
     min_s[2]='\0';
     sec_s[2]='\0';
-
     hr = atoi(hr_s); 
     min = atoi(min_s);
     sec = atoi(sec_s);
+
     if (hr>23 || min>59 || sec > 59)
         return ERROR_ILLEGAL_ARG;
     *time = hr*3600 + min*60 + sec;
@@ -85,98 +83,42 @@ int CCI_printTraceBuffers (char* data)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    CCI_printf("MESSAGE TRACE BUFFERS\n"
-            "-----------------------------\n"
-            "Send trace buffer:\n");
-    for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
-             && send_dump[i].time_stamp != 0;i++)
+    CCI_printf(    "MESSAGE TRACE BUFFERS\n\n"
+                   " Send Trace                   || Receive Trace\n"
+                   " Dest |Sender|Message|  Time  || Dest |Sender|Message|  Time\n"
+                   " PID  |PID   |Type   |        || PID  |PID   |Type   |\n"
+                   "--------------------------------------------------------------\n");
+    for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE;i++)
     {
-        CCI_printf("  %2u | %u | %u | %3d | %6lu\n",i+1,send_dump[i].dest_pid,
-               send_dump[i].send_pid, send_dump[i].msg_type,
-               send_dump[i].time_stamp);
-    }        
-    
-    CCI_printf("\nReceive trace buffer:\n");
-    for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE 
-             && recv_dump[i].time_stamp != 0;i++)
-    {
-        CCI_printf("  %2u | %u | %u | %3d | %6lu\n",i+1,recv_dump[i].dest_pid,
-               recv_dump[i].send_pid, recv_dump[i].msg_type,
-               recv_dump[i].time_stamp);
-    } 
-    CCI_printf("\n");
-
-    return CODE_SUCCESS;
-}
-
-//set process priority based on params given provided
-int CCI_setNewPriority (char* param)
-{
-CCI_printf("Getting the prams for priority \n");
-    if (param == NULL)
-        return ERROR_NULL_ARG;
-
-    char* priorityStr;
-    char* pidStr;
-    int priority, pid;
-    //splitFirstWord (param, priorityStr, pidStr);
-    priorityStr = strtok (param," \t");
-    pidStr = strtok(NULL," \t");
-    priority = atoi(priorityStr);
-    pid = atoi(pidStr);
-	
-	CCI_printf("\n The priority submitted is %d and the pid is %d \n", priority, pid);
-	
-    return change_priority(priority, pid);
-}
-
-//Splits input into the first word (retStr1) and the remainder (retStr2)
-int splitFirstWord (char* input, char* retStr1, char* retStr2)
-{
-    if (input == NULL || retStr1 == NULL || retStr2 == NULL)
-        return ERROR_NULL_ARG;
-    else
-    {
-        int i = 0;
-        char ch = input[0];
-        //ignore leading whitespace
-        while (ch == ' ' || ch == '\t')
+        if (send_dump[i].time_stamp != 0)
         {
-            i++;
-            ch = input [i];
+            CCI_printf("   %2u |   %2u |   %3d | %6lu ||",
+                       send_dump[i].dest_pid, send_dump[i].send_pid,
+                       send_dump[i].msg_type, send_dump[i].time_stamp);
         }
-
-        //get first word
-        while (ch != '\0' && ch != '\t' && ch != ' ')
+        else if (recv_dump[i].time_stamp != 0)
         {
-            retStr1[i]=ch;
-            i++;
-            ch = input[i];
+            CCI_printf("      |      |       |       ||");
         }
-        retStr1[i] = '\0';
-
-        //get remainder
-        int j = 0;
-        if (ch == '\0')
-            retStr2[0]='\0';
         else
         {
-            while (ch == ' ' || ch == '\t')
-            {
-                i++;
-                ch = input [i];
-            }
-
-            while (ch != '\0')
-            {
-                retStr2[j]=ch;
-                i++;
-                j++;
-                ch = input[i];
-            }
-            retStr2[j]='\0';
+            break;
         }
-    }
+        
+        if (recv_dump[i].time_stamp != 0)
+        {
+            CCI_printf("   %2u |   %2u |   %3d | %6lu\n",send_dump[i].dest_pid,
+                       recv_dump[i].send_pid, recv_dump[i].msg_type,
+                       recv_dump[i].time_stamp);
+        }
+        else
+        {
+            CCI_printf("      |      |       |       \n");
+        }
+    }        
+    
+    CCI_printf("\n");
+
     return CODE_SUCCESS;
 }
 

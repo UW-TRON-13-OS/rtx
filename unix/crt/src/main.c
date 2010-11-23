@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     
     while (1)
     {
-        if (crt_buffer->i_process_wait_flag == '1')
+        if (crt_buffer->i_process_wait_flag == CRT_FLAG_WAIT)
         {
             i = 0;
             while (crt_buffer->data[i] != '\0')
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
                 i++;
             }
             fflush(stdout);
-            crt_buffer->i_process_wait_flag = '0';
+            crt_buffer->i_process_wait_flag = CRT_FLAG_FREE;
             kill(parent_pid, SIGUSR2);
         }
         usleep(TIME_1MS);
