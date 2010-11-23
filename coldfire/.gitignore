@@ -1,2 +1,6 @@
 lib
 bin
+*.s19 
+*.bin
+*.lst
+*.map

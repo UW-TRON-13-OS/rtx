@@ -37,6 +37,7 @@
 /*
  * Data Types by Size
  */
+/*
 #define SINT32  signed long int
 #define UINT32  unsigned long int
 #define SINT16  signed short int
@@ -47,6 +48,16 @@
 #define BYTE    unsigned char
 #define VOID    void
 #define BOOLEAN signed long int
+*/
+
+typedef signed long int     int32_t;
+typedef signed long int     uint32_t;
+typedef signed long int     int16_t;
+typedef signed long int     uint16_t;
+typedef signed long int     int8_t;
+typedef signed long int     uint8_t;
+typedef unsigned char       byte;
+typedef signed long int     bool;
 
 
 #define ESC                 0x1B
