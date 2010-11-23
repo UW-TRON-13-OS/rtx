@@ -112,6 +112,7 @@ int CCI_printTraceBuffers (char* data)
 //set process priority based on params given provided
 int CCI_setNewPriority (char* param)
 {
+CCI_printf("Getting the prams for priority \n");
     if (param == NULL)
         return ERROR_NULL_ARG;
 
@@ -123,6 +124,9 @@ int CCI_setNewPriority (char* param)
     pidStr = strtok(NULL," \t");
     priority = atoi(priorityStr);
     pid = atoi(pidStr);
+	
+	CCI_printf("\n The priority submitted is %d and the pid is %d \n", priority, pid);
+	
     return change_priority(priority, pid);
 }
 
