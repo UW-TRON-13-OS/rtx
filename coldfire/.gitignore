@@ -4,3 +4,5 @@ bin
 *.bin
 *.lst
 *.map
+*.s
+*.o
