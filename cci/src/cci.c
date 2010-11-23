@@ -8,6 +8,7 @@
 #include <stdarg.h>
 
 #define WAKEUP_CODE 123
+#define ONE_SECOND_DELAY 10
 
 #define SAVE_CURSOR "\033[s"
 #define RESTORE_CURSOR "\033[u"
@@ -39,7 +40,6 @@ int CCI_printf (const char* format, ...)
         }
         else
         {
-            //printf("Found message type %d when waiting for DISPLAY ACK\n", env->msg_type);
             msg_env_queue_enqueue(messageQueue, env);
         }
     }
@@ -64,8 +64,7 @@ void start_cci()
     status = get_console_chars(receive_env);
     if (status != CODE_SUCCESS)
         CCI_printf("get_console_chars failed with status %d\n",status);
-    //we can add a periodic delay fcn instead
-    status = request_delay ( 10, WAKEUP_CODE, timeout_env); //one second delay 
+    status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env); 
     if (status != CODE_SUCCESS)
         CCI_printf("request_delay failed with status %d\n",status);
 
@@ -83,7 +82,7 @@ void start_cci()
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
         {
-            status = request_delay ( 10, WAKEUP_CODE, timeout_env);
+            status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
                 CCI_printf("request_delay failed with status %d\n",status);
             clock_time = (clock_time+1)%86400; //86400 = 24hrs in secs
@@ -117,10 +116,15 @@ void start_cci()
             {
                 status = request_process_status(status_env);
                 if (status != CODE_SUCCESS)
+                {
                     CCI_printf("request_process_status failed with status %d\n",status);
-                status = CCI_printProcessStatuses(status_env->msg);
-                if (status != CODE_SUCCESS)
-                    CCI_printf("CCI_printProcessStatuses failed with status %d\n",status);
+                }
+                else
+                {
+                    status = CCI_printProcessStatuses(status_env->msg);
+                    if (status != CODE_SUCCESS)
+                        CCI_printf("CCI_printProcessStatuses failed with status %d\n",status);
+                }
             }
             //set clock
             else if (strcmp(cmd,"c") == 0) 
@@ -128,13 +132,13 @@ void start_cci()
                 char* param = strtok(NULL," \t");
                 if (strtok(NULL," \t") != NULL)
                     CCI_printf("c\n"
-                           "Sets the console clock.\n"
-                           "Usage: c <hh:mm:ss>\n");
+                               "Sets the console clock.\n"
+                               "Usage: c <hh:mm:ss>\n");
                 status = CCI_setClock(param, &clock_time);
                 if (status == ERROR_ILLEGAL_ARG)
                     CCI_printf("c\n"
-                           "Sets the console clock.\n"
-                           "Usage: c <hh:mm:ss>\n");
+                               "Sets the console clock.\n"
+                               "Usage: c <hh:mm:ss>\n");
                 else if (status != CODE_SUCCESS)
                     CCI_printf("CCI_setClock failed with status %d\n",status);
             }
