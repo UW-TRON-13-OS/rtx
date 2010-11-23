@@ -183,7 +183,6 @@ void start_cci()
                     }
                     else
                     {
-                        CCI_printf("The priority submitted is %d and the pid is %d \n", priority, pid);
                         status = change_priority(priority, pid);
                         if (status == ERROR_ILLEGAL_ARG)
                             CCI_printf("Usage: n <priority> <processID>\n");
