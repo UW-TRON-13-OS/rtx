@@ -14,10 +14,10 @@ void start_crt_i_process()
     MsgEnv* prev_msg = NULL;
     msg_env_queue_t* displayQueue = msg_env_queue_create();
     int i = 0;
-    crt_buf->i_process_wait_flag = '0';
+    crt_buf->i_process_wait_flag = CRT_FLAG_FREE;
     while (1)
     {
-        if (prev_msg != NULL && crt_buf->i_process_wait_flag == '0')
+        if (prev_msg != NULL && crt_buf->i_process_wait_flag == CRT_FLAG_FREE)
         {
             prev_msg->msg_type = DISPLAY_ACK;
             k_send_message(prev_msg->send_pid, prev_msg);
@@ -27,7 +27,7 @@ void start_crt_i_process()
         message = k_receive_message();
         msg_env_queue_enqueue(displayQueue, message);
         
-        if (crt_buf->i_process_wait_flag == '0' && msg_env_queue_is_empty(displayQueue) != 1)
+        if (crt_buf->i_process_wait_flag == CRT_FLAG_FREE && msg_env_queue_is_empty(displayQueue) != 1)
         {
             message = msg_env_queue_dequeue(displayQueue);
             assert(message != NULL);
@@ -38,7 +38,7 @@ void start_crt_i_process()
                 i++;
             }
             crt_buf->data[i] = '\0';
-            crt_buf->i_process_wait_flag = '1';
+            crt_buf->i_process_wait_flag = CRT_FLAG_WAIT;
             prev_msg = message;
         }
         k_i_process_exit();
