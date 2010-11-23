@@ -1,10 +1,7 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include "processes.h"
-#include <stdio.h> 
-#include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 //like CCI_printf, except for the CCI. and possibly broken.
 int CCI_printf (const char* format, ...);
@@ -53,6 +50,7 @@ int CCI_setClock (char* timeParam, uint32_t* time)
     if (timeParam[2] != ':' || timeParam[5] != ':')
         return ERROR_ILLEGAL_ARG;
 
+    //parse timeParam string
     char hr_s [3];
     char min_s [3];
     char sec_s [3];
@@ -66,10 +64,10 @@ int CCI_setClock (char* timeParam, uint32_t* time)
     hr_s[2]='\0';
     min_s[2]='\0';
     sec_s[2]='\0';
-
     hr = atoi(hr_s); 
     min = atoi(min_s);
     sec = atoi(sec_s);
+
     if (hr>23 || min>59 || sec > 59)
         return ERROR_ILLEGAL_ARG;
     *time = hr*3600 + min*60 + sec;
@@ -122,24 +120,5 @@ int CCI_printTraceBuffers (char* data)
     CCI_printf("\n");
 
     return CODE_SUCCESS;
-}
-
-//set process priority based on params given provided
-int CCI_setNewPriority (char* param)
-{
-    if (param == NULL)
-        return ERROR_NULL_ARG;
-
-    char* priorityStr;
-    char* pidStr;
-    int priority, pid;
-    priorityStr = strtok (param," \t");
-    pidStr = strtok(NULL," \t");
-    priority = atoi(priorityStr);
-    pid = atoi(pidStr);
-	
-	CCI_printf("The priority submitted is %d and the pid is %d \n", priority, pid);
-	
-    return change_priority(priority, pid);
 }
 
