@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     
     kb_buffer = (recv_buf_t *) mmap_ptr;
     
-    kb_buffer->kb_wait_flag = '0';
+    kb_buffer->kb_wait_flag = KB_FLAG_FREE;
     kb_buffer->length = 0;
     
     while (1)
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 		if (c == '\n')
         {
             kill(parent_pid, SIGUSR1); // send a signal to RTX
-            kb_buffer->kb_wait_flag = '1';
+            kb_buffer->kb_wait_flag = KB_FLAG_WAIT;
         }
         else if (kb_buffer->length < KEYBOARD_BUF_SIZE)
         {

@@ -25,7 +25,7 @@ void start_kb_i_process()
             }
             message->msg[i] = '\0';
             message->msg_type = CONSOLE_INPUT;
-            kb_buf->kb_wait_flag = '0';
+            kb_buf->kb_wait_flag = KB_FLAG_FREE;
             k_send_message(message->send_pid, message);
         }
         kb_buf->length = 0;
