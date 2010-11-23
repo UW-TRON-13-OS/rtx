@@ -2,6 +2,7 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include "processes.h"
+#include "msg_env_queue.h"
 #include <string.h>
 #include <stdio.h> 
 #include <stdarg.h>
@@ -15,7 +16,9 @@
 //                    00:00:00
 #define EMPTY_CLOCK  "        "
 
-MsgEnv *send_env, *timeout_env, *receive_env, *status_env;
+msg_env_queue_t *messageQueue;
+MsgEnv *send_env, *timeout_env, *receive_env, *status_env, *proc_a_env;
+
 int CCI_printf (const char* format, ...)
 {
     if (format == NULL)
@@ -36,8 +39,8 @@ int CCI_printf (const char* format, ...)
         }
         else
         {
-            printf("Found message type %d when waiting for DISPLAY ACK\n", env->msg_type);
-            //send_message(
+            //printf("Found message type %d when waiting for DISPLAY ACK\n", env->msg_type);
+            msg_env_queue_enqueue(messageQueue, env);
         }
     }
     return status;    
@@ -51,10 +54,12 @@ void start_cci()
     char clock_display_en = 0; //clock not displayed by default
     uint32_t status;
 
+    messageQueue = msg_env_queue_create();
     send_env = request_msg_env();
     timeout_env = request_msg_env();
     receive_env = request_msg_env();
     status_env = request_msg_env();
+    proc_a_env = request_msg_env();
 
     status = get_console_chars(receive_env);
     if (status != CODE_SUCCESS)
@@ -69,7 +74,12 @@ void start_cci()
 
     while (1)
     {
-        MsgEnv *env = receive_message(); 
+        MsgEnv* env;
+        if( msg_env_queue_is_empty(messageQueue))
+            env = receive_message(); 
+        else
+            env = msg_env_queue_dequeue(messageQueue);
+
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
         {
@@ -91,11 +101,16 @@ void start_cci()
             //send empty envelope to process A
             if (strcmp(cmd,"s") == 0) 
             {
-                    // TODO keep track of whether we have already started process A
-                    MsgEnv* tmpEnv = request_msg_env();
-                    status = send_message (PROCESS_A_PID, tmpEnv);
+                if ( proc_a_env != NULL )
+                {
+                    status = send_message (PROCESS_A_PID, proc_a_env);
                     if (status != CODE_SUCCESS)
                         CCI_printf("send_message failed with status %d\n",status);
+                }
+                else
+                {
+                    CCI_printf("Process A has already been started.\n");
+                }
             }
             //displays process statuses
             else if (strcmp(cmd,"ps") == 0) 
