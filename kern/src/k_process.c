@@ -43,11 +43,13 @@ int k_change_priority(int new_priority, int target_process_id)
         target_process_id < 0 || target_process_id >= _num_processes)
     {
         return ERROR_ILLEGAL_ARG;
+		CCI_printf("exiting at 1 priotiyy!!");
     }
 
     pcb_t *pcb = &p_table[target_process_id];
     if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
     {
+		CCI_printf("exiting at 2 priotiyy!!");
         return ERROR_ILLEGAL_ARG;
     }
     switch (pcb->status)

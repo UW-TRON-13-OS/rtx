@@ -13,6 +13,7 @@ void process_C()
     {
         MsgEnv *deq_msg;
         MsgEnv *rec_msg = NULL;
+        MsgEnv *rec_msg_2 = NULL;
         if(msg_env_queue_is_empty(messageQueue))
         {
             MsgEnv *received_msg = receive_message();
@@ -52,19 +53,21 @@ void process_C()
                 // "Go passive for 10 seconds" in the outline
                 while(1)
                 {
-                    MsgEnv *rec_msg = receive_message();
-                    if(rec_msg->msg_type == WAKEUP_10)
+                    rec_msg_2 = receive_message();
+                    if(rec_msg_2->msg_type == WAKEUP_10)
                     {
                         break;
                     }
                     else
                     {
-                        msg_env_queue_enqueue(messageQueue, rec_msg);
+                        msg_env_queue_enqueue(messageQueue, rec_msg_2);
                     }
                 }
             }
         }
         release_msg_env(rec_msg);
+        release_msg_env(rec_msg_2);
+        release_msg_env(deq_msg);
         release_processor();
     }
 }
