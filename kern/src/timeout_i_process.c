@@ -39,7 +39,7 @@ void start_timeout_i_process()
                 k_send_message(msg_env->send_pid, msg_env);
             }
         }
-
+		//exit i process
         k_i_process_exit();
 
     }
@@ -50,13 +50,14 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
     // assume new_msg_env != NULL
     assert(new_msg_env != NULL);
 	
+	//calculate the time with respect to the system time
     int timeout = k_clock_get_system_time() + *((int *) new_msg_env->msg);
     
     // Check for empty queue
     if (timeout_queue == NULL)
     {
-        timeout_queue = new_msg_env;		
         *((int *) new_msg_env->msg) = timeout;
+        timeout_queue = new_msg_env;
         return;
     }
 
@@ -93,5 +94,6 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
 
 int timeout_queue_is_empty()
 {
+	//check if te timeout queue is null or not.
     return timeout_queue == NULL;
 }

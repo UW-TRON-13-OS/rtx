@@ -13,6 +13,7 @@ proc_pq_t *env_blocked_pq;
 
 void k_storage_init()
 {
+	// create all the queues used by the OS
     env_blocked_pq = proc_pq_create(NUM_PRIORITIES);
     free_env_q = msg_env_queue_create();
     env_pool = malloc(sizeof(*env_pool) * IPC_NUM_FREE_MSG_ENVS);
@@ -43,6 +44,7 @@ MsgEnv * k_request_msg_env()
 
 int k_release_msg_env(MsgEnv * msg_env)
 {
+	// do a null check on the envelope
     if (msg_env == NULL)
     {
         return ERROR_NULL_ARG;
