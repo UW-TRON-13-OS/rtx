@@ -11,3 +11,8 @@ void k_clock_incr_system_time()
 {
     clock++;
 }
+
+void k_set_system_time(uint64_t time)
+{
+    clock = time;
+}
