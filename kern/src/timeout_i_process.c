@@ -49,22 +49,24 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
 {
     // assume new_msg_env != NULL
     assert(new_msg_env != NULL);
+	
+    int timeout = k_clock_get_system_time() + *((int *) new_msg_env->msg);
     
     // Check for empty queue
     if (timeout_queue == NULL)
     {
-        timeout_queue = new_msg_env;
+        timeout_queue = new_msg_env;		
+        *((int *) new_msg_env->msg) = timeout;
         return;
     }
 
     // Insert at head of queue
-    int timeout = k_clock_get_system_time() + *((int *) new_msg_env->msg);
     MsgEnv* node = timeout_queue;
     int timeout_so_far = *((int*)node->msg);
     if (timeout <= *((int *) node->msg))
     {
         new_msg_env->next = node;
-        //*((int *) node->msg) -= timeout;
+        *((int *) new_msg_env->msg) = timeout;
         timeout_queue = new_msg_env;
         return;
     }
