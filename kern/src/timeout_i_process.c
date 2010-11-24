@@ -28,8 +28,8 @@ void start_timeout_i_process()
             // decrement the number of intervals of the head by 1
             (*((int *)timeout_queue->msg))--;
 
-
-            while (timeout_queue && *((int *) timeout_queue->msg) == 0)
+            while (timeout_queue && 
+				   *((int *) timeout_queue->msg) <= k_clock_get_system_time())
             {
                 // Dequeue the head
                 msg_env = timeout_queue;
@@ -40,12 +40,9 @@ void start_timeout_i_process()
             }
         }
 
-
         k_i_process_exit();
 
     }
-
-
 }
 
 void timeout_queue_insert (MsgEnv* new_msg_env)
@@ -53,7 +50,7 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
     // assume new_msg_env != NULL
     assert(new_msg_env != NULL);
     
-    // Empty queue
+    // Check for empty queue
     if (timeout_queue == NULL)
     {
         timeout_queue = new_msg_env;
@@ -61,13 +58,13 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
     }
 
     // Insert at head of queue
-    int timeout = *((int *) new_msg_env->msg);
+    int timeout = k_clock_get_system_time() + *((int *) new_msg_env->msg);
     MsgEnv* node = timeout_queue;
     int timeout_so_far = *((int*)node->msg);
     if (timeout <= *((int *) node->msg))
     {
         new_msg_env->next = node;
-        *((int *) node->msg) -= timeout;
+        //*((int *) node->msg) -= timeout;
         timeout_queue = new_msg_env;
         return;
     }
@@ -77,27 +74,18 @@ void timeout_queue_insert (MsgEnv* new_msg_env)
     node = node->next;
     if (node)
     {
-        timeout_so_far += *((int*)node->msg);
+        timeout_so_far = *((int*)node->msg);
         while(timeout_so_far < timeout && node != NULL)
         {
             prev_node = node;
             node = node->next;
-            timeout_so_far += *((int*)node->msg);
-        }
-        
-        // If we are inserting before another node, adjust its timeout value
-        if (node != NULL)
-        {
-            timeout_so_far -= *((int*)node->msg);
-            *((int *)node->msg) -= (timeout - timeout_so_far);
-            assert(*((int *)node->msg) > 0);
-            assert(timeout > timeout_so_far);
+            timeout_so_far = *((int*)node->msg);
         }
     }
 
     // Insert into the queue
     prev_node->next = new_msg_env;
-    *((int *) new_msg_env->msg) -= timeout_so_far;
+    *((int *) new_msg_env->msg) = timeout;
     new_msg_env->next = node;
 }
 
