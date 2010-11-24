@@ -42,38 +42,6 @@ int CCI_printProcessStatuses (char* raw_data)
     return CODE_SUCCESS;
 }
 
-//sets the clock 
-int CCI_setClock (char* timeParam, uint32_t* time)
-{
-    if (timeParam == NULL)
-        return ERROR_NULL_ARG;
-    if (timeParam[2] != ':' || timeParam[5] != ':')
-        return ERROR_ILLEGAL_ARG;
-
-    //parse timeParam string
-    char hr_s [3];
-    char min_s [3];
-    char sec_s [3];
-    int i, hr, min, sec;
-    for (i=0;i<2;i++)
-    {
-        hr_s[i] =timeParam[i];
-        min_s[i]=timeParam[3+i];
-        sec_s[i]=timeParam[6+i];
-    }
-    hr_s[2]='\0';
-    min_s[2]='\0';
-    sec_s[2]='\0';
-    hr = atoi(hr_s); 
-    min = atoi(min_s);
-    sec = atoi(sec_s);
-
-    if (hr>23 || min>59 || sec > 59)
-        return ERROR_ILLEGAL_ARG;
-    *time = hr*3600 + min*60 + sec;
-    return CODE_SUCCESS;
-}
-
 //prints trace buffers on console given the envelope message data
 int CCI_printTraceBuffers (char* data)
 {
