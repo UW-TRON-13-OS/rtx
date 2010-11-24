@@ -6,6 +6,7 @@
 #include "k_delay.h"
 #include "k_console.h"
 #include "k_uart.h"
+#include "k_clock.h"
 #include <signal.h>
 
 int send_message(int dest_pid, MsgEnv *msg_env)
@@ -103,6 +104,15 @@ int get_trace_buffers(MsgEnv* msg_env)
 {
     atomic(ON);
     int ret_value = k_get_trace_buffers(msg_env);
+    atomic(OFF);
+    return ret_value;
+}
+
+
+uint64_t clock_get_system_time()
+{
+    atomic(ON);
+    int ret_value = k_clock_get_system_time();
     atomic(OFF);
     return ret_value;
 }

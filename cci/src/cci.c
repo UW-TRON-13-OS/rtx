@@ -1,5 +1,6 @@
 #include "cci.h"
 #include "cci_util.h"
+#include "wallclock.h"
 #include "rtx.h"
 #include "processes.h"
 #include "msg_env_queue.h"
@@ -10,15 +11,8 @@
 #define WAKEUP_CODE 123
 #define ONE_SECOND_DELAY 10
 
-#define SAVE_CURSOR "\033[s"
-#define RESTORE_CURSOR "\033[u"
-#define MOVE_CURSOR "\033[0;72H"
-#define CLOCK_FORMAT "%02d:%02d:%02d"
-//                    00:00:00
-#define EMPTY_CLOCK  "        "
-
 msg_env_queue_t *messageQueue;
-MsgEnv *send_env, *timeout_env, *receive_env, *status_env, *proc_a_env;
+MsgEnv *send_env, *receive_env, *status_env, *proc_a_env;
 
 /** Adaption of printf for the CCI console using variable arguments **/
 int CCI_printf (const char* format, ...)
@@ -57,13 +51,10 @@ int CCI_printf (const char* format, ...)
 void start_cci()
 {
     // initialise 
-    uint32_t clock_time = 0;
-    char clock_display_en = 0; //clock not displayed by default
     uint32_t status;
 
     messageQueue = msg_env_queue_create();
     send_env = request_msg_env();
-    timeout_env = request_msg_env();
     receive_env = request_msg_env();
     status_env = request_msg_env();
     proc_a_env = request_msg_env();
@@ -72,11 +63,6 @@ void start_cci()
     if (status != CODE_SUCCESS)
     {
         CCI_printf("get_console_chars failed with status %d\n",status);
-    }
-    status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env); 
-    if (status != CODE_SUCCESS)
-    {
-        CCI_printf("request_delay failed with status %d\n",status);
     }
 
     //print CCI prompt
@@ -95,23 +81,8 @@ void start_cci()
             env = msg_env_queue_dequeue(messageQueue);
         }
 
-        //envelope from timing services
-        if (env->msg_type == WAKEUP_CODE)
-        {
-            status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
-            if (status != CODE_SUCCESS)
-            {
-                CCI_printf("request_delay failed with status %d\n",status);
-            }
-            clock_time = (clock_time+1)%86400; //86400 = 24hrs in secs
-            if (clock_display_en)
-            {
-                CCI_printf( SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
-                        clock_time/3600,(clock_time%3600)/60, clock_time%60);
-            }
-        }
         //envelope with characters from console
-        else if (env->msg_type == CONSOLE_INPUT)
+        if (env->msg_type == CONSOLE_INPUT)
         {
             char cmd [3];
             if (sscanf(env->msg,"%s", cmd)==1)
@@ -126,6 +97,8 @@ void start_cci()
                         {
                             CCI_printf("send_message failed with status %d\n",status);
                         }
+                        release_msg_env(proc_a_env);
+                        proc_a_env = NULL;
                     }
                     else
                     {
@@ -150,13 +123,12 @@ void start_cci()
                 //show clock
                 else if (strcmp(cmd,"cd") == 0) 
                 {
-                    clock_display_en = 1;
+                    displayWallClock (1);
                 }
                 //hide clock
                 else if (strcmp(cmd,"ct") == 0)  
                 {
-                    CCI_printf( SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR);
-                    clock_display_en = 0;
+                    displayWallClock (0);
                 }
                 //show send/receive trace buffers
                 else if (strcmp(cmd,"b") == 0) 
@@ -202,7 +174,7 @@ void start_cci()
                     }
                     else
                     {
-                        status = CCI_setClock(newTime, &clock_time);
+                        status = setWallClock (newTime)
                         if (status == ERROR_ILLEGAL_ARG)
                         {
                             CCI_printf("c\n"

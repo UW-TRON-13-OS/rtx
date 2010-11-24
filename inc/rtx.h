@@ -72,4 +72,7 @@ int get_console_chars(MsgEnv *msg_env);
 /** 5.6 Interprocess Message Trace **/
 int get_trace_buffers(MsgEnv* msg_env);
 
+/** System Clock **/
+uint64_t clock_get_system_time()
+
 #endif
