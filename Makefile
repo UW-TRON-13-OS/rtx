@@ -3,7 +3,7 @@
 #
 #
 
-APP_SUBDIRS := kern utest keyboard crt cci wallclock abc rtx_util 
+APP_SUBDIRS := wallclock abc rtx_util kern utest keyboard crt cci 
 
 .PHONY: clean all $(APP_SUBDIRS)
 
