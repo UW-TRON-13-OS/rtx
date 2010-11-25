@@ -112,7 +112,7 @@ int get_trace_buffers(MsgEnv* msg_env)
 uint64_t clock_get_system_time()
 {
     atomic(ON);
-    int ret_value = k_clock_get_system_time();
+    uint64_t ret_value = k_clock_get_system_time();
     atomic(OFF);
     return ret_value;
 }

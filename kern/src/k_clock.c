@@ -16,3 +16,4 @@ void k_set_system_time(uint64_t time)
 {
     clock = time;
 }
+
