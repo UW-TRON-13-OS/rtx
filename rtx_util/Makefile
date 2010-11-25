@@ -10,6 +10,6 @@ LOCAL_CFLAGS = -g
 LOCAL_LDFLAGS = -g
 
 REQ_LIBS = 
-APPDEPS = wallclock rtx_util
+APPDEPS = 
 
 include $(TOP_DIR)/make/rules.mk
