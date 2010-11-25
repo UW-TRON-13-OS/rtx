@@ -1,10 +1,9 @@
 #include "crt_i_process.h"
 //#include "k_globals.h"
-//#include "rtx.h"
-//#include "k_signal_handler.h"
-//#include "k_ipc.h"
-//#include "k_uart.h"
+#include "rtx.h"
+#include "k_primitives.h"
 #include "msg_env_queue.h"
+#include "dbug.h"
 
 void start_crt_i_process()
 {
