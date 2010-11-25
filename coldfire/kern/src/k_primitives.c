@@ -4,6 +4,30 @@
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
     pcb_t *dest_pcb;
+    if(msg_env == NULL)
+    {
+        return ERROR_NULL_ARG;
+    }
+
+    if(dest_pid < 0 || dest_pid >= k_get_num_processes())
+    {
+        return ERROR_ILLEGAL_ARG;
+    }
+
+    msg_env->send_pid = current_process->pid;
+    msg_env->dest_pid = dest_pid;
+
+    pcb_t *dest_pcb = &p_table[dest_pid];
+    msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env);
+    if (dest_pcb->status == P_BLOCKED_ON_RECEIVE)
+    {
+        dest_pcb->status = P_READY;
+        proc_pq_enqueue(ready_pq, dest_pcb );
+    }
+
+    _log_msg_event(&_send_trace_buf, msg_env);
+
+    return CODE_SUCCESS;
 }
 
 MsgEnv * k_receive_message()
