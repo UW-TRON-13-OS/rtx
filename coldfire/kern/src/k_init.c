@@ -13,7 +13,6 @@ SINT32 coldfire_vbr_init( VOID )
     /*
      * Move the VBR into real memory
      *
-     * DG: actually, it'll already be here.
      */
     asm( "move.l %a0, -(%a7)" );
     asm( "move.l #0x10000000, %a0 " );
@@ -26,11 +25,6 @@ SINT32 coldfire_vbr_init( VOID )
 void init_uart(void)
 {
     UINT32 mask;
-
-    /* Disable all interupts */
-    asm( "move.w #0x2700,%sr" );
-
-    coldfire_vbr_init();
 
     /*
      * Store the serial ISR at user vector #64
@@ -83,8 +77,24 @@ void init_uart(void)
     SIM_IMR = mask;
 }
 
+void init_kern_swi()
+{
+    // TRAP #0
+    asm( "move.l #kern_swi_entry, %d0" );
+    asm( "move.l %d0,0x10000080" );
+}
+
 int main (void)
 {
+    /* Disable all interupts */
+    asm( "move.w #0x2700,%sr" );
+
+    coldfire_vbr_init();
     init_uart();
+    init_kern_swi();
+
+    /* Enable all interupts */
+    asm( "move.w #0x2000,%sr" );
+
     return 0;
 }
