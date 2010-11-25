@@ -1,3 +1,6 @@
+#ifndef _KERN_PRIMITIVES_H_
+#define _KERN_PRIMITIVES_H_
+
 #include "rtx.h"
 
 /** 5.1 Interprocess Communication **/
@@ -23,3 +26,5 @@ int k_get_console_chars(MsgEnv *msg_env);
 
 /** 5.6 Interprocess Message Trace **/
 int k_get_trace_buffers(MsgEnv* msg_env);
+
+#endif
