@@ -30,7 +30,6 @@ void start_wallclock()
     {
         CCI_printf("request_delay failed with status %d\n",status);
     }
-    printf("HELLO FROM WALLCLOCK");
     
     while (1)
     {
@@ -39,14 +38,14 @@ void start_wallclock()
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
         {
-            printf("I'm here too!");
             status = request_delay( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
             {
                 CCI_printf("request_delay failed with status %d\n",status);
             }
             //86400 = 24hrs in secs
-            uint32_t clock_time = (clock_get_system_time()/10+offset)%86400; 
+            uint64_t clock_time = (clock_get_system_time()/10+offset)%86400;
+            printf("%d",offset);
             if (clock_display_en)
             {
                 CCI_printf( SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
