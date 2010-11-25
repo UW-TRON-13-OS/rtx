@@ -12,10 +12,13 @@
 #define EMPTY_CLOCK  "        "
 
 #define WAKEUP_CODE 123
-#define ONE_SECOND_DELAY 10
+#define ONE_SECOND_DELAY 9 
+#define SEC_IN_HR 86400
 
 uint32_t offset;
+uint64_t ref;
 char clock_display_en;
+
 MsgEnv *timeout_env, *send_env;
 msg_env_queue_t *msgQ;
 
@@ -25,6 +28,7 @@ void start_wallclock()
     //initialise
     msgQ = msg_env_queue_create();
     offset = 0; 
+    ref = 0;
     clock_display_en = 0; //clock not displayed by default
     timeout_env = request_msg_env();
     send_env = request_msg_env();
@@ -57,7 +61,7 @@ void start_wallclock()
                 RTX_printf(send_env, msgQ, "request_delay failed with status %d\n",status);
             }
             //86400 = 24hrs in secs
-            uint32_t clock_time = (uint32_t)(clock_get_system_time()/10+offset)%86400;
+            int32_t clock_time = (int32_t)((clock_get_system_time()-ref)/10+offset)%SEC_IN_HR;
             if (clock_display_en)
             {
                 RTX_printf(send_env, msgQ,  SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
@@ -79,7 +83,7 @@ int setWallClock (char* timeParam)
     char hr_s [3];
     char min_s [3];
     char sec_s [3];
-    int i, hr, min, sec;
+    int32_t i, hr, min, sec;
     for (i=0;i<2;i++)
     {
         hr_s[i] =timeParam[i];
@@ -95,7 +99,8 @@ int setWallClock (char* timeParam)
 
     if (hr>23 || min>59 || sec > 59)
         return ERROR_ILLEGAL_ARG;
-    offset = hr*3600 + min*60 + sec;
+    offset = (hr*3600 + min*60 + sec);
+    ref = clock_get_system_time(); 
     return CODE_SUCCESS;
 }
 
