@@ -1,8 +1,8 @@
 #include "wallclock.h"
 #include "rtx.h"
-#include "cci_util.h"
+#include "rtx_util.h"
+#include "msg_env_queue.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 #define SAVE_CURSOR "\033[s"
 #define RESTORE_CURSOR "\033[u"
@@ -16,25 +16,37 @@
 
 uint32_t offset;
 char clock_display_en;
-MsgEnv *timeout_env;
+MsgEnv *timeout_env, *send_env;
+msg_env_queue_t *msgQ;
 
 void start_wallclock()
 {
     uint32_t status;
     //initialise
+    msgQ = msg_env_queue_create();
     offset = 0; 
     clock_display_en = 0; //clock not displayed by default
     timeout_env = request_msg_env();
+    send_env = request_msg_env();
 
     status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env); 
     if (status != CODE_SUCCESS)
     {
-        CCI_printf("request_delay failed with status %d\n",status);
+        RTX_printf(send_env, msgQ, "request_delay failed with status %d\n",status);
     }
     
     while (1)
     {
-        MsgEnv* env = receive_message(); 
+        MsgEnv* env;
+        //First check for messages received but not processed by CCI_printf
+        if( msg_env_queue_is_empty(msgQ))
+        {
+            env = receive_message(); 
+        }
+        else
+        {
+            env = msg_env_queue_dequeue(msgQ);
+        }
 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
@@ -42,13 +54,13 @@ void start_wallclock()
             status = request_delay( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
             {
-                CCI_printf("request_delay failed with status %d\n",status);
+                RTX_printf(send_env, msgQ, "request_delay failed with status %d\n",status);
             }
             //86400 = 24hrs in secs
             uint32_t clock_time = (uint32_t)(clock_get_system_time()/10+offset)%86400;
             if (clock_display_en)
             {
-                CCI_printf( SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
+                RTX_printf(send_env, msgQ,  SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
                         clock_time/3600,(clock_time%3600)/60, clock_time%60);
             }
         }
@@ -96,7 +108,7 @@ void displayWallClock (int disp_b)
     }
     else
     {
-        CCI_printf( SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR);
+        RTX_printf(send_env, msgQ, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR);
         clock_display_en = 0;
     }
 }

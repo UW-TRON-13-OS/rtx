@@ -1,49 +1,47 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include "processes.h"
-#include <stdlib.h>
-
-//like CCI_printf, except for the CCI. and possibly broken.
-int CCI_printf (const char* format, ...);
+#include "rtx_util.h"
 
 //prints process statuses on console given the envelope message data
-int CCI_printProcessStatuses (char* raw_data)
+int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env,
+                              msg_env_queue_t* msgQ)
 {
     if (raw_data == NULL)
         return ERROR_NULL_ARG;
     int * data = (int *) raw_data;
     int num_processes = *data++;
     int i;
-    CCI_printf ("PID | STATUS                | PRIORITY\n");
+    RTX_printf(send_env, msgQ, "PID | STATUS                | PRIORITY\n");
     for (i=0;i<num_processes;i++)
     {
-        CCI_printf("  %d   ",*data++);
+        RTX_printf(send_env, msgQ, "  %d   ",*data++);
         switch(*data)
         {
             case P_READY:
-                CCI_printf("ready                  ");
+                RTX_printf(send_env, msgQ, "ready                  ");
                 break;
             case P_EXECUTING:
-                CCI_printf("executing              ");
+                RTX_printf(send_env, msgQ, "executing              ");
                 break;
             case P_BLOCKED_ON_ENV_REQUEST:
-                CCI_printf("blocked on env request ");
+                RTX_printf(send_env, msgQ, "blocked on env request ");
                 break;
             case P_BLOCKED_ON_RECEIVE:
-                CCI_printf("blocked on receive     ");
+                RTX_printf(send_env, msgQ, "blocked on receive     ");
                 break;
             default :
-                CCI_printf("                       ");
+                RTX_printf(send_env, msgQ, "                       ");
                 break;
         }
         data++;
-        CCI_printf(" %d\n",*data++);
+        RTX_printf(send_env, msgQ, " %d\n",*data++);
     }
     return CODE_SUCCESS;
 }
 
 //prints trace buffers on console given the envelope message data
-int CCI_printTraceBuffers (char* data)
+int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
 {
     if (data == NULL)
         return ERROR_NULL_ARG;
@@ -51,7 +49,7 @@ int CCI_printTraceBuffers (char* data)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    CCI_printf(    "MESSAGE TRACE BUFFERS\n\n"
+    RTX_printf(send_env, msgQ,     "MESSAGE TRACE BUFFERS\n\n"
                    " Send Trace                   || Receive Trace\n"
                    " Dest |Sender|Message|  Time  || Dest |Sender|Message|  Time\n"
                    " PID  |PID   |Type   |        || PID  |PID   |Type   |\n"
@@ -60,13 +58,13 @@ int CCI_printTraceBuffers (char* data)
     {
         if (send_dump[i].time_stamp != 0)
         {
-            CCI_printf("   %2u |   %2u |   %3d | %6lu ||",
+            RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6lu ||",
                        send_dump[i].dest_pid, send_dump[i].send_pid,
                        send_dump[i].msg_type, send_dump[i].time_stamp);
         }
         else if (recv_dump[i].time_stamp != 0)
         {
-            CCI_printf("      |      |       |       ||");
+            RTX_printf(send_env, msgQ, "      |      |       |       ||");
         }
         else
         {
@@ -75,17 +73,17 @@ int CCI_printTraceBuffers (char* data)
         
         if (recv_dump[i].time_stamp != 0)
         {
-            CCI_printf("   %2u |   %2u |   %3d | %6lu\n",send_dump[i].dest_pid,
+            RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6lu\n",send_dump[i].dest_pid,
                        recv_dump[i].send_pid, recv_dump[i].msg_type,
                        recv_dump[i].time_stamp);
         }
         else
         {
-            CCI_printf("      |      |       |       \n");
+            RTX_printf(send_env, msgQ, "      |      |       |       \n");
         }
     }        
     
-    CCI_printf("\n");
+    RTX_printf(send_env, msgQ, "\n");
 
     return CODE_SUCCESS;
 }
