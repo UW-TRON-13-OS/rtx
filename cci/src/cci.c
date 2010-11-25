@@ -8,9 +8,6 @@
 #include <stdio.h> 
 #include <stdarg.h>
 
-#define WAKEUP_CODE 123
-#define ONE_SECOND_DELAY 10
-
 msg_env_queue_t *messageQueue;
 MsgEnv *send_env, *receive_env, *status_env, *proc_a_env;
 
@@ -174,7 +171,7 @@ void start_cci()
                     }
                     else
                     {
-                        status = setWallClock (newTime)
+                        status = setWallClock (newTime);
                         if (status == ERROR_ILLEGAL_ARG)
                         {
                             CCI_printf("c\n"

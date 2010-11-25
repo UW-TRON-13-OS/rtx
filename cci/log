@@ -1,0 +1,467 @@
+    Make cci.c -> cci.o
+In file included from src/cci.c:7:
+../inc/msg_env_queue.h: In function ‘clock_get_system_time’:
+../inc/msg_env_queue.h:6: error: storage class specified for parameter ‘msg_env_queue_t’
+../inc/msg_env_queue.h:8: error: expected declaration specifiers before ‘msg_env_queue_t’
+../inc/msg_env_queue.h:9: error: expected ‘)’ before ‘*’ token
+../inc/msg_env_queue.h:10: error: expected ‘)’ before ‘*’ token
+../inc/msg_env_queue.h:11: error: expected ‘)’ before ‘*’ token
+../inc/msg_env_queue.h:12: error: expected ‘)’ before ‘*’ token
+../inc/msg_env_queue.h:13: error: expected ‘)’ before ‘*’ token
+In file included from src/cci.c:8:
+/usr/include/string.h:40: error: storage class specified for parameter ‘memcpy’
+/usr/include/string.h:44: error: storage class specified for parameter ‘memmove’
+/usr/include/string.h:53: error: storage class specified for parameter ‘memccpy’
+/usr/include/string.h:59: error: storage class specified for parameter ‘memset’
+/usr/include/string.h:63: error: storage class specified for parameter ‘memcmp’
+/usr/include/string.h:67: error: storage class specified for parameter ‘memchr’
+/usr/include/string.h:85: error: storage class specified for parameter ‘strcpy’
+/usr/include/string.h:89: error: storage class specified for parameter ‘strncpy’
+/usr/include/string.h:93: error: storage class specified for parameter ‘strcat’
+/usr/include/string.h:96: error: storage class specified for parameter ‘strncat’
+/usr/include/string.h:100: error: storage class specified for parameter ‘strcmp’
+/usr/include/string.h:103: error: storage class specified for parameter ‘strncmp’
+/usr/include/string.h:107: error: storage class specified for parameter ‘strcoll’
+/usr/include/string.h:111: error: storage class specified for parameter ‘strxfrm’
+/usr/include/string.h:131: error: storage class specified for parameter ‘strdup’
+/usr/include/string.h:168: error: storage class specified for parameter ‘strchr’
+/usr/include/string.h:171: error: storage class specified for parameter ‘strrchr’
+/usr/include/string.h:185: error: storage class specified for parameter ‘strcspn’
+/usr/include/string.h:189: error: storage class specified for parameter ‘strspn’
+/usr/include/string.h:192: error: storage class specified for parameter ‘strpbrk’
+/usr/include/string.h:195: error: storage class specified for parameter ‘strstr’
+/usr/include/string.h:200: error: storage class specified for parameter ‘strtok’
+/usr/include/string.h:208: error: storage class specified for parameter ‘__strtok_r’
+/usr/include/string.h:212: error: storage class specified for parameter ‘strtok_r’
+/usr/include/string.h:243: error: storage class specified for parameter ‘strlen’
+/usr/include/string.h:256: error: storage class specified for parameter ‘strerror’
+/usr/include/string.h:270: error: storage class specified for parameter ‘strerror_r’
+/usr/include/string.h:288: error: storage class specified for parameter ‘__bzero’
+/usr/include/string.h:293: error: storage class specified for parameter ‘bcopy’
+/usr/include/string.h:296: error: storage class specified for parameter ‘bzero’
+/usr/include/string.h:300: error: storage class specified for parameter ‘bcmp’
+/usr/include/string.h:304: error: storage class specified for parameter ‘index’
+/usr/include/string.h:308: error: storage class specified for parameter ‘rindex’
+/usr/include/string.h:312: error: storage class specified for parameter ‘ffs’
+/usr/include/string.h:326: error: storage class specified for parameter ‘strcasecmp’
+/usr/include/string.h:330: error: storage class specified for parameter ‘strncasecmp’
+/usr/include/string.h:350: error: storage class specified for parameter ‘strsep’
+In file included from /usr/include/stdio.h:37,
+                 from src/cci.c:9:
+/usr/include/bits/types.h:34: error: storage class specified for parameter ‘__u_char’
+/usr/include/bits/types.h:35: error: storage class specified for parameter ‘__u_short’
+/usr/include/bits/types.h:36: error: storage class specified for parameter ‘__u_int’
+/usr/include/bits/types.h:37: error: storage class specified for parameter ‘__u_long’
+/usr/include/bits/types.h:40: error: storage class specified for parameter ‘__int8_t’
+/usr/include/bits/types.h:41: error: storage class specified for parameter ‘__uint8_t’
+/usr/include/bits/types.h:42: error: storage class specified for parameter ‘__int16_t’
+/usr/include/bits/types.h:43: error: storage class specified for parameter ‘__uint16_t’
+/usr/include/bits/types.h:44: error: storage class specified for parameter ‘__int32_t’
+/usr/include/bits/types.h:45: error: storage class specified for parameter ‘__uint32_t’
+/usr/include/bits/types.h:47: error: storage class specified for parameter ‘__int64_t’
+/usr/include/bits/types.h:48: error: storage class specified for parameter ‘__uint64_t’
+/usr/include/bits/types.h:56: error: storage class specified for parameter ‘__quad_t’
+/usr/include/bits/types.h:57: error: storage class specified for parameter ‘__u_quad_t’
+In file included from /usr/include/stdio.h:37,
+                 from src/cci.c:9:
+/usr/include/bits/types.h:137: error: storage class specified for parameter ‘__dev_t’
+/usr/include/bits/types.h:138: error: storage class specified for parameter ‘__uid_t’
+/usr/include/bits/types.h:139: error: storage class specified for parameter ‘__gid_t’
+/usr/include/bits/types.h:140: error: storage class specified for parameter ‘__ino_t’
+/usr/include/bits/types.h:141: error: storage class specified for parameter ‘__ino64_t’
+/usr/include/bits/types.h:142: error: storage class specified for parameter ‘__mode_t’
+/usr/include/bits/types.h:143: error: storage class specified for parameter ‘__nlink_t’
+/usr/include/bits/types.h:144: error: storage class specified for parameter ‘__off_t’
+/usr/include/bits/types.h:145: error: storage class specified for parameter ‘__off64_t’
+/usr/include/bits/types.h:146: error: storage class specified for parameter ‘__pid_t’
+/usr/include/bits/types.h:147: error: storage class specified for parameter ‘__fsid_t’
+/usr/include/bits/types.h:148: error: storage class specified for parameter ‘__clock_t’
+/usr/include/bits/types.h:149: error: storage class specified for parameter ‘__rlim_t’
+/usr/include/bits/types.h:150: error: storage class specified for parameter ‘__rlim64_t’
+/usr/include/bits/types.h:151: error: storage class specified for parameter ‘__id_t’
+/usr/include/bits/types.h:152: error: storage class specified for parameter ‘__time_t’
+/usr/include/bits/types.h:153: error: storage class specified for parameter ‘__useconds_t’
+/usr/include/bits/types.h:154: error: storage class specified for parameter ‘__suseconds_t’
+/usr/include/bits/types.h:156: error: storage class specified for parameter ‘__daddr_t’
+/usr/include/bits/types.h:157: error: storage class specified for parameter ‘__swblk_t’
+/usr/include/bits/types.h:158: error: storage class specified for parameter ‘__key_t’
+/usr/include/bits/types.h:161: error: storage class specified for parameter ‘__clockid_t’
+/usr/include/bits/types.h:164: error: storage class specified for parameter ‘__timer_t’
+/usr/include/bits/types.h:167: error: storage class specified for parameter ‘__blksize_t’
+/usr/include/bits/types.h:172: error: storage class specified for parameter ‘__blkcnt_t’
+/usr/include/bits/types.h:173: error: storage class specified for parameter ‘__blkcnt64_t’
+/usr/include/bits/types.h:176: error: storage class specified for parameter ‘__fsblkcnt_t’
+/usr/include/bits/types.h:177: error: storage class specified for parameter ‘__fsblkcnt64_t’
+/usr/include/bits/types.h:180: error: storage class specified for parameter ‘__fsfilcnt_t’
+/usr/include/bits/types.h:181: error: storage class specified for parameter ‘__fsfilcnt64_t’
+/usr/include/bits/types.h:183: error: storage class specified for parameter ‘__ssize_t’
+/usr/include/bits/types.h:187: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__loff_t’
+/usr/include/bits/types.h:188: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+/usr/include/bits/types.h:189: error: storage class specified for parameter ‘__caddr_t’
+/usr/include/bits/types.h:192: error: storage class specified for parameter ‘__intptr_t’
+/usr/include/bits/types.h:195: error: storage class specified for parameter ‘__socklen_t’
+In file included from src/cci.c:9:
+/usr/include/stdio.h:46: error: storage class specified for parameter ‘FILE’
+/usr/include/stdio.h:62: error: storage class specified for parameter ‘__FILE’
+In file included from /usr/include/_G_config.h:15,
+                 from /usr/include/libio.h:33,
+                 from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h:355: error: storage class specified for parameter ‘wint_t’
+In file included from /usr/include/_G_config.h:25,
+                 from /usr/include/libio.h:33,
+                 from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/include/wchar.h:81: error: expected specifier-qualifier-list before ‘wint_t’
+/usr/include/wchar.h:84: error: storage class specified for parameter ‘__mbstate_t’
+In file included from /usr/include/libio.h:33,
+                 from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/include/_G_config.h:28: error: expected specifier-qualifier-list before ‘__off_t’
+/usr/include/_G_config.h:30: error: storage class specified for parameter ‘_G_fpos_t’
+/usr/include/_G_config.h:33: error: expected specifier-qualifier-list before ‘__off64_t’
+/usr/include/_G_config.h:35: error: storage class specified for parameter ‘_G_fpos64_t’
+In file included from /usr/include/_G_config.h:45,
+                 from /usr/include/libio.h:33,
+                 from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/include/gconv.h:72: error: storage class specified for parameter ‘__gconv_fct’
+/usr/include/gconv.h:75: error: expected declaration specifiers or ‘...’ before ‘*’ token
+/usr/include/gconv.h:75: error: storage class specified for parameter ‘wint_t’
+/usr/include/gconv.h:75: error: ‘wint_t’ declared as function returning a function
+/usr/include/gconv.h:75: error: conflicting types for ‘wint_t’
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h:355: error: previous definition of ‘wint_t’ was here
+/usr/include/gconv.h:78: error: storage class specified for parameter ‘__gconv_init_fct’
+/usr/include/gconv.h:79: error: storage class specified for parameter ‘__gconv_end_fct’
+/usr/include/gconv.h:88: error: storage class specified for parameter ‘__gconv_trans_fct’
+/usr/include/gconv.h:93: error: storage class specified for parameter ‘__gconv_trans_context_fct’
+/usr/include/gconv.h:97: error: storage class specified for parameter ‘__gconv_trans_query_fct’
+/usr/include/gconv.h:100: error: storage class specified for parameter ‘__gconv_trans_init_fct’
+/usr/include/gconv.h:101: error: storage class specified for parameter ‘__gconv_trans_end_fct’
+/usr/include/gconv.h:106: error: expected specifier-qualifier-list before ‘__gconv_trans_fct’
+/usr/include/gconv.h:125: error: expected specifier-qualifier-list before ‘__gconv_fct’
+/usr/include/gconv.h:162: error: expected specifier-qualifier-list before ‘__mbstate_t’
+/usr/include/gconv.h:177: error: storage class specified for parameter ‘__gconv_t’
+In file included from /usr/include/libio.h:33,
+                 from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/include/_G_config.h:53: error: storage class specified for parameter ‘_G_iconv_t’
+/usr/include/_G_config.h:55: error: storage class specified for parameter ‘_G_int16_t’
+/usr/include/_G_config.h:56: error: storage class specified for parameter ‘_G_int32_t’
+/usr/include/_G_config.h:57: error: storage class specified for parameter ‘_G_uint16_t’
+/usr/include/_G_config.h:58: error: storage class specified for parameter ‘_G_uint32_t’
+In file included from /usr/include/libio.h:54,
+                 from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h:43: error: storage class specified for parameter ‘__gnuc_va_list’
+In file included from /usr/include/stdio.h:73,
+                 from src/cci.c:9:
+/usr/include/libio.h:177: error: storage class specified for parameter ‘_IO_lock_t’
+/usr/include/libio.h:297: error: expected specifier-qualifier-list before ‘__off_t’
+/usr/include/libio.h:338: error: storage class specified for parameter ‘_IO_FILE’
+/usr/include/libio.h:343: error: storage class specified for parameter ‘_IO_2_1_stdin_’
+/usr/include/libio.h:344: error: storage class specified for parameter ‘_IO_2_1_stdout_’
+/usr/include/libio.h:345: error: storage class specified for parameter ‘_IO_2_1_stderr_’
+/usr/include/libio.h:361: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__io_read_fn’
+/usr/include/libio.h:369: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__io_write_fn’
+/usr/include/libio.h:378: error: expected declaration specifiers or ‘...’ before ‘__off64_t’
+/usr/include/libio.h:378: error: storage class specified for parameter ‘__io_seek_fn’
+/usr/include/libio.h:381: error: storage class specified for parameter ‘__io_close_fn’
+/usr/include/libio.h:413: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:414: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:415: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:416: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__wunderflow’
+/usr/include/libio.h:417: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__wuflow’
+/usr/include/libio.h:418: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__woverflow’
+/usr/include/libio.h:451: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:452: error: expected declaration specifiers or ‘...’ before ‘_IO_FILE’
+/usr/include/libio.h:452: error: storage class specified for parameter ‘_IO_putc’
+/usr/include/libio.h:453: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:454: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:456: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:462: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:463: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:464: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:481: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:483: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:485: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_IO_padn’
+/usr/include/libio.h:486: error: expected ‘)’ before ‘*’ token
+/usr/include/libio.h:488: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_IO_seekoff’
+/usr/include/libio.h:489: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_IO_seekpos’
+/usr/include/libio.h:491: error: expected ‘)’ before ‘*’ token
+In file included from src/cci.c:9:
+/usr/include/stdio.h:88: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘fpos_t’
+In file included from src/cci.c:9:
+/usr/include/stdio.h:142: error: storage class specified for parameter ‘stdin’
+/usr/include/stdio.h:143: error: storage class specified for parameter ‘stdout’
+/usr/include/stdio.h:144: error: storage class specified for parameter ‘stderr’
+/usr/include/stdio.h:154: error: storage class specified for parameter ‘remove’
+/usr/include/stdio.h:156: error: storage class specified for parameter ‘rename’
+/usr/include/stdio.h:171: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+/usr/include/stdio.h:185: error: storage class specified for parameter ‘tmpnam’
+/usr/include/stdio.h:191: error: storage class specified for parameter ‘tmpnam_r’
+/usr/include/stdio.h:204: error: storage class specified for parameter ‘tempnam’
+/usr/include/stdio.h:213: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:218: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:228: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:248: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+/usr/include/stdio.h:254: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+/usr/include/stdio.h:280: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+/usr/include/stdio.h:303: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:307: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:314: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:318: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:327: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:333: error: storage class specified for parameter ‘printf’
+/usr/include/stdio.h:336: error: storage class specified for parameter ‘sprintf’
+/usr/include/stdio.h:342: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:348: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+/usr/include/stdio.h:348: error: storage class specified for parameter ‘vprintf’
+/usr/include/stdio.h:351: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+/usr/include/stdio.h:351: error: storage class specified for parameter ‘vsprintf’
+/usr/include/stdio.h:359: error: storage class specified for parameter ‘snprintf’
+/usr/include/stdio.h:362: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+/usr/include/stdio.h:363: error: storage class specified for parameter ‘vsnprintf’
+/usr/include/stdio.h:399: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:405: error: storage class specified for parameter ‘scanf’
+/usr/include/stdio.h:408: error: storage class specified for parameter ‘sscanf’
+/usr/include/stdio.h:441: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:442: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:448: error: storage class specified for parameter ‘getchar’
+/usr/include/stdio.h:460: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:461: error: storage class specified for parameter ‘getchar_unlocked’
+/usr/include/stdio.h:471: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:483: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:483: error: storage class specified for parameter ‘fputc’
+/usr/include/stdio.h:484: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:484: error: storage class specified for parameter ‘putc’
+/usr/include/stdio.h:490: error: storage class specified for parameter ‘putchar’
+/usr/include/stdio.h:504: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:504: error: storage class specified for parameter ‘fputc_unlocked’
+/usr/include/stdio.h:512: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:512: error: storage class specified for parameter ‘putc_unlocked’
+/usr/include/stdio.h:513: error: storage class specified for parameter ‘putchar_unlocked’
+/usr/include/stdio.h:520: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:523: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:523: error: storage class specified for parameter ‘putw’
+/usr/include/stdio.h:532: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:533: error: storage class specified for parameter ‘fgets’
+/usr/include/stdio.h:540: error: storage class specified for parameter ‘gets’
+/usr/include/stdio.h:590: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:590: error: storage class specified for parameter ‘fputs’
+/usr/include/stdio.h:596: error: storage class specified for parameter ‘puts’
+/usr/include/stdio.h:603: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:603: error: storage class specified for parameter ‘ungetc’
+/usr/include/stdio.h:611: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:611: error: storage class specified for parameter ‘fread’
+/usr/include/stdio.h:617: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:617: error: storage class specified for parameter ‘fwrite’
+/usr/include/stdio.h:639: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:639: error: storage class specified for parameter ‘fread_unlocked’
+/usr/include/stdio.h:641: error: expected declaration specifiers or ‘...’ before ‘FILE’
+/usr/include/stdio.h:641: error: storage class specified for parameter ‘fwrite_unlocked’
+/usr/include/stdio.h:650: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:655: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:660: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:674: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:679: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘ftello’
+/usr/include/stdio.h:699: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:704: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:727: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:729: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:731: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:736: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:737: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:738: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:747: error: storage class specified for parameter ‘perror’
+In file included from /usr/include/stdio.h:755,
+                 from src/cci.c:9:
+/usr/include/bits/sys_errlist.h:27: error: storage class specified for parameter ‘sys_nerr’
+/usr/include/bits/sys_errlist.h:28: error: storage class specified for parameter ‘sys_errlist’
+In file included from src/cci.c:9:
+/usr/include/stdio.h:759: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:764: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:774: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+/usr/include/stdio.h:780: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:786: error: storage class specified for parameter ‘ctermid’
+/usr/include/stdio.h:814: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:818: error: expected ‘)’ before ‘*’ token
+/usr/include/stdio.h:821: error: expected ‘)’ before ‘*’ token
+In file included from src/cci.c:10:
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h:105: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘va_list’
+src/cci.c:14: error: expected declaration specifiers before ‘msg_env_queue_t’
+src/cci.c:19: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+src/cci.c:52: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+src/cci.c:15: error: declaration for parameter ‘proc_a_env’ but no such parameter
+src/cci.c:15: error: declaration for parameter ‘status_env’ but no such parameter
+src/cci.c:15: error: declaration for parameter ‘receive_env’ but no such parameter
+src/cci.c:15: error: declaration for parameter ‘send_env’ but no such parameter
+/usr/include/stdio.h:786: error: declaration for parameter ‘ctermid’ but no such parameter
+/usr/include/bits/sys_errlist.h:28: error: declaration for parameter ‘sys_errlist’ but no such parameter
+/usr/include/bits/sys_errlist.h:27: error: declaration for parameter ‘sys_nerr’ but no such parameter
+/usr/include/stdio.h:747: error: declaration for parameter ‘perror’ but no such parameter
+/usr/include/stdio.h:641: error: declaration for parameter ‘fwrite_unlocked’ but no such parameter
+/usr/include/stdio.h:639: error: declaration for parameter ‘fread_unlocked’ but no such parameter
+/usr/include/stdio.h:617: error: declaration for parameter ‘fwrite’ but no such parameter
+/usr/include/stdio.h:611: error: declaration for parameter ‘fread’ but no such parameter
+/usr/include/stdio.h:603: error: declaration for parameter ‘ungetc’ but no such parameter
+/usr/include/stdio.h:596: error: declaration for parameter ‘puts’ but no such parameter
+/usr/include/stdio.h:590: error: declaration for parameter ‘fputs’ but no such parameter
+/usr/include/stdio.h:540: error: declaration for parameter ‘gets’ but no such parameter
+/usr/include/stdio.h:533: error: declaration for parameter ‘fgets’ but no such parameter
+/usr/include/stdio.h:523: error: declaration for parameter ‘putw’ but no such parameter
+/usr/include/stdio.h:513: error: declaration for parameter ‘putchar_unlocked’ but no such parameter
+/usr/include/stdio.h:512: error: declaration for parameter ‘putc_unlocked’ but no such parameter
+/usr/include/stdio.h:504: error: declaration for parameter ‘fputc_unlocked’ but no such parameter
+/usr/include/stdio.h:490: error: declaration for parameter ‘putchar’ but no such parameter
+/usr/include/stdio.h:484: error: declaration for parameter ‘putc’ but no such parameter
+/usr/include/stdio.h:483: error: declaration for parameter ‘fputc’ but no such parameter
+/usr/include/stdio.h:461: error: declaration for parameter ‘getchar_unlocked’ but no such parameter
+/usr/include/stdio.h:448: error: declaration for parameter ‘getchar’ but no such parameter
+/usr/include/stdio.h:408: error: declaration for parameter ‘sscanf’ but no such parameter
+/usr/include/stdio.h:405: error: declaration for parameter ‘scanf’ but no such parameter
+/usr/include/stdio.h:363: error: declaration for parameter ‘vsnprintf’ but no such parameter
+/usr/include/stdio.h:359: error: declaration for parameter ‘snprintf’ but no such parameter
+/usr/include/stdio.h:351: error: declaration for parameter ‘vsprintf’ but no such parameter
+/usr/include/stdio.h:348: error: declaration for parameter ‘vprintf’ but no such parameter
+/usr/include/stdio.h:336: error: declaration for parameter ‘sprintf’ but no such parameter
+/usr/include/stdio.h:333: error: declaration for parameter ‘printf’ but no such parameter
+/usr/include/stdio.h:204: error: declaration for parameter ‘tempnam’ but no such parameter
+/usr/include/stdio.h:191: error: declaration for parameter ‘tmpnam_r’ but no such parameter
+/usr/include/stdio.h:185: error: declaration for parameter ‘tmpnam’ but no such parameter
+/usr/include/stdio.h:156: error: declaration for parameter ‘rename’ but no such parameter
+/usr/include/stdio.h:154: error: declaration for parameter ‘remove’ but no such parameter
+/usr/include/stdio.h:144: error: declaration for parameter ‘stderr’ but no such parameter
+/usr/include/stdio.h:143: error: declaration for parameter ‘stdout’ but no such parameter
+/usr/include/stdio.h:142: error: declaration for parameter ‘stdin’ but no such parameter
+/usr/include/libio.h:452: error: declaration for parameter ‘_IO_putc’ but no such parameter
+/usr/include/libio.h:381: error: declaration for parameter ‘__io_close_fn’ but no such parameter
+/usr/include/libio.h:378: error: declaration for parameter ‘__io_seek_fn’ but no such parameter
+/usr/include/libio.h:345: error: parameter ‘_IO_2_1_stderr_’ has incomplete type
+/usr/include/libio.h:345: error: declaration for parameter ‘_IO_2_1_stderr_’ but no such parameter
+/usr/include/libio.h:344: error: parameter ‘_IO_2_1_stdout_’ has incomplete type
+/usr/include/libio.h:344: error: declaration for parameter ‘_IO_2_1_stdout_’ but no such parameter
+/usr/include/libio.h:343: error: parameter ‘_IO_2_1_stdin_’ has incomplete type
+/usr/include/libio.h:343: error: declaration for parameter ‘_IO_2_1_stdin_’ but no such parameter
+/usr/include/libio.h:338: error: declaration for parameter ‘_IO_FILE’ but no such parameter
+/usr/include/libio.h:177: error: parameter ‘_IO_lock_t’ has incomplete type
+/usr/include/libio.h:177: error: declaration for parameter ‘_IO_lock_t’ but no such parameter
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h:43: error: declaration for parameter ‘__gnuc_va_list’ but no such parameter
+/usr/include/_G_config.h:58: error: declaration for parameter ‘_G_uint32_t’ but no such parameter
+/usr/include/_G_config.h:57: error: declaration for parameter ‘_G_uint16_t’ but no such parameter
+/usr/include/_G_config.h:56: error: declaration for parameter ‘_G_int32_t’ but no such parameter
+/usr/include/_G_config.h:55: error: declaration for parameter ‘_G_int16_t’ but no such parameter
+/usr/include/_G_config.h:53: error: declaration for parameter ‘_G_iconv_t’ but no such parameter
+/usr/include/gconv.h:177: error: declaration for parameter ‘__gconv_t’ but no such parameter
+/usr/include/gconv.h:101: error: declaration for parameter ‘__gconv_trans_end_fct’ but no such parameter
+/usr/include/gconv.h:100: error: declaration for parameter ‘__gconv_trans_init_fct’ but no such parameter
+/usr/include/gconv.h:97: error: declaration for parameter ‘__gconv_trans_query_fct’ but no such parameter
+/usr/include/gconv.h:93: error: declaration for parameter ‘__gconv_trans_context_fct’ but no such parameter
+/usr/include/gconv.h:88: error: declaration for parameter ‘__gconv_trans_fct’ but no such parameter
+/usr/include/gconv.h:79: error: declaration for parameter ‘__gconv_end_fct’ but no such parameter
+/usr/include/gconv.h:78: error: declaration for parameter ‘__gconv_init_fct’ but no such parameter
+/usr/include/gconv.h:75: error: declaration for parameter ‘wint_t’ but no such parameter
+/usr/include/gconv.h:72: error: declaration for parameter ‘__gconv_fct’ but no such parameter
+/usr/include/_G_config.h:35: error: declaration for parameter ‘_G_fpos64_t’ but no such parameter
+/usr/include/_G_config.h:30: error: declaration for parameter ‘_G_fpos_t’ but no such parameter
+/usr/include/wchar.h:84: error: declaration for parameter ‘__mbstate_t’ but no such parameter
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h:355: error: declaration for parameter ‘wint_t’ but no such parameter
+/usr/include/stdio.h:62: error: declaration for parameter ‘__FILE’ but no such parameter
+/usr/include/stdio.h:46: error: declaration for parameter ‘FILE’ but no such parameter
+/usr/include/bits/types.h:195: error: declaration for parameter ‘__socklen_t’ but no such parameter
+/usr/include/bits/types.h:192: error: declaration for parameter ‘__intptr_t’ but no such parameter
+/usr/include/bits/types.h:189: error: declaration for parameter ‘__caddr_t’ but no such parameter
+/usr/include/bits/types.h:183: error: declaration for parameter ‘__ssize_t’ but no such parameter
+/usr/include/bits/types.h:181: error: declaration for parameter ‘__fsfilcnt64_t’ but no such parameter
+/usr/include/bits/types.h:180: error: declaration for parameter ‘__fsfilcnt_t’ but no such parameter
+/usr/include/bits/types.h:177: error: declaration for parameter ‘__fsblkcnt64_t’ but no such parameter
+/usr/include/bits/types.h:176: error: declaration for parameter ‘__fsblkcnt_t’ but no such parameter
+/usr/include/bits/types.h:173: error: declaration for parameter ‘__blkcnt64_t’ but no such parameter
+/usr/include/bits/types.h:172: error: declaration for parameter ‘__blkcnt_t’ but no such parameter
+/usr/include/bits/types.h:167: error: declaration for parameter ‘__blksize_t’ but no such parameter
+/usr/include/bits/types.h:164: error: declaration for parameter ‘__timer_t’ but no such parameter
+/usr/include/bits/types.h:161: error: declaration for parameter ‘__clockid_t’ but no such parameter
+/usr/include/bits/types.h:158: error: declaration for parameter ‘__key_t’ but no such parameter
+/usr/include/bits/types.h:157: error: declaration for parameter ‘__swblk_t’ but no such parameter
+/usr/include/bits/types.h:156: error: declaration for parameter ‘__daddr_t’ but no such parameter
+/usr/include/bits/types.h:154: error: declaration for parameter ‘__suseconds_t’ but no such parameter
+/usr/include/bits/types.h:153: error: declaration for parameter ‘__useconds_t’ but no such parameter
+/usr/include/bits/types.h:152: error: declaration for parameter ‘__time_t’ but no such parameter
+/usr/include/bits/types.h:151: error: declaration for parameter ‘__id_t’ but no such parameter
+/usr/include/bits/types.h:150: error: declaration for parameter ‘__rlim64_t’ but no such parameter
+/usr/include/bits/types.h:149: error: declaration for parameter ‘__rlim_t’ but no such parameter
+/usr/include/bits/types.h:148: error: declaration for parameter ‘__clock_t’ but no such parameter
+/usr/include/bits/types.h:147: error: declaration for parameter ‘__fsid_t’ but no such parameter
+/usr/include/bits/types.h:146: error: declaration for parameter ‘__pid_t’ but no such parameter
+/usr/include/bits/types.h:145: error: declaration for parameter ‘__off64_t’ but no such parameter
+/usr/include/bits/types.h:144: error: declaration for parameter ‘__off_t’ but no such parameter
+/usr/include/bits/types.h:143: error: declaration for parameter ‘__nlink_t’ but no such parameter
+/usr/include/bits/types.h:142: error: declaration for parameter ‘__mode_t’ but no such parameter
+/usr/include/bits/types.h:141: error: declaration for parameter ‘__ino64_t’ but no such parameter
+/usr/include/bits/types.h:140: error: declaration for parameter ‘__ino_t’ but no such parameter
+/usr/include/bits/types.h:139: error: declaration for parameter ‘__gid_t’ but no such parameter
+/usr/include/bits/types.h:138: error: declaration for parameter ‘__uid_t’ but no such parameter
+/usr/include/bits/types.h:137: error: declaration for parameter ‘__dev_t’ but no such parameter
+/usr/include/bits/types.h:57: error: declaration for parameter ‘__u_quad_t’ but no such parameter
+/usr/include/bits/types.h:56: error: declaration for parameter ‘__quad_t’ but no such parameter
+/usr/include/bits/types.h:48: error: declaration for parameter ‘__uint64_t’ but no such parameter
+/usr/include/bits/types.h:47: error: declaration for parameter ‘__int64_t’ but no such parameter
+/usr/include/bits/types.h:45: error: declaration for parameter ‘__uint32_t’ but no such parameter
+/usr/include/bits/types.h:44: error: declaration for parameter ‘__int32_t’ but no such parameter
+/usr/include/bits/types.h:43: error: declaration for parameter ‘__uint16_t’ but no such parameter
+/usr/include/bits/types.h:42: error: declaration for parameter ‘__int16_t’ but no such parameter
+/usr/include/bits/types.h:41: error: declaration for parameter ‘__uint8_t’ but no such parameter
+/usr/include/bits/types.h:40: error: declaration for parameter ‘__int8_t’ but no such parameter
+/usr/include/bits/types.h:37: error: declaration for parameter ‘__u_long’ but no such parameter
+/usr/include/bits/types.h:36: error: declaration for parameter ‘__u_int’ but no such parameter
+/usr/include/bits/types.h:35: error: declaration for parameter ‘__u_short’ but no such parameter
+/usr/include/bits/types.h:34: error: declaration for parameter ‘__u_char’ but no such parameter
+/usr/include/string.h:350: error: declaration for parameter ‘strsep’ but no such parameter
+/usr/include/string.h:330: error: declaration for parameter ‘strncasecmp’ but no such parameter
+/usr/include/string.h:326: error: declaration for parameter ‘strcasecmp’ but no such parameter
+/usr/include/string.h:312: error: declaration for parameter ‘ffs’ but no such parameter
+/usr/include/string.h:308: error: declaration for parameter ‘rindex’ but no such parameter
+/usr/include/string.h:304: error: declaration for parameter ‘index’ but no such parameter
+/usr/include/string.h:300: error: declaration for parameter ‘bcmp’ but no such parameter
+/usr/include/string.h:296: error: declaration for parameter ‘bzero’ but no such parameter
+/usr/include/string.h:293: error: declaration for parameter ‘bcopy’ but no such parameter
+/usr/include/string.h:288: error: declaration for parameter ‘__bzero’ but no such parameter
+/usr/include/string.h:270: error: declaration for parameter ‘strerror_r’ but no such parameter
+/usr/include/string.h:256: error: declaration for parameter ‘strerror’ but no such parameter
+/usr/include/string.h:243: error: declaration for parameter ‘strlen’ but no such parameter
+/usr/include/string.h:212: error: declaration for parameter ‘strtok_r’ but no such parameter
+/usr/include/string.h:208: error: declaration for parameter ‘__strtok_r’ but no such parameter
+/usr/include/string.h:200: error: declaration for parameter ‘strtok’ but no such parameter
+/usr/include/string.h:195: error: declaration for parameter ‘strstr’ but no such parameter
+/usr/include/string.h:192: error: declaration for parameter ‘strpbrk’ but no such parameter
+/usr/include/string.h:189: error: declaration for parameter ‘strspn’ but no such parameter
+/usr/include/string.h:185: error: declaration for parameter ‘strcspn’ but no such parameter
+/usr/include/string.h:171: error: declaration for parameter ‘strrchr’ but no such parameter
+/usr/include/string.h:168: error: declaration for parameter ‘strchr’ but no such parameter
+/usr/include/string.h:131: error: declaration for parameter ‘strdup’ but no such parameter
+/usr/include/string.h:111: error: declaration for parameter ‘strxfrm’ but no such parameter
+/usr/include/string.h:107: error: declaration for parameter ‘strcoll’ but no such parameter
+/usr/include/string.h:103: error: declaration for parameter ‘strncmp’ but no such parameter
+/usr/include/string.h:100: error: declaration for parameter ‘strcmp’ but no such parameter
+/usr/include/string.h:96: error: declaration for parameter ‘strncat’ but no such parameter
+/usr/include/string.h:93: error: declaration for parameter ‘strcat’ but no such parameter
+/usr/include/string.h:89: error: declaration for parameter ‘strncpy’ but no such parameter
+/usr/include/string.h:85: error: declaration for parameter ‘strcpy’ but no such parameter
+/usr/include/string.h:67: error: declaration for parameter ‘memchr’ but no such parameter
+/usr/include/string.h:63: error: declaration for parameter ‘memcmp’ but no such parameter
+/usr/include/string.h:59: error: declaration for parameter ‘memset’ but no such parameter
+/usr/include/string.h:53: error: declaration for parameter ‘memccpy’ but no such parameter
+/usr/include/string.h:44: error: declaration for parameter ‘memmove’ but no such parameter
+/usr/include/string.h:40: error: declaration for parameter ‘memcpy’ but no such parameter
+../inc/msg_env_queue.h:6: error: parameter ‘msg_env_queue_t’ has incomplete type
+../inc/msg_env_queue.h:6: error: declaration for parameter ‘msg_env_queue_t’ but no such parameter
+../inc/abc.h:6: error: declaration for parameter ‘process_C’ but no such parameter
+../inc/abc.h:5: error: declaration for parameter ‘process_B’ but no such parameter
+../inc/abc.h:4: error: declaration for parameter ‘process_A’ but no such parameter
+inc/wallclock.h:8: error: declaration for parameter ‘displayWallClock’ but no such parameter
+inc/wallclock.h:5: error: declaration for parameter ‘setWallClock’ but no such parameter
+inc/cci_util.h:13: error: declaration for parameter ‘CCI_printTraceBuffers’ but no such parameter
+inc/cci_util.h:10: error: declaration for parameter ‘CCI_printProcessStatuses’ but no such parameter
+inc/cci_util.h:7: error: declaration for parameter ‘CCI_printf’ but no such parameter
+src/cci.c:204: error: expected ‘{’ at end of input
+make: *** [bin/cci.o] Error 1

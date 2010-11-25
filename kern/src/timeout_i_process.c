@@ -22,8 +22,11 @@ void start_timeout_i_process()
 
 		msg_env = check_timeout_queue(msg_env);
 		
-		// Send the envelope back
-		k_send_message(msg_env->send_pid, msg_env);
+        if (msg_env != NULL)
+        {
+            // Send the envelope back
+            k_send_message(msg_env->send_pid, msg_env);
+        }
 		
 		//exit i process
         k_i_process_exit();
