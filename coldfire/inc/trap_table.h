@@ -3,7 +3,7 @@
 
 #define STR(X) #X
 
-#define KERN_SWI 6
+#define KERN_SWI 0
 
 #define TRAP_TABLE_SEND_MESSAGE 0
 #define TRAP_TABLE_RECEIVE_MESSAGE 1
