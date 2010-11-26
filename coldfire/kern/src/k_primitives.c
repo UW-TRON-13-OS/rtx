@@ -75,13 +75,14 @@ int k_request_process_status(MsgEnv *msg_env)
     }
 
     uint32_t * data = (uint32_t *) msg_env->msg;
-    int i;
-    *data++ = _num_processes;
-    for (i = 0; i < _num_processes; i++)
+    int pid;
+    *data++ = k_get_num_processes();
+    for (pid = 0; pid < k_get_num_processes(); pid++)
     {
-        *data++ = p_table[i].pid;
-        *data++ = p_table[i].status;
-        *data++ = p_table[i].priority;
+        pcb_t * process = k_get_process(pid);
+        *data++ = process->pid;
+        *data++ = process->state;
+        *data++ = process->priority;
     }
     return CODE_SUCCESS;
 }
@@ -94,13 +95,13 @@ int k_terminate()
 int k_change_priority(int new_priority, int target_process_id)
 {
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
-        target_process_id < 0 || target_process_id >= _num_processes)
+        target_process_id < 0 || target_process_id >= k_get_num_processes())
     {
         return ERROR_ILLEGAL_ARG;
     }
 
-    pcb_t *pcb = &p_table[target_process_id];
-    if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
+    pcb_t *pcb = k_get_process(target_process_id);
+    if (pcb->is_i_process || pcb->pid == NULL_PID)
     {
         return ERROR_ILLEGAL_ARG;
     }
@@ -114,9 +115,9 @@ int k_change_priority(int new_priority, int target_process_id)
             break;
 
         case P_BLOCKED_ON_ENV_REQUEST:
-            proc_pq_remove(env_blocked_pq, pcb);
+            proc_pq_remove(blocked_request_env_pq, pcb);
             pcb->priority = new_priority;
-            proc_pq_enqueue(env_blocked_pq, pcb);
+            proc_pq_enqueue(blocked_request_env_pq, pcb);
             break;
 
         default:

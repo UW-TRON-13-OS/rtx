@@ -9,11 +9,12 @@ OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 
 all: $(OBJS)
 
+rtx.h: $(OBJS)
 bin/primitives.o: trap_table.h
 bin/dbug.o: dbug.h
 bin/k_init.o: k_globals.h
-k_primitives.o: k_globals.h
-k_scheduler.c: k_globals.h
-k_process.c: k_globals.h
+bin/k_primitives.o: k_globals.h
+bin/k_scheduler.o: k_globals.h
+bin/k_process.o: k_globals.h
 
 include $(TOP_DIR)/make/coldfire.mk
