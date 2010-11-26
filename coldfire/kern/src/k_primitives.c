@@ -51,12 +51,35 @@ MsgEnv * k_receive_message()
 /** 5.2 Storage Management **/
 MsgEnv * k_request_msg_env()
 {
-    return NULL;
+    while (msg_env_queue_is_empty(free_env_q))
+    {
+        if (current_process->is_i_process)
+        {
+            return NULL;
+        }
+        proc_pq_enqueue(blocked_request_env_pq, current_process);
+        k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
+    }
+
+    MsgEnv *env = msg_env_queue_dequeue(free_env_q);
+    return env;
 }
 
 int k_release_msg_env(MsgEnv * msg_env)
 {
-    return -1;
+    if (msg_env == NULL)
+    {
+        return ERROR_NULL_ARG;
+    }
+
+    msg_env_queue_enqueue(free_env_q, msg_env);
+    pcb_t * blocked_process = proc_pq_dequeue(blocked_request_env_pq);
+    if (blocked_process)
+    {
+        blocked_process->state = P_READY;
+        proc_pq_enqueue(ready_pq, blocked_process);
+    }
+    return CODE_SUCCESS;
 }
 
 /** 5.3 Processor Management **/
