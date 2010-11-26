@@ -7,7 +7,7 @@
 
 void start_crt_i_process()
 {
-	BYTE temp;
+    BYTE temp;
     temp = SERIAL1_UCSR; 
 	
     MsgEnv* message;
@@ -34,12 +34,12 @@ void start_crt_i_process()
             assert(message != NULL);
             i = 0;
 			
-			/* enable tx interrupts  */
+	    /* enable tx interrupts  */
             SERIAL1_IMR = 3;
 			
             while (message->msg[i] != '\0')
             {
-				SERIAL1_WD = message->msg[i];   /* Write data to port */
+		SERIAL1_WD = message->msg[i];   /* Write data to port */
                 i++;
             }
             SERIAL1_WD = '\0';
