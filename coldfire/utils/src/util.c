@@ -53,6 +53,7 @@ CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
 						num -= digit*div;
 						div/=10;
 					}
+					k++;
 				}
 				else
 				{
@@ -73,7 +74,8 @@ CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
 			str[j] = format[k];
 			k++;
 			j++;
-		}	
+		}
+		str[j] = '\0';
 	}
 	return str;
 }
