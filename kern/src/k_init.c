@@ -73,6 +73,7 @@ void k_init()
     ualarm(DELAY_TIME, TIMEOUT_100MS);
 
     k_uart_init();
+    k_ipc_init();
 
     printf("Done Bootup...Starting RTX\n"
            "rtx pid: %u keyboard pid: %u crt pid: %u\n"

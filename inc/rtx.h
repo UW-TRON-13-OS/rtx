@@ -21,6 +21,9 @@
 // wakeup codes
 #define WAKEUP_10       -10
 
+//for ipc trace buffers
+#define MAX_UINT32 4294967295
+
 typedef void (*start_pc)();
 typedef struct MsgEnv {
     struct MsgEnv *next;
@@ -34,7 +37,7 @@ typedef struct ipc_trace {
     uint32_t dest_pid;
     uint32_t send_pid;
     uint32_t msg_type;
-    uint64_t time_stamp;
+    uint32_t time_stamp;
 } ipc_trace_t;
 
 typedef enum p_status {

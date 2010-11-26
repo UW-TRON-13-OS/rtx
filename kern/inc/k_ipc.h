@@ -8,4 +8,6 @@ MsgEnv * k_receive_message();
 
 int k_get_trace_buffers(MsgEnv *msg_env);
 
+void k_ipc_init ();
+
 #endif
