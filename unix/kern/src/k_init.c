@@ -50,6 +50,7 @@ void k_init()
         { TIMEOUT_I_PROCESS_PID, "timeout-i",   0, IS_I_PROCESS,     start_timeout_i_process },
         { PROCESS_NULL_PID,      "null",        3, IS_NOT_I_PROCESS, start_null },
         { PROCESS_CCI_PID,       "cci",         2, IS_NOT_I_PROCESS, start_cci },
+        { PROCESS_WALLCLOCK_PID, "wallclock",   2, IS_NOT_I_PROCESS, start_wallclock },
         { PROCESS_A_PID,         "a",           0, IS_NOT_I_PROCESS, process_A },
         { PROCESS_B_PID,         "b",           1, IS_NOT_I_PROCESS, process_B },
         { PROCESS_C_PID,         "c",           2, IS_NOT_I_PROCESS, process_C }
@@ -72,6 +73,7 @@ void k_init()
     ualarm(DELAY_TIME, TIMEOUT_100MS);
 
     k_uart_init();
+    k_ipc_init();
 
     printf("Done Bootup...Starting RTX\n"
            "rtx pid: %u keyboard pid: %u crt pid: %u\n"
