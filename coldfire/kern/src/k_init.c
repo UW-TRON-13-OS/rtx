@@ -84,6 +84,48 @@ void init_kern_swi()
     asm( "move.l %d0,0x10000080" );
 }
 
+/*
+ * initialises timer 
+ */
+int init_timer( void )
+{
+    UINT32 mask;
+
+    /*
+     * Store the timer ISR at auto-vector #6
+     */
+    asm( "move.l #asm_timer_entry,%d0" );
+    asm( "move.l %d0,0x10000078" );
+
+    /*
+     * Setup to use auto-vectored interupt level 6, priority 3
+     */
+    TIMER0_ICR = 0x9B;
+    // 1_00_110_11
+    // autovector enable_(clear)_interrupt level_interrupt priority
+
+    /*
+     * Set the reference counts, ~10ms
+     */
+    TIMER0_TRR = 1758;
+
+    /*
+     * Setup the timer prescaler and stuff
+     */
+    TIMER0_TMR = 0xFF1B;
+    //11111111_00_0_1_1_01_1
+    //prescale_disable interrupt on capture event_output mode
+    //enable interrupt on reaching ref_restart on ref value
+    //set input clock as sysbus div 1_enable timer
+
+    /*
+     * Set the interupt mask
+     */
+    mask = SIM_IMR;
+    mask &= 0x0003fdff;
+    SIM_IMR = mask;    
+}
+
 int main (void)
 {
     /* Disable all interupts */

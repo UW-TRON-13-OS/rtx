@@ -74,6 +74,8 @@ void c_serial_handler( void )
 
 void start_kb_i_process()
 {
+    // Enable interrupts
+    asm( "move.w #0x2000,%sr" );
     int i;
     while (1)
     {
@@ -93,10 +95,8 @@ void start_kb_i_process()
         k_i_process_exit();
     }
 
-    /* Enable all interupts */
-    asm( "move.w #0x2000,%sr" );
     /* Busy Loop */
-    while(1 /* CharIn != '\r' && CharIn != '\n' && CharIn != '+'*/ )
+    while(1)
     {
         if( !Caught )
         {
