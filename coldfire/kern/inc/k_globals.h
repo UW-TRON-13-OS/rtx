@@ -5,6 +5,9 @@
 #include "k_structs.h"
 #include "proc_pq.h"
 
+// process pids
+#define NULL_PID 0
+
 // Process priorities
 #define NUM_PRIORITIES 3
 #define ADDITIONAL_NULL_PRIORITY 1
