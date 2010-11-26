@@ -56,13 +56,13 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
                    "--------------------------------------------------------------\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE;i++)
     {
-        if (send_dump[i].time_stamp != 0)
+        if (send_dump[i].time_stamp != MAX_UINT32)
         {
-            RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6lu ||",
+            RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6u ||",
                        send_dump[i].dest_pid, send_dump[i].send_pid,
                        send_dump[i].msg_type, send_dump[i].time_stamp);
         }
-        else if (recv_dump[i].time_stamp != 0)
+        else if (recv_dump[i].time_stamp != MAX_UINT32)
         {
             RTX_printf(send_env, msgQ, "      |      |       |       ||");
         }
@@ -73,7 +73,7 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
         
         if (recv_dump[i].time_stamp != 0)
         {
-            RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6lu\n",send_dump[i].dest_pid,
+            RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6u\n",send_dump[i].dest_pid,
                        recv_dump[i].send_pid, recv_dump[i].msg_type,
                        recv_dump[i].time_stamp);
         }
