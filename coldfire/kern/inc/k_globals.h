@@ -3,9 +3,10 @@
 
 #include "rtx.h"
 #include "k_structs.h"
+#include "proc_pq.h"
 
-// Processes
-#define NUM_PROCESSES 3
+// process pids
+#define NULL_PID 0
 
 // Process priorities
 #define NUM_PRIORITIES 3
@@ -14,13 +15,16 @@
 #define LOWEST_PRIORITY  2
 #define NULL_PRIORITY    3
 
+// Processes
+extern pcb_t * current_process;
+int32_t k_get_num_processes();
 pcb_t * k_get_process(int32_t pid);
 
 // Scheduling
 extern proc_pq_t *ready_pq;
 extern proc_pq_t *blocked_request_env_pq;
 
-bool k_process_switch(enum process_state transition_to);
-bool k_context_switch(pcb_t * prev, pcb_t * next);
+void k_process_switch(enum process_state transition_to);
+void k_context_switch(pcb_t * prev, pcb_t * next);
 
 #endif

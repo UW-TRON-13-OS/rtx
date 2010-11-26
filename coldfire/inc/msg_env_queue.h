@@ -1,7 +1,7 @@
 #ifndef _MSG_ENV_QUEUE_H_
 #define _MSG_ENV_QUEUE_H_
 
-#include <rtx.h>
+#include "rtx.h"
 
 typedef struct msg_env_queue msg_env_queue_t;
 

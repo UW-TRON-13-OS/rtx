@@ -30,7 +30,7 @@ hello.s19: $(HELLO_OBJS)
 show: primitives.c
 	$(CC) $(CFLAGS) -S src/primitives.c 
 
-primitives.o: primitives.c trap_table.h
+primitives.o: trap_table.h
 
 clean:
 	rm -f *.s19 *.o *.bin *.lst *.map
