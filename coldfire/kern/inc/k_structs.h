@@ -16,12 +16,12 @@ typedef struct pcb {
     uint32_t            priority;
     enum process_state  state;
     bool                is_i_process;
-    msg_env_queue_t     recv_msgs;
+    //msg_env_queue_t     recv_msgs;
     start_pc            start;
     byte *              stack_end;
 } pcb_t;
 
-typedef pcb_init {
+typedef struct pcb_init {
     int32_t             pid;
     char *              name;
     uint32_t            priority;
