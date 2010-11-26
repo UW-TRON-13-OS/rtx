@@ -39,17 +39,20 @@ int k_request_process_status(MsgEnv *msg_env)
 
 int k_change_priority(int new_priority, int target_process_id)
 {
+	// check for bad priority numbers and bad process ids
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
         target_process_id < 0 || target_process_id >= _num_processes)
     {
         return ERROR_ILLEGAL_ARG;
     }
 
+	// check if taget process id is not an iprocess
     pcb_t *pcb = &p_table[target_process_id];
     if (pcb->is_i_process || pcb->pid == PROCESS_NULL_PID)
     {
         return ERROR_ILLEGAL_ARG;
     }
+	// change priority
     switch (pcb->status)
     {
         case P_READY:
@@ -78,6 +81,7 @@ void k_process_init(int num_processes, proc_cfg_t init_table[])
     int i;
     _num_processes = num_processes;
     ready_pq = proc_pq_create(NUM_PRIORITIES+NULL_PRIORITY);
+	//initalize all the data for the pcb
     for (i = 0; i < num_processes; i++)
     {
         pcb_t *pcb = &p_table[i];
