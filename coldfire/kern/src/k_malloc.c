@@ -3,4 +3,5 @@
 
 void * k_malloc(uint32_t size)
 {
+    return NULL;
 }
