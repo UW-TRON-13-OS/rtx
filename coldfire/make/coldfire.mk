@@ -39,11 +39,11 @@ DIS_ASM_FILES:=$(addprefix $(BIN_DIR)/,  \
 #bin/objectfile based on a .c (automatically found using vpath in src)
 $(BIN_DIR)/%.o: %.c
 	@echo "Module $(MODULE) - $< -> $@"
-	@$(MKDIR) $(BIN_DIR)
+	@$(MKDIR) $(dir $@)
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BIN_DIR)/%.s: %.c
-	@$(MKDIR) $(BIN_DIR)
+	@$(MKDIR) $(dir $@)
 	@$(CC) $(CFLAGS) -S -o $@ $<
 
 show: $(DIS_ASM_FILES)

@@ -87,7 +87,7 @@ void init_kern_swi()
 /*
  * initialises timer 
  */
-int init_timer( void )
+void init_timer( void )
 {
     UINT32 mask;
 
