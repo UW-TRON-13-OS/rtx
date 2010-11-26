@@ -7,7 +7,7 @@
 
 void start_crt_i_process()
 {
-	BYTE temp;
+	/*&byte temp;
     temp = SERIAL1_UCSR; 
 	
     MsgEnv* message;
@@ -34,19 +34,20 @@ void start_crt_i_process()
             assert(message != NULL);
             i = 0;
 			
-			/* enable tx interrupts  */
+			// enable tx interrupts 
             SERIAL1_IMR = 3;
 			
             while (message->msg[i] != '\0')
             {
-				SERIAL1_WD = message->msg[i];   /* Write data to port */
+				SERIAL1_WD = message->msg[i];   // Write data to port
                 i++;
             }
             SERIAL1_WD = '\0';
             crt_buf->i_process_wait_flag = CRT_FLAG_WAIT;
             prev_msg = message;
         }
-        SERIAL1_IMR = 2;       /* Disable tx Interupt */
+        SERIAL1_IMR = 2;       // Disable tx Interupt 
         k_i_process_exit();
     }
+*/
 }
