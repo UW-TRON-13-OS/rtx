@@ -1,4 +1,6 @@
 #include "k_primitives.h"
+#include "k_structs.h"
+#include "k_globals.h"
 
 /** 5.1 Interprocess Communication **/
 int k_send_message(int dest_pid, MsgEnv *msg_env)
