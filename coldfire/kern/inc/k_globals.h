@@ -4,6 +4,7 @@
 #include "rtx.h"
 #include "k_structs.h"
 #include "proc_pq.h"
+#include "msg_env_queue.h"
 
 // process pids
 #define NULL_PID 0
@@ -27,7 +28,10 @@ extern proc_pq_t *blocked_request_env_pq;
 void k_process_switch(enum process_state transition_to);
 void k_context_switch(pcb_t * prev, pcb_t * next);
 
-// memory allocation
+// Memory allocation
 void * k_malloc(uint32_t size);
+
+// Msg Resources
+extern msg_env_queue_t * free_env_q;
 
 #endif

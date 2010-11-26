@@ -1,6 +1,7 @@
 #include "rtx.h"
 #include "dbug.h"
-#include "k_primitives.h"
+#include "k_globals.h"
+#include "msg_env_queue.h"
 
 // We need this function because of gcc
 int __main(void)
@@ -124,6 +125,11 @@ void init_timer( void )
     mask = SIM_IMR;
     mask &= 0x0003fdff;
     SIM_IMR = mask;    
+}
+
+void init_msg_envs()
+{
+    free_env_q = msg_env_queue_create();
 }
 
 int main (void)
