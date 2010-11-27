@@ -5,18 +5,18 @@
 /*
  * Global Variables
  */
-volatile BYTE CharIn = '!';
-volatile BOOLEAN Caught = TRUE;
-volatile BYTE CharOut = '\0';
-CHAR inputString[1000] = {0};
+volatile byte CharIn = '!';
+volatile bool Caught = TRUE;
+volatile byte CharOut = '\0';
+char inputString[1000] = {0};
 int cur = 0;
 
 /*
  * This function is called by the assembly STUB function
  */
-VOID c_serial_handler( VOID )
+void c_serial_handler( void )
 {
-    BYTE temp;
+    byte temp;
 
     temp = SERIAL1_UCSR;    /* Ack the interrupt */
 

@@ -13,7 +13,7 @@
  * @param: c the charcter to output to janusROM  
  */
 
-VOID rtx_dbug_out_char( CHAR c )
+void rtx_dbug_out_char( char c )
 {
 	
     /* Store registers */
@@ -37,7 +37,7 @@ VOID rtx_dbug_out_char( CHAR c )
  * @brief: Prints a C-style null terminated string
  * @param: s the string to output to janusROM terminal 
  */
-SINT32 rtx_dbug_outs( CHAR* s )
+int32_t rtx_dbug_outs( char* s )
 {
     if ( s == NULL )
     {

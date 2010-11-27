@@ -35,14 +35,14 @@ typedef struct ipc_trace {
     uint32_t time_stamp;
 } ipc_trace_t;
 
-typedef enum process_state {
+enum process_state {
     P_READY, P_EXECUTING, P_BLOCKED_ON_ENV_REQUEST, P_BLOCKED_ON_RECEIVE, 
     P_INTERRUPTED
 };
 
 typedef struct process_status {
     uint32_t    pid;
-    p_status_t  status;
+    enum process_state  status;
     uint32_t priority;
 } process_status_t;
 
