@@ -11,7 +11,8 @@ OBJ_NAMES=k_api dbug k_init k_primitives k_scheduler k_process \
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC:=rtx.h k_globals.h k_structs.h dbug.h
 
-all: $(OBJS)
+#all: $(OBJS)
+include $(TOP_DIR)/make/coldfire.mk
 
 bin/k_api.o: $(COMMON_INC) trap_table.h 
 bin/dbug.o: coldfire.h dbug.h 
@@ -26,4 +27,3 @@ bin/crt_process.o: $(COMMON_INC) crt_process.h msg_env_queue.h
 # Add an entry above ^^^ where its the form of:
 # bin/<filename>.o: <header files the .h depends on>
 
-include $(TOP_DIR)/make/coldfire.mk
