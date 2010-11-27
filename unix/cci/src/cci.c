@@ -1,6 +1,5 @@
 #include "cci.h"
 #include "cci_util.h"
-#include "wallclock.h"
 #include "rtx.h"
 #include "processes.h"
 #include "msg_env_queue.h"
@@ -86,12 +85,12 @@ void start_cci()
                 //show clock
                 else if (strcmp(cmd,"cd") == 0) 
                 {
-                    displayWallClock (1);
+                    CCI_displayWallClock (send_env, msgQ, 1);
                 }
                 //hide clock
                 else if (strcmp(cmd,"ct") == 0)  
                 {
-                    displayWallClock (0);
+                    CCI_displayWallClock (send_env, msgQ, 0);
                 }
                 //show send/receive trace buffers
                 else if (strcmp(cmd,"b") == 0) 
@@ -138,7 +137,7 @@ void start_cci()
                     }
                     else
                     {
-                        status = setWallClock (newTime);
+                        status = CCI_setWallClock (send_env, msgQ,newTime);
                         if (status == ERROR_ILLEGAL_ARG)
                         {
                             RTX_printf(send_env, msgQ, "c\n"
