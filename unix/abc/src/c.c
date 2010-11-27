@@ -2,8 +2,7 @@
 #include "processes.h"
 #include "abc.h"
 #include "msg_env_queue.h"
-
-#include <stdio.h> // TODO remove when done
+#include "rtx_util.h"
 #include <string.h>
 
 void process_C()
@@ -50,10 +49,7 @@ void process_C()
                    if(rec_msg->msg_type == DISPLAY_ACK)
                    {
                        //check for an error case
-                       if(request_delay(100, WAKEUP_10, rec_msg) != CODE_SUCCESS)
-                       {
-                           //printf("An error occurred.\n");
-                       }
+                       request_delay(100,WAKEUP_10, rec_msg);
                        break;
                    }
                    else if (rec_msg->msg_type == COUNT_REPORT)
@@ -63,7 +59,6 @@ void process_C()
                    }
                    else
                    {
-                       printf("AJSLKFDJALSKJFLKDSJF SHOULD NOT BE HERE WAHHHH\n");
                        assert(0);
                    }
                 }
@@ -71,12 +66,7 @@ void process_C()
                 // "Go passive for 10 seconds" in the outline
                 while(1)
                 {
-                    //recieve a message env
                     rec_msg_2 = receive_message();
-                    //if the recieved env is a type 'WAKEUP_10' then
-                    //exit the while loop
-                    //otherwise, enqueue the recieved message env back into the
-                    //message env queue
                     if(rec_msg_2->msg_type == WAKEUP_10)
                     {
                         break;
@@ -88,6 +78,7 @@ void process_C()
                 }
             }
         }
+
         //release all the envelopes and yeild the processor
         release_msg_env(rec_msg);
         release_msg_env(rec_msg_2);
