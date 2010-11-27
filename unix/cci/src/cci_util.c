@@ -2,6 +2,8 @@
 #include "rtx.h"
 #include "processes.h"
 #include "rtx_util.h"
+#include "wallclock.h"
+#include <string.h>
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env,
@@ -86,5 +88,58 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
     RTX_printf(send_env, msgQ, "\n");
 
     return CODE_SUCCESS;
+}
+
+int CCI_setWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, char* newTime)
+{
+    int status;
+    strcpy(send_env->msg, newTime);
+    send_env->msg_type = CLOCK_SET;
+    send_message(PROCESS_WALLCLOCK_PID,send_env);
+
+    while (1)
+    {
+        MsgEnv *env = receive_message();
+        if (env->msg_type == CLOCK_RET)
+        {
+            status = *((int *)env->msg);
+            break;
+        }
+        //store envelopes not used in local queue for CCI main loop
+        else
+        {
+            msg_env_queue_enqueue(msgQ, env);
+        }
+    }
+
+    return status;
+}
+
+void CCI_displayWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, int disp_b)
+{
+    if (disp_b)
+    {
+        send_env->msg_type = CLOCK_ON;
+    }
+    else
+    {
+        send_env->msg_type = CLOCK_OFF;
+    }
+
+    send_message(PROCESS_WALLCLOCK_PID,send_env);
+
+    while (1)
+    {
+        MsgEnv *env = receive_message();
+        if (env->msg_type == CLOCK_RET)
+        {
+            break;
+        }
+        //store envelopes not used in local queue for CCI main loop
+        else
+        {
+            msg_env_queue_enqueue(msgQ, env);
+        }
+    }
 }
 
