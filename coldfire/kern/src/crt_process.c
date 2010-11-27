@@ -3,6 +3,7 @@
 #include "msg_env_queue.h"
 #include "dbug.h"
 #include "crt_process.h"
+#include "k_globals.h"
 
 void start_crt_process()
 {

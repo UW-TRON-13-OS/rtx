@@ -8,6 +8,8 @@
 
 // process pids
 #define NULL_PID 0
+#define CCI_PID -1
+#define UART_I_PROCESS_PID -2
 
 // Process priorities
 #define NUM_PRIORITIES 3
