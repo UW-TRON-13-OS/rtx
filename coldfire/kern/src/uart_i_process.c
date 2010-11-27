@@ -3,6 +3,7 @@
 #include "k_primitives.h"
 #include "msg_env_queue.h"
 #include "dbug.h"
+#include "k_globals.h"
 
 volatile BYTE CharIn = ' ';
 volatile BYTE CharOut = '\0';
@@ -39,13 +40,16 @@ void start_uart_i_process()//VOID c_serial_handler( VOID )
             inputIndex++;
             SERIAL1_IMR = 3;
             SERIAL1_WD = '\n';
-            MsgEnv* message = k_request_msg_env();
-            message->msg_type = CONSOLE_INPUT;
-            for (i = 0; i < inputIndex; i++)
+            MsgEnv* message = k_receive_message();
+            if (message != NULL)
             {
-                message->msg[i] = InBuffer[i];
+                message->msg_type = CONSOLE_INPUT;
+                for (i = 0; i < inputIndex; i++)
+                {
+                    message->msg[i] = InBuffer[i];
+                }
+                k_send_message(CCI_PID, message);
             }
-            k_send_message(CCI_PID, message);
             inputIndex = 0;
         }
     }
