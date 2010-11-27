@@ -16,7 +16,7 @@ all: $(OBJS)
 bin/k_api.o: $(COMMON_INC) trap_table.h 
 bin/dbug.o: coldfire.h dbug.h 
 bin/k_init.o: $(COMMON_INC) msg_env_queue.h
-bin/k_primitives.o: $(COMMON_INC)
+bin/k_primitives.o: $(COMMON_INC) k_primitives.h
 bin/k_scheduler.o: $(COMMON_INC)
 bin/k_process.o: $(COMMON_INC)
 bin/k_malloc.o: memory_layout.h k_globals.h
