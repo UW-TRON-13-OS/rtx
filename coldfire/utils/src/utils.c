@@ -1,4 +1,5 @@
 #include "rtx.h"
+#include "utils.h"
 
 CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
 {
@@ -43,6 +44,12 @@ CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
 						div*=10;
 					}
 					div/=10;
+
+					if(size == 0)
+					{
+						str[j] = '0';
+						j++;
+					}
 					
 					while(size > 0)
 					{
@@ -78,4 +85,10 @@ CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
 		str[j] = '\0';
 	}
 	return str;
+}
+
+CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str)
+{
+	void * params[] = {cpy_str};
+	return rtx_spritf(CHAR * str, "%s", params);
 }
