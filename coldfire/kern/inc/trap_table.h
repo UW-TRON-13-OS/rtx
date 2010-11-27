@@ -1,7 +1,8 @@
 #ifndef _TRAP_TABLE_H_
 #define _TRAP_TABLE_H_
 
-#define STR(X) #X
+#define STR_(X) #X
+#define STR(X) STR_(X)
 
 #define KERN_SWI 0
 

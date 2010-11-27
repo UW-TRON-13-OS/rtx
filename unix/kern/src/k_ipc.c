@@ -1,7 +1,5 @@
 #include "k_ipc.h"
-
-#include <rtx.h>
-
+#include "rtx.h"
 #include "k_config.h"
 #include "k_process.h"
 #include "k_scheduler.h"
@@ -100,8 +98,9 @@ int k_get_trace_buffers( MsgEnv *msg_env )
 
 int _find_trace_buf_head(trace_circle_buf_t *tbuf)
 {
-    int head = circle_index(tbuf->tail+1);
-    while (tbuf->buf[head].time_stamp == 0 && head != tbuf->tail) 
+    int head = circle_index(tbuf->tail);
+    while (tbuf->buf[head].time_stamp == MAX_UINT32 &&
+           head != circle_index(tbuf->tail-1)) 
     {
         head = circle_index(head + 1);
     }
@@ -117,4 +116,13 @@ void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
     tbuf->tail = circle_index(tbuf->tail + 1);
 }
 
+void k_ipc_init ()
+{
+    int i;
+    for (i=0; i<IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
+    {
+        _send_trace_buf.buf[i].time_stamp = MAX_UINT32;
+        _recv_trace_buf.buf[i].time_stamp = MAX_UINT32;
+    }
+}
 

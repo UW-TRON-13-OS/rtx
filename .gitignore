@@ -12,3 +12,5 @@ tests/*
 *.dat
 m5307v2
 .nfs*
+.*.swo
+.*.swp
