@@ -1,6 +1,7 @@
 #include "wallclock.h"
 #include "rtx.h"
 #include "rtx_util.h"
+#include "processes.h"
 #include "msg_env_queue.h"
 #include <stdlib.h>
 
@@ -21,6 +22,9 @@ char clock_display_en;
 
 MsgEnv *timeout_env, *send_env;
 msg_env_queue_t *msgQ;
+
+int _setWallClock (char* timeParam);
+void _displayWallClock (int disp_b);
 
 void start_wallclock()
 {
@@ -58,26 +62,52 @@ void start_wallclock()
             status = request_delay( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
             {
-                RTX_printf(send_env, msgQ, "request_delay failed with status %d\n",status);
+                RTX_printf(send_env, msgQ, 
+                           "request_delay failed with status %d\n",status);
             }
             //86400 = 24hrs in secs
-            int32_t clock_time = (int32_t)((clock_get_system_time()-ref)/10+offset)%SEC_IN_HR;
+            int32_t clock_time = (int32_t)((clock_get_system_time()-ref)/10
+                                 +offset)%SEC_IN_HR;
             if (clock_display_en)
             {
-                RTX_printf(send_env, msgQ,  SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR,
-                        clock_time/3600,(clock_time%3600)/60, clock_time%60);
+                RTX_printf(send_env, msgQ, SAVE_CURSOR MOVE_CURSOR 
+                           CLOCK_FORMAT RESTORE_CURSOR,
+                           clock_time/3600,(clock_time%3600)/60, clock_time%60);
             }
+        }
+        else if (env->msg_type == CLOCK_ON)
+        {
+            _displayWallClock (1);
+            env->msg_type = CLOCK_RET;
+            send_message(PROCESS_CCI_PID,env);
+        }
+        else if (env->msg_type == CLOCK_OFF)
+        {
+            _displayWallClock (0);
+            env->msg_type = CLOCK_RET;
+            send_message(PROCESS_CCI_PID,env);
+        }
+        else if (env->msg_type == CLOCK_SET) 
+        {
+            int status = _setWallClock (env->msg);
+            *((int *)env->msg) = status; 
+            env->msg_type = CLOCK_RET;
+            send_message(PROCESS_CCI_PID,env);
         }
     }
 }
 
 //sets the clock
-int setWallClock (char* timeParam)
+int _setWallClock (char* timeParam)
 {
     if (timeParam == NULL)
+    {
         return ERROR_NULL_ARG;
-    if (timeParam[2] != ':' || timeParam[5] != ':')
+    }
+    if (timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != '\0')
+    {
         return ERROR_ILLEGAL_ARG;
+    }
 
     //parse timeParam string
     char hr_s [3];
@@ -105,7 +135,7 @@ int setWallClock (char* timeParam)
 }
 
 //set whether clock is displayed or not
-void displayWallClock (int disp_b)
+void _displayWallClock (int disp_b)
 {
     if (disp_b)
     {
@@ -113,7 +143,8 @@ void displayWallClock (int disp_b)
     }
     else
     {
-        RTX_printf(send_env, msgQ, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR);
+        RTX_printf(send_env, msgQ, SAVE_CURSOR MOVE_CURSOR
+                   EMPTY_CLOCK RESTORE_CURSOR);
         clock_display_en = 0;
     }
 }
