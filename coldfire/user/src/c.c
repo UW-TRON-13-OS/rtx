@@ -59,11 +59,6 @@ void process_C()
                        //enqueue the released env back into the message queue
                        msg_env_queue_enqueue(messageQueue, rec_msg);
                    }
-                   else
-                   {
-                       //printf("AJSLKFDJALSKJFLKDSJF SHOULD NOT BE HERE WAHHHH\n");
-                       assert(0);
-                   }
                 }
 
                 // "Go passive for 10 seconds" in the outline

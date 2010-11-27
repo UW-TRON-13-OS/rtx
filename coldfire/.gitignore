@@ -1,8 +1,10 @@
 lib
 bin
+test
 *.s19 
 *.bin
 *.lst
 *.map
 ./*.s
 *.o
+*.a

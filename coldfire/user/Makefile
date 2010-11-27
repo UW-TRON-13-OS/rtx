@@ -1,14 +1,7 @@
-# Makefile
-# David Grant, 2004
-# Irene Huang, 2010/05/03 
-
 TOP_DIR := ..
 
 # Add source file name (without .c) here
-OBJ_NAMES=null_process
-OBJ_NAMES=a
-OBJ_NAMES=b
-OBJ_NAMES=c
+OBJ_NAMES=null_process a b  c
 
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC:=rtx.h dbug.h

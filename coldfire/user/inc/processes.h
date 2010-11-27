@@ -10,8 +10,7 @@
 #define PROCESS_B_PID 7
 #define PROCESS_C_PID 8
 
-#include "cci.h"
-#include "wallclock.h"
+//#include "wallclock.h"
 #include "abc.h"
 
 #endif

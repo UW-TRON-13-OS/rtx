@@ -132,7 +132,7 @@ void init_msg_envs()
     free_env_q = msg_env_queue_create();
 }
 
-int main (void)
+int k_init ()
 {
     /* Disable all interupts */
     asm( "move.w #0x2700,%sr" );
