@@ -22,7 +22,7 @@ SHARED_DIR:=$(TOP_DIR)/shared
 LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
-CFLAGS=-Wall -m5307 -pipe -nostdlib -T$(SHARED_DIR)/mcf5307.ld -I$(INC_DIR) -I$(TOP_DIR)/inc
+CFLAGS=-Wall -m5307 -pipe -nostdlib -I$(INC_DIR) -I$(TOP_DIR)/inc
 
 vpath %.c $(SRC_DIR)
 vpath %.h $(INC_DIR)
@@ -78,7 +78,7 @@ $(APP): $(LIB) $(MAIN_FILE) $(START_ASM)
 $(LIB): $(LIB_OBJ)
 	@echo "    Building Library lib$(MODULE).a"
 	@$(MKDIR) $(LIB_DIR)
-	@$(AR) $(ARFLAGS) $(LIB) $(LIB_OBJ)
+	@$(AR) $(ARFLAGS) $(LIB) $(LIB_OBJ) > /dev/null
 	@$(RANLIB) $(LIB)
 
 $(BIN_DIR)/%.o: %.c
