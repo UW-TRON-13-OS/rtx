@@ -49,7 +49,7 @@ void start_cci()
             if (sscanf(env->msg,"%s", cmd)==1)
             {
                 //send empty envelope to process A. should only do so once.
-                if (strcmp(cmd,"s") == 0) 
+                if (strcasecmp(cmd,"s") == 0) 
                 {
                     if ( proc_a_env != NULL )
                     {
@@ -67,7 +67,7 @@ void start_cci()
                     }
                 }
                 //displays process statuses
-                else if (strcmp(cmd,"ps") == 0) 
+                else if (strcasecmp(cmd,"ps") == 0) 
                 {
                     status = request_process_status(status_env);
                     if (status != CODE_SUCCESS)
@@ -83,17 +83,17 @@ void start_cci()
                     }
                 }
                 //show clock
-                else if (strcmp(cmd,"cd") == 0) 
+                else if (strcasecmp(cmd,"cd") == 0) 
                 {
                     CCI_displayWallClock (send_env, msgQ, 1);
                 }
                 //hide clock
-                else if (strcmp(cmd,"ct") == 0)  
+                else if (strcasecmp(cmd,"ct") == 0)  
                 {
                     CCI_displayWallClock (send_env, msgQ, 0);
                 }
                 //show send/receive trace buffers
-                else if (strcmp(cmd,"b") == 0) 
+                else if (strcasecmp(cmd,"b") == 0) 
                 {
                     status = get_trace_buffers (status_env);
                     if (status != CODE_SUCCESS)
@@ -104,12 +104,12 @@ void start_cci()
                         RTX_printf(send_env, msgQ, "CCI_printTraceBuffers failed with status %d\n",status);
                 }
                 //terminate RTX
-                else if (strcmp(cmd,"t") == 0) 
+                else if (strcasecmp(cmd,"t") == 0) 
                 {
                     terminate();
                 }
                 //change process priority
-                else if (strcmp(cmd,"n") == 0) 
+                else if (strcasecmp(cmd,"n") == 0) 
                 {
                     int priority, pid; 
                     if (sscanf(env->msg, "%*s %d %d", &priority, &pid)!=2)
@@ -126,7 +126,7 @@ void start_cci()
                     }
                 }
                 //set clock
-                else if (strcmp(cmd,"c") == 0) 
+                else if (strcasecmp(cmd,"c") == 0) 
                 {
                     char newTime [9];
                     if (sscanf(env->msg, "%*s %s",newTime) != 1)
