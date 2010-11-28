@@ -114,7 +114,7 @@ void start_cci()
                     int priority, pid; 
                     if (sscanf(env->msg, "%*s %d %d", &priority, &pid)!=2)
                     {
-                        RTX_printf(send_env, msgQ, "Usageasd: n <priority> <processID>\n");
+                        RTX_printf(send_env, msgQ, "Usage: n <priority> <processID>\n");
                     }
                     else
                     {
