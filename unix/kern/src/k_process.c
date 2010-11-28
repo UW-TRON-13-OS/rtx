@@ -52,6 +52,13 @@ int k_change_priority(int new_priority, int target_process_id)
     {
         return ERROR_ILLEGAL_ARG;
     }
+    
+    // check if we need to take any actions to set the new_priority
+    if (pcb->priority == new_priority)
+    {
+        return CODE_SUCCESS;
+    }
+
 	// change priority
     switch (pcb->status)
     {

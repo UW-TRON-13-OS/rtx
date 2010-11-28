@@ -129,6 +129,11 @@ int k_change_priority(int new_priority, int target_process_id)
         return ERROR_ILLEGAL_ARG;
     }
 
+    if (pcb->priority == new_priority)
+    {
+        return CODE_SUCCESS;
+    }
+
     switch (pcb->state)
     {
         case P_READY:
