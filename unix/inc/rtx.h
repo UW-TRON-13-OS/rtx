@@ -22,7 +22,7 @@
 #define WAKEUP_10       -10
 
 //for ipc trace buffers
-#define MAX_UINT32 4294967295
+#define MAX_UINT32 ((uint32_t) -1)
 
 typedef void (*start_pc)();
 typedef struct MsgEnv {

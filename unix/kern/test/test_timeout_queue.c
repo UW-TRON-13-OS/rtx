@@ -1,6 +1,7 @@
 #include "utest.h"
 #include "timeout_queue.h"
 #include "rtx.h"
+#include "k_clock.h"
 #include <stdlib.h>
 
 void test_create()
