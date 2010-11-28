@@ -59,7 +59,6 @@ void start_cci()
                         {
                             RTX_printf(send_env, msgQ, "send_message failed with status %d\n",status);
                         }
-                        release_msg_env(proc_a_env);
                         proc_a_env = NULL;
                     }
                     else
