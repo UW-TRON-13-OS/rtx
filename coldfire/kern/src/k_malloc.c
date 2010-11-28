@@ -6,7 +6,7 @@
 void * k_malloc(uint32_t size)
 {
     static uint32_t origin = MEMORY_START;
-    if (size == 0 || (origin + size) > MEMORY_END)
+    if (size == 0 || (origin + size) > MEMORY_END + 1)
     {
         return NULL;
     }
