@@ -1,3 +1,4 @@
+#include "k_init.h"
 #include "rtx.h"
 #include "dbug.h"
 #include "k_globals.h"
@@ -23,7 +24,7 @@ SINT32 coldfire_vbr_init( VOID )
     return RTX_SUCCESS;
 }
 
-void init_uart(void)
+void init_uart()
 {
     UINT32 mask;
 
@@ -88,7 +89,7 @@ void init_kern_swi()
 /*
  * initialises timer 
  */
-void init_timer( void )
+void init_timer()
 {
     UINT32 mask;
 
