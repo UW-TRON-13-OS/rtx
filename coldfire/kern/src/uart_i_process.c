@@ -5,13 +5,13 @@
 #include "dbug.h"
 #include "k_globals.h"
 
-volatile BYTE CharIn = ' ';
 volatile BYTE CharOut = '\0';
-volatile BOOLEAN Caught = TRUE;
 CHAR OutBuffer[100] = {0};
 CHAR InBuffer[100] = {0};
 int inputIndex = 0;
 int outputIndex = 0;
+msg_env_queue_t* input_queue;
+msg_env_queue_t* output_queue;
 
 /*
  * This function is called by the assembly STUB function
@@ -21,29 +21,50 @@ void start_uart_i_process()//VOID c_serial_handler( VOID )
     int i;
     BYTE temp;
     temp = SERIAL1_UCSR;    // Ack the interrupt
+    volatile BYTE CharIn = ' ';
+    if (input_queue == NULL)
+    {
+        input_queue = msg_env_queue_create();
+    }
+    if (output_queue == NULL)
+    {
+        output_queue = msg_env_queue_create();
+    }
+    
+    MsgEnv* message = k_receive_message();
+    if (message != NULL)
+    {
+        if (message->msg_type == CONSOLE_INPUT)
+        {
+            msg_env_queue_enqueue(input_queue, message);
+        }
+        else if (message->msg_type == CONSOLE_INPUT)
+        {
+            msg_env_queue_enqueue(output_queue, message);
+        }
+        else
+        {
+            rtx_dbug_outs("ERROR"); // should never get here
+        }
+    }
 
     // There is data to be read
     if( temp & 1 )
     {
         CharIn = SERIAL1_RD;
-        Caught = FALSE;
+        InBuffer[inputIndex] = CharIn;
+        inputIndex++;
+        SERIAL1_IMR = 3;
         if (CharIn != '\0') // enter in a character
         {
-            InBuffer[inputIndex] = CharIn;
-            inputIndex++;
-            SERIAL1_IMR = 3;
             SERIAL1_WD = CharOut;
         }
         else // enter key is pressed
         {
-            InBuffer[inputIndex] = CharIn;
-            inputIndex++;
-            SERIAL1_IMR = 3;
             SERIAL1_WD = '\n';
-            MsgEnv* message = k_receive_message();
+            message = msg_env_queue_dequeue(input_queue);
             if (message != NULL)
             {
-                message->msg_type = CONSOLE_INPUT;
                 for (i = 0; i < inputIndex; i++)
                 {
                     message->msg[i] = InBuffer[i];
@@ -56,13 +77,16 @@ void start_uart_i_process()//VOID c_serial_handler( VOID )
     // Check to see if data can be written out
     else if ( temp & 4 )
     {
-        MsgEnv* message = k_receive_message();
-        if (message != NULL)
+        if (outputIndex == 0)
         {
-            i = 0;
-            while (message->msg[i] != '\0')
+            message = msg_env_queue_dequeue(output_queue);
+            if (message != NULL)
             {
-                OutBuffer[i] = message->msg[i];
+                i = 0;
+                while (message->msg[i] != '\0')
+                {
+                    OutBuffer[i] = message->msg[i];
+                }
             }
         }
         
