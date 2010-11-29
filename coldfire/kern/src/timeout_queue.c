@@ -1,18 +1,11 @@
-#include "timeout_i_process.h"
-#include "k_ipc.h"
-#include "k_globals.h"
-#include "msg_env_queue.h"
-#include "k_signal_handler.h"
-#include "k_clock.h"
 #include "timeout_queue.h"
+#include "k_globals.h"
+#include "k_clock.h"
 
 MsgEnv * timeout_queue = NULL;
 
 void timeout_queue_insert (MsgEnv* new_msg_env)
 {
-    // assume new_msg_env != NULL
-    assert(new_msg_env != NULL);
-	
 	//calculate the time with respect to the system time
     int timeout = k_clock_get_system_time() + *((int *) new_msg_env->msg);
     *((int *) new_msg_env->msg) = timeout;
