@@ -12,6 +12,8 @@ LDFLAGS=-T$(TOP_DIR)/shared/rtx.ld -Wl,-Map=hello.map
 MKDIR=mkdir -p
 CD =cd
 
+ASM=$(wildcard $(SRC_DIR)/*.s)
+
 MODULE=$(shell basename $(shell pwd))
 
 SRC_DIR:=src
@@ -61,17 +63,17 @@ clean:
 	@rm -rf $(BIN_DIR) *.s19 *.o *.bin *.lst *.map $(LIB)
 
 # RULES
-$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM)
+$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
 	@echo "	   Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@.bin $(START_ASM) $(LIB) $<
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@.bin $(START_ASM) $(ASM) $(LIB) $<
 	@$(OBJCPY) $@.bin $@.s19
 	@$(OBJDMP) $@.bin > $@.lst
 	@chmod u+x $@.s19
 
-$(APP): $(LIB) $(MAIN_FILE) $(START_ASM)
+$(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM)
 	@echo "Makeing app $(APP)"
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(MAIN_FILE) $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) $(LIB)
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst
 	@chmod u+x $(APP).s19
