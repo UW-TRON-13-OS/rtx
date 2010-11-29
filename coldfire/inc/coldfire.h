@@ -43,7 +43,7 @@
 #define UINT16  unsigned short int
 #define SINT8   signed char
 #define UINT8   unsigned char
-#define CHAR    signed char
+#define CHAR    char
 #define BYTE    unsigned char
 #define VOID    void
 #define BOOLEAN signed long int
