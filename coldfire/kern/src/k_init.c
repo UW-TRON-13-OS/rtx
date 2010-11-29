@@ -4,12 +4,6 @@
 #include "k_globals.h"
 #include "msg_env_queue.h"
 
-// We need this function because of gcc
-int __main(void)
-{
-    return 0;
-}
-
 SINT32 coldfire_vbr_init( VOID )
 {
     /*
@@ -31,7 +25,7 @@ void init_uart()
     /*
      * Store the serial ISR at user vector #64
      */
-    asm( "move.l #asm_serial_entry,%d0" );
+    asm( "move.l #asm_uart_entry,%d0" );
     asm( "move.l %d0,0x10000100" );
 
     /* Reset the entire UART */
