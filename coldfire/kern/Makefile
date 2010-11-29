@@ -1,6 +1,6 @@
 # Makefile
-# David Grant, 2004
-# Irene Huang, 2010/05/03 
+# Author: Chris Wu
+#
 
 TOP_DIR := ..
 MAIN_FILE := src/main.c
@@ -13,7 +13,7 @@ OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC:=rtx.h k_globals.h k_structs.h dbug.h
 
 #all: $(OBJS)
-include $(TOP_DIR)/make/coldfire.mk
+include $(TOP_DIR)/shared/coldfire.mk
 
 bin/k_api.o: $(COMMON_INC) trap_table.h 
 bin/dbug.o: coldfire.h dbug.h 
