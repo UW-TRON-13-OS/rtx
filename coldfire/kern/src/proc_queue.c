@@ -1,6 +1,5 @@
 #include "proc_queue.h"
-
-#include <stdlib.h>
+#include "k_globals.h"
 
 struct proc_queue {
     pcb_t *head;
@@ -9,17 +8,12 @@ struct proc_queue {
 
 proc_queue_t * proc_queue_create()
 {
-    proc_queue_t * queue = malloc(sizeof(*queue));
+    proc_queue_t * queue = k_malloc(sizeof(*queue));
     if (queue)
     {
         queue->head = queue-> tail = NULL;
     }
     return queue;
-}
-
-void proc_queue_destroy(proc_queue_t * queue)
-{
-    free(queue);
 }
 
 int proc_queue_is_empty(proc_queue_t* queue)
@@ -59,7 +53,6 @@ int proc_queue_enqueue(proc_queue_t * queue, pcb_t * pcb)
         return ERROR_NULL_ARG;
     }
 
-    assert(pcb->next == NULL);
     if (proc_queue_is_empty(queue))
     {
         queue->head = pcb;

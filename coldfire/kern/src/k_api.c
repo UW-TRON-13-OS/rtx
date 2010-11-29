@@ -252,3 +252,7 @@ int get_trace_buffers(MsgEnv* msg_env)
 
     return retCode;
 }
+
+void kern_swi_handler()
+{
+}

@@ -2,6 +2,8 @@
 #include "k_structs.h"
 #include "k_globals.h"
 
+msg_env_queue_t *free_env_q;
+
 /** 5.1 Interprocess Communication **/
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
