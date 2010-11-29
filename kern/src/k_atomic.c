@@ -9,11 +9,14 @@
 #define LAST_OFF 0
 void atomic(int on_off)
 {
+#ifdef DEBUG_KERN
     if (current_process != NULL && current_process->is_i_process)
     {
         printf("ERROR atomic %d is being called from an i process %s\n", on_off, current_process->name);
         assert(!current_process->is_i_process);
     }
+#endif
+
     static sigset_t oldmask;
     sigset_t newmask;
     if (on_off == ON)
@@ -22,15 +25,6 @@ void atomic(int on_off)
         if (current_process->atomic_count == FIRST_ON) 
         {
             sigemptyset(&newmask);
-            sigaddset(&newmask, SIGALRM);
-            sigaddset(&newmask, SIGINT);
-            sigaddset(&newmask, SIGBUS);
-            sigaddset(&newmask, SIGHUP);
-            sigaddset(&newmask, SIGILL);
-            sigaddset(&newmask, SIGQUIT);
-            sigaddset(&newmask, SIGSEGV);
-            sigaddset(&newmask, SIGTERM);
-            sigaddset(&newmask, SIGABRT);
             sigaddset(&newmask, SIGALRM); // Timeout signal
             sigaddset(&newmask, SIGINT);  // Ctrl-C
             sigaddset(&newmask, SIGUSR1); // CRT signal

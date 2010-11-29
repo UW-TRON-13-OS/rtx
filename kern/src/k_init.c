@@ -34,11 +34,6 @@
 #define NUM_I_PROCESSES 3
 #define TOTAL_NUM_PROCESSES (NUM_I_PROCESSES+NUM_USER_PROCESSES)
 
-void die()
-{
-    k_terminate();
-}
-
 void k_init()
 {
     k_storage_init();
@@ -75,9 +70,12 @@ void k_init()
     k_uart_init();
     k_ipc_init();
 
+#ifdef DEBUG_KERN
     printf("Done Bootup...Starting RTX\n"
            "rtx pid: %u keyboard pid: %u crt pid: %u\n"
-            "=============================================\n", rtx_pid, kb_child_pid, crt_child_pid);
+            "=============================================\n", 
+            rtx_pid, kb_child_pid, crt_child_pid);
+#endif 
 
     // Jump to the first process
     k_enter_scheduler();
@@ -85,9 +83,11 @@ void k_init()
 
 int k_terminate()
 {
+#ifdef DEBUG_KERN
     printf("Shutting down...%u\n", getpid());
     printf("Killing keyboard child...%u\n", kb_child_pid);
     printf("Killing crt child...%u\n", crt_child_pid);
+#endif
 
     k_uart_cleanup();
 
