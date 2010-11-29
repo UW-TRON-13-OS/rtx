@@ -17,7 +17,7 @@ asm_kern_swi:
 	move.l %a5, -(%a7)
 	move.l %a6, -(%a7)
 		
-	jsr	c_trap_handler
+	jsr	kern_swi_handler
 	
 	move.l (%a7)+, %a6
 	move.l (%a7)+, %a5

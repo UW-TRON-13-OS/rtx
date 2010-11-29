@@ -1,7 +1,7 @@
 #ifndef _PROC_QUEUE_H_
 #define _PROC_QUEUE_H_
 
-#include "k_process.h"
+#include "k_structs.h"
 
 typedef struct proc_queue proc_queue_t;
 
