@@ -1,7 +1,7 @@
 #ifndef _KEYBOARD_SHMEM_H_
 #define _KEYBOARD_SHMEM_H_
 
-#define KEYBOARD_BUF_SIZE 80
+#define KEYBOARD_BUF_SIZE 1024
 #define KB_SHMEM_FILENAME "keyboard_shmem.dat"
 #define KB_FLAG_WAIT 1
 #define KB_FLAG_FREE 0
