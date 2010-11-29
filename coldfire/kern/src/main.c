@@ -1,8 +1,7 @@
-#include <stdio.h>
-#include "k_structs.h"
+#include "dbug.h"
 
 int main()
 {
-    printf("sizeof %d\n", sizeof(pcb_t));
+    rtx_dbug_outs("Hello world\n");
     return 0;
 }

@@ -3,6 +3,7 @@
 # Irene Huang, 2010/05/03 
 
 TOP_DIR := ..
+MAIN_FILE := src/main.c
 
 # Add source file name (without .c) here
 OBJ_NAMES=k_api dbug k_init k_primitives k_scheduler k_process \
