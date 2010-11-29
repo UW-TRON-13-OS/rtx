@@ -31,8 +31,11 @@ void k_process_switch(p_status_t next_status)
 
 void k_context_switch(jmp_buf *old_context, jmp_buf *new_context)
 {
+
+#ifdef DEBUG_KERN
     assert(old_context != NULL);
     assert(new_context != NULL);
+#endif
     if (setjmp(*old_context) == 0)
     {
         longjmp(*new_context, RESUME_PROCESS);

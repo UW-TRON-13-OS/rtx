@@ -51,7 +51,6 @@ void process_C()
                        //check for an error case
                        if(request_delay(100, WAKEUP_10, rec_msg) != CODE_SUCCESS)
                        {
-                           //printf("An error occurred.\n");
                        }
                        break;
                    }
