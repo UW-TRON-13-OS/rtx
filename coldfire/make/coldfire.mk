@@ -46,12 +46,13 @@ DIS_ASM_FILES:=$(addprefix $(BIN_DIR)/,  \
 LIB:=$(LIB_DIR)/lib$(MODULE).a
 APP=
 TESTS:=$(addprefix $(TEST_DIR)/, $(notdir $(basename $(TEST_FILES))))
-ifeq ($(MODULE), "kern")
-	APP=rtx
+ifeq ($(MODULE),kern)
+	APP=$(TOP_DIR)/rtx
 endif
 
 # TARGETS
 all: $(APP) $(LIB) $(TESTS)
+	@echo "Building $(APP) $(MODULE)"
 	
 show: $(DIS_ASM_FILES)
 	@echo "Showing dis-assemblies in $(BIN_DIR)"
@@ -70,7 +71,7 @@ $(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM)
 
 $(APP): $(LIB) $(MAIN_FILE) $(START_ASM)
 	@echo "Makeing app $(APP)"
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(MAIN_FILE) $(LIB)
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst
 	@chmod u+x $(APP).s19
