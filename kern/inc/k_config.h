@@ -7,7 +7,7 @@
  * size of memory buffers etc.
  */
 
-#define IPC_NUM_FREE_MSG_ENVS   6
+#define IPC_NUM_FREE_MSG_ENVS   32
 
 #define MAX_NUM_PROCESSES       9
 #define NUM_PRIORITIES          3
