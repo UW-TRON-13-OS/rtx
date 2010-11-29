@@ -16,7 +16,7 @@ msg_env_queue_t* output_queue;
 /*
  * This function is called by the assembly STUB function
  */
-void start_uart_i_process()//VOID c_serial_handler( VOID )
+void uart_i_process()
 {
     int i;
     BYTE temp;
