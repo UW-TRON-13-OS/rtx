@@ -1,6 +1,21 @@
 RTX Project
 -------------------------
 
-Group members: Christopher Wu, Maverick Lee, Wien Leung, Hassaan Aamir
+ACE team number, T8 
+
+Group members: 
+Christopher Wu - 20305170
+Maverick Lee - 20312110
+Wien Leung - 20308651
+Hassaan Aamir - 20303200
+
+The directory contains each module which are built from a top level makefile (or just hte module by their own repsective module).
+
+Kern is the main kernel and the rest are processes or utility libraries
+
+Libraries are built in to lib
+Executibles are built into bin
+
+Run make to compile the rtx. Then cd into bin and run ./kern. NOTE you must run from inside the bin directory or the keyboard and crt helper processes will not start
 
 DISCLAIMER: This is for our own group's project. We do not allow direct copying of our source code or any violations of Policy 71. Therefore please don't plagerize if you're taking a UW OS course
