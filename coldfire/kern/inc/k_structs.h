@@ -5,12 +5,12 @@
 #include "msg_env_queue.h"
 
 typedef struct pcb_context {
-    int32_t stack_ptr;
+    uint32_t stack_ptr;
 } pcb_context_t;
 
 typedef struct pcb {
-    pcb_context_t       context;
     struct pcb *        next;
+    pcb_context_t       context;
     int32_t             pid;
     char *              name;
     uint32_t            priority;
