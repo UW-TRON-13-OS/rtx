@@ -3,7 +3,6 @@
 #include "abc.h"
 #include "msg_env_queue.h"
 
-#include <stdio.h> // TODO remove when done
 #include <string.h>
 
 void process_C()
@@ -63,7 +62,6 @@ void process_C()
                    }
                    else
                    {
-                       printf("AJSLKFDJALSKJFLKDSJF SHOULD NOT BE HERE WAHHHH\n");
                        assert(0);
                    }
                 }

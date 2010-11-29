@@ -2,8 +2,6 @@
 #include "processes.h"
 #include "abc.h"
 
-#include <stdio.h> // TODO remove when done
-
 void process_A()
 {
     //recieve a message env from the CCI
