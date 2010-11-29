@@ -1,8 +1,9 @@
 #include "k_clock.h"
+#include "rtx.h"
 
-static uint64_t clock = 1;
+static uint32_t clock = 1;
 
-uint64_t k_clock_get_system_time()
+uint32_t k_clock_get_system_time()
 {
     return clock;
 }
