@@ -8,6 +8,12 @@
 #include <string.h>
 #include <stdio.h>
 
+void cci_intro(MsgEnv *send_env, msg_env_queue_t *msgQ)
+{
+    RTX_printf(send_env, msgQ, "Welcome to GladOS\n"
+                               "==========================\n");
+}
+
 /** CCI entry point and main loop **/
 void start_cci()
 {
@@ -20,6 +26,9 @@ void start_cci()
     receive_env = request_msg_env();
     status_env = request_msg_env();
     proc_a_env = request_msg_env();
+
+    // Print the introduction
+    cci_intro(send_env, msgQ);
 
     //print CCI prompt
     get_console_chars(receive_env);
@@ -108,6 +117,7 @@ void start_cci()
                 //terminate RTX
                 else if (strcmp(cmd,"t") == 0) 
                 {
+                    RTX_printf(send_env, msgQ, "bye bye\n");
                     terminate();
                 }
                 //change process priority
