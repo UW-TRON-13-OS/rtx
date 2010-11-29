@@ -5,7 +5,13 @@
 #include "msg_env_queue.h"
 #include "rtx_util.h"
 #include <string.h>
-#include <stdio.h> 
+#include <stdio.h>
+
+void cci_intro(MsgEnv *send_env, msg_env_queue_t *msgQ)
+{
+    RTX_printf(send_env, msgQ, "Welcome to GladOS\n"
+                               "==========================\n");
+}
 
 /** CCI entry point and main loop **/
 void start_cci()
@@ -20,13 +26,11 @@ void start_cci()
     status_env = request_msg_env();
     proc_a_env = request_msg_env();
 
-    status = get_console_chars(receive_env);
-    if (status != CODE_SUCCESS)
-    {
-        RTX_printf(send_env, msgQ, "get_console_chars failed with status %d\n",status);
-    }
+    // Print the introduction
+    cci_intro(send_env, msgQ);
 
     //print CCI prompt
+    get_console_chars(receive_env);
     RTX_printf(send_env, msgQ, "CCI: ");
 
     while (1)
@@ -56,14 +60,16 @@ void start_cci()
                         status = send_message (PROCESS_A_PID, proc_a_env);
                         if (status != CODE_SUCCESS)
                         {
-                            RTX_printf(send_env, msgQ, "send_message failed with status %d\n",status);
+                            RTX_printf(send_env, msgQ, 
+                                    "Error: could not jumpstart proces A. "
+                                    "errno %d\n",status);
                         }
-                        release_msg_env(proc_a_env);
                         proc_a_env = NULL;
                     }
                     else
                     {
-                        RTX_printf(send_env, msgQ, "Process A has already been started.\n");
+                        RTX_printf(send_env, msgQ, 
+                                "Process A has already been started.\n");
                     }
                 }
                 //displays process statuses
@@ -72,14 +78,18 @@ void start_cci()
                     status = request_process_status(status_env);
                     if (status != CODE_SUCCESS)
                     {
-                        RTX_printf(send_env, msgQ, "request_process_status failed with status %d\n",status);
+                        RTX_printf(send_env, msgQ, 
+                                "Error: could not get the process statues. "
+                                "errno %d\n",status);
                     }
                     else
                     {
                         status = CCI_printProcessStatuses(status_env->msg,
                                  send_env, msgQ);
                         if (status != CODE_SUCCESS)
-                            RTX_printf(send_env, msgQ, "CCI_printProcessStatuses failed with status %d\n",status);
+                            RTX_printf(send_env, msgQ, 
+                                    "CCI_printProcessStatuses failed with "
+                                    "status %d\n",status);
                     }
                 }
                 //show clock
@@ -106,6 +116,7 @@ void start_cci()
                 //terminate RTX
                 else if (strcasecmp(cmd,"t") == 0) 
                 {
+                    RTX_printf(send_env, msgQ, "bye bye\n");
                     terminate();
                 }
                 //change process priority
@@ -114,14 +125,19 @@ void start_cci()
                     int priority, pid; 
                     if (sscanf(env->msg, "%*s %d %d", &priority, &pid)!=2)
                     {
-                        RTX_printf(send_env, msgQ, "Usageasd: n <priority> <processID>\n");
+                        RTX_printf(send_env, msgQ, "Error Bad command format: "
+                                            "Usage: n <priority> <processID>\n");
                     }
                     else
                     {
                         status = change_priority(priority, pid);
                         if (status == ERROR_ILLEGAL_ARG)
-                            RTX_printf(send_env, msgQ, "Usage: n <priority> <processID>\n");
-                        if (status != CODE_SUCCESS)
+                            RTX_printf(send_env, msgQ, 
+                                    "Usage: n <priority> <processID>\n"
+                                    "priority must be 0-2 and "
+                                    "processID must be a user process other "
+                                    "than the null process\n");
+                        else if (status != CODE_SUCCESS)
                             RTX_printf(send_env, msgQ, "CCI_setNewPriority failed with status %d\n",status);
                     }
                 }
@@ -141,8 +157,11 @@ void start_cci()
                         if (status == ERROR_ILLEGAL_ARG)
                         {
                             RTX_printf(send_env, msgQ, "c\n"
-                                       "Sets the console clock.\n"
-                                       "Usage: c <hh:mm:ss>\n");
+                                       "Sets the console clock (24h).\n"
+                                       "Usage: c <hh:mm:ss>\n"
+                                       "hh must be 00-23\n"
+                                       "mm must be 00-59\n"
+                                       "ss must be 00-59\n");
                         }
                         else if (status != CODE_SUCCESS)
                         {

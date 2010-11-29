@@ -73,7 +73,7 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
             break;
         }
         
-        if (recv_dump[i].time_stamp != 0)
+        if (recv_dump[i].time_stamp != MAX_UINT32)
         {
             RTX_printf(send_env, msgQ, "   %2u |   %2u |   %3d | %6u\n",send_dump[i].dest_pid,
                        recv_dump[i].send_pid, recv_dump[i].msg_type,
