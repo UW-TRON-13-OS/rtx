@@ -1,7 +1,7 @@
 #ifndef _CRT_SHMEM_H_
 #define _CRT_SHMEM_H_
 
-#define CRT_BUF_SIZE 80
+#define CRT_BUF_SIZE 1024
 #define CRT_SHMEM_FILENAME "crt_shmem.dat"
 #define CRT_FLAG_WAIT 1
 #define CRT_FLAG_FREE 0
