@@ -1,6 +1,7 @@
 #include "k_primitives.h"
 #include "k_structs.h"
 #include "k_globals.h"
+#include "dbug.h"
 
 msg_env_queue_t *free_env_q;
 
@@ -159,11 +160,20 @@ int k_change_priority(int new_priority, int target_process_id)
 }
 
 /** 5.4 Timing Servicies **/
-int k_request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
+int k_request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
+{
+    return -1;
+}
 
 /** 5.5 System Console I/O **/
-int k_send_console_chars(MsgEnv *msg_env);
-int k_get_console_chars(MsgEnv *msg_env);
+int k_send_console_chars(MsgEnv *msg_env)
+{
+    return -1;
+}
 
 /** 5.6 Interprocess Message Trace **/
-int k_get_trace_buffers(MsgEnv* msg_env);
+int k_get_trace_buffers(MsgEnv* msg_env)
+{
+    msg_env->msg = "Inside the kernel\n";
+    return 0;
+}

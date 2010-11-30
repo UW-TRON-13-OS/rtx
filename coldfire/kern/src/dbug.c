@@ -49,3 +49,21 @@ int32_t rtx_dbug_outs( char* s )
     }
     return RTX_SUCCESS;
 }
+
+void rtx_dbug_uint(uint32_t num)
+{
+    if (num == 0)
+    {
+        rtx_dbug_outs("0");
+    }
+
+    char buf[128];
+    buf[127] = '\0';
+    int i = 126;
+    while (num)
+    {
+        buf[i--] = (num % 10) + '0';
+        num /= 10;
+    }
+    rtx_dbug_outs(&buf[i+1]);
+}

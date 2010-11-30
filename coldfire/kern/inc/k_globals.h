@@ -28,7 +28,7 @@ extern proc_pq_t *ready_pq;
 extern proc_pq_t *blocked_request_env_pq;
 
 void k_process_switch(enum process_state transition_to);
-void k_context_switch(pcb_t * prev, pcb_t * next);
+void k_context_switch(pcb_context_t * old_context, pcb_context_t * new_context);
 
 // Memory allocation
 void * k_malloc(uint32_t size);
