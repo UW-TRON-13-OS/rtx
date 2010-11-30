@@ -12,5 +12,6 @@
 
 void rtx_dbug_out_char( char c );   // output a char to janusROM terminal
 int32_t rtx_dbug_outs( char* s );    // output a string to janusROM terminal
+void rtx_dbug_uint(uint32_t num);
 
 #endif /* _DBUG_H_ */

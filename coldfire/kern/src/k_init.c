@@ -76,7 +76,7 @@ void init_uart()
 void init_kern_swi()
 {
     // TRAP #0
-    asm( "move.l #kern_swi_entry, %d0" );
+    asm( "move.l #asm_kern_swi, %d0" );
     asm( "move.l %d0,0x10000080" );
 }
 
@@ -127,17 +127,31 @@ void init_msg_envs()
     free_env_q = msg_env_queue_create();
 }
 
+void init_fake_stack_frame(pcb_t * pcb)
+{
+#define FORMAT 0x40000000  // Assume 'a7' was previous aligned on 0 modulo 4
+#define FS_3_2 0x0     // No fault
+#define Vector_7_0 (32<<(2+16))   // Trap interrupt
+#define FS_1_0 0x0     // No fault
+#define STATUS_REG 0x70 // Interrupt 7 - cleared CSR
+#define FAKE_FV_STATUS_CONSTANT (FORMAT|FS_3_2|Vector_7_0|FS_1_0|STATUS_REG)
+    uint32_t * fake_stack_ptr = ((uint32_t *) pcb->stack_end) - 1;
+    *fake_stack_ptr-- = (uint32_t) pcb->start;
+    *fake_stack_ptr = FAKE_FV_STATUS_CONSTANT;
+    pcb->context.stack_ptr = *fake_stack_ptr;
+}
+
 int k_init ()
 {
     /* Disable all interupts */
-    asm( "move.w #0x2700,%sr" );
+    asm("move.w #0x2700,%sr");
 
     coldfire_vbr_init();
     init_uart();
     init_kern_swi();
 
     /* Enable all interupts */
-    asm( "move.w #0x2000,%sr" );
+    asm("move.w #0x2000,%sr");
 
     return 0;
 }
