@@ -6,7 +6,10 @@
 void * k_malloc(uint32_t size)
 {
     static uint32_t origin = MEMORY_START;
-    if ( size == 0 || size % 4 != 0 || (origin + size) > MEMORY_END )
+
+    //align to even boundary
+    size = (size+1) & 0x00000001 
+    if ( size == 0 || (origin + size) > MEMORY_END )
     {
         return NULL;
     }
