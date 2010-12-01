@@ -10,9 +10,10 @@ int __main(void)
 
 int main()
 {
+    char buf[1024];
     MsgEnv msg_env;
-    msg_env.msg = NULL;
-    k_init();
+    msg_env.msg = buf;
+    k_init(NULL, 0);
     rtx_dbug_uint((uint32_t)&msg_env);
     rtx_dbug_out_char('\n');
     rtx_dbug_uint((uint32_t)msg_env.msg);

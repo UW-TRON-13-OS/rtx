@@ -57,6 +57,7 @@ typedef signed long int     uint8_t;
 typedef unsigned char       byte;
 typedef signed long int     bool;
 
+#define MAX_UINT32 ((uint32_t) -1)
 
 #define ESC                 0x1B
 #define BKSP                '\b'

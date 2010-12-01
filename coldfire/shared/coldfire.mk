@@ -24,7 +24,8 @@ SHARED_DIR:=$(TOP_DIR)/shared
 LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
-CFLAGS=-Wall -m5307 -pipe -nostdlib -I$(INC_DIR) -I$(TOP_DIR)/inc
+INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc
+CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE)
 
 vpath %.c $(SRC_DIR)
 vpath %.h $(INC_DIR)
