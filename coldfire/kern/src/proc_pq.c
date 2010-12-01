@@ -1,7 +1,7 @@
 #include "proc_pq.h"
 #include "proc_queue.h"
-
-#include <stdlib.h>
+#include "k_globals.h"
+#include "dbug.h"
 
 struct proc_pq {
     uint32_t num_priorities;
@@ -15,50 +15,15 @@ proc_pq_t * proc_pq_create(uint32_t num_priorities)
         return NULL;
     }
 
-    proc_pq_t * ppq = malloc(sizeof(*ppq));
-    if (ppq)
+    proc_pq_t * ppq = k_malloc(sizeof(*ppq));
+    ppq->priority_queues = k_malloc(sizeof(*ppq->priority_queues) * num_priorities);
+    ppq->num_priorities = num_priorities;
+    int i;
+    for (i = 0; i < num_priorities; i++)
     {
-        int allocation_error = 0;
-        ppq->priority_queues = malloc(sizeof(*ppq->priority_queues) * num_priorities);
-        if (ppq->priority_queues)
-        {
-            int priority;
-            for (priority = 0; priority < num_priorities; priority++)
-            {
-                ppq->priority_queues[priority] = proc_queue_create();
-                allocation_error = allocation_error || !ppq->priority_queues[priority];
-            }
-        }
-        else
-        {
-            allocation_error = 1;
-        }
-        ppq->num_priorities = num_priorities;
-
-        if (allocation_error)
-        {
-            proc_pq_destroy(ppq);
-            ppq = NULL;
-        }
+        ppq->priority_queues[i] = proc_queue_create();
     }
     return ppq;
-}
-
-void proc_pq_destroy(proc_pq_t * ppq)
-{
-    if (ppq)
-    {
-        if (ppq->priority_queues)
-        {
-            int priority;
-            for (priority = 0; priority < ppq->num_priorities; priority++)
-            {
-                 proc_queue_destroy(ppq->priority_queues[priority]);
-            }
-            free(ppq->priority_queues);
-        }
-        free(ppq);
-    }
 }
 
 pcb_t * proc_pq_dequeue(proc_pq_t *ppq)
@@ -90,8 +55,6 @@ int proc_pq_enqueue(proc_pq_t *ppq, pcb_t * pcb)
         return ERROR_ILLEGAL_ARG;
     }
 
-    assert(!pcb->is_i_process);
-
     return proc_queue_enqueue(ppq->priority_queues[pcb->priority], pcb);
 }
 
@@ -110,3 +73,16 @@ pcb_t * proc_pq_remove(proc_pq_t * ppq, pcb_t *pcb)
 
     return NULL;
 }
+
+void proc_pq_print(proc_pq_t* ppq)
+{
+    dbug_uint("ppq # priorities ", ppq->num_priorities);
+    int i;
+    for (i = 0; i < ppq->num_priorities; i++)
+    {
+        rtx_dbug_outs("     priority ");
+        rtx_dbug_uint(i);
+        proc_queue_print(ppq->priority_queues[i]);
+    }
+}
+

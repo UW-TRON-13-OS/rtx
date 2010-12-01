@@ -39,30 +39,38 @@ void k_uart_init()
     kb_fid = open(KEYBOARD_SHMEM_FILE, O_RDWR | O_CREAT /*| O_EXCL*/, (mode_t) 0755);
     if (kb_fid < 0 )
     {
+#ifdef DEBUG_KERN
         printf("Bad open on file %s\n", KEYBOARD_SHMEM_FILE);
+#endif
         exit(1);
     }
 
     status = ftruncate(kb_fid, sizeof(recv_buf_t));
     if (status != 0) 
     {
+#ifdef DEBUG_KERN
         printf("Could not truncate the file %s to %d bytes. status %d\n", 
                 KEYBOARD_SHMEM_FILE, sizeof(recv_buf_t), status);
+#endif
         exit(1);
     }
 
     crt_fid = open(CRT_SHMEM_FILE, O_RDWR | O_CREAT /*| O_EXCL*/, (mode_t) 0755);
     if (crt_fid < 0 )
     {
+#ifdef DEBUG_KERN
         printf("Bad open on mmap file %s\n", CRT_SHMEM_FILE);
+#endif
         exit(1);
     }
 
     status = ftruncate(crt_fid, sizeof(send_buf_t));
     if (status != 0) 
     {
+#ifdef DEBUG_KERN
         printf("Could not truncate the file %s to %d bytes. status %d\n", 
                 CRT_SHMEM_FILE, sizeof(send_buf_t), status);
+#endif
         exit(1);
     }
     
@@ -72,7 +80,9 @@ void k_uart_init()
     void *  mmap_ptr = mmap(NULL, sizeof(recv_buf_t), PROT_READ | PROT_WRITE, MAP_SHARED, kb_fid, 0);
     if (mmap_ptr == MAP_FAILED)
     {
+#ifdef DEBUG_KERN
         printf("Could not create mmap pointer to %s\n", KEYBOARD_SHMEM_FILE);
+#endif
         exit(1);
     }
     kb_buf = (recv_buf_t *) mmap_ptr;
@@ -85,7 +95,9 @@ void k_uart_init()
     {
         sprintf(arg2, "%d", kb_fid);
         execl("./keyboard", "keyboard", arg1, arg2, NULL);
+#ifdef DEBUG_KERN
         printf("SHOULD NOT REACH HERE keyboard %s\n", strerror(errno));
+#endif
         kill(rtx_pid, SIGINT);
         exit(1);
     }
@@ -95,7 +107,9 @@ void k_uart_init()
     mmap_ptr = mmap(NULL, sizeof(send_buf_t), PROT_READ | PROT_WRITE, MAP_SHARED, crt_fid, 0);
     if (mmap_ptr == MAP_FAILED)
     {
+#ifdef DEBUG_KERN
         printf("Could not create mmap pointer to %s\n", CRT_SHMEM_FILE);
+#endif
         exit(1);
     }
     crt_buf = (send_buf_t *)mmap_ptr;
@@ -105,7 +119,9 @@ void k_uart_init()
     {
         sprintf(arg2, "%d", crt_fid);
         execl("./crt", "crt", arg1, arg2, NULL);
+#ifdef DEBUG_KERN
         printf("SHOULD NOT REACH HERE crt\n");
+#endif
         kill(rtx_pid, SIGINT);
         exit(1);
     }
@@ -124,26 +140,34 @@ void k_uart_cleanup()
     int status = munmap(kb_buf, sizeof(*kb_buf));
     if (status == FAIL)
     {
+#ifdef DEBUG_KERN
         printf("Unmapping the keyboard shared memory failed\n");
+#endif
     }
 
     status = munmap(crt_buf, sizeof(*crt_buf));
     if (status == FAIL)
     {
+#ifdef DEBUG_KERN
         printf("Unmapping the keyboard shared memory failed\n");
+#endif
     }
 
     // Delete shared memory file
     status = unlink(KEYBOARD_SHMEM_FILE);
     if (status == FAIL)
     {
+#ifdef DEBUG_KERN
         printf("Deleting the keyboard shared memory file failed\n");
+#endif
     }
 
     status = unlink(CRT_SHMEM_FILE);
     if (status == FAIL)
     {
+#ifdef DEBUG_KERN
         printf("Deleting the crt shared memory file failed\n");
+#endif
     }
 }
 

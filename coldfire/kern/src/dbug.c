@@ -13,8 +13,14 @@
  * @param: c the charcter to output to janusROM  
  */
 
+bool enable_debug = 0;
+
 void rtx_dbug_out_char( char c )
 {
+    if (!enable_debug)
+    {
+        return;
+    }
 	
     /* Store registers */
     asm( "move.l %d0, -(%a7)" );
@@ -49,3 +55,64 @@ int32_t rtx_dbug_outs( char* s )
     }
     return RTX_SUCCESS;
 }
+
+void rtx_dbug_uint(uint32_t num)
+{
+    if (num == 0)
+    {
+        rtx_dbug_outs("0");
+    }
+
+    char buf[128];
+    buf[127] = '\0';
+    int i = 126;
+    while (num)
+    {
+        buf[i--] = (num % 10) + '0';
+        num /= 10;
+    }
+    rtx_dbug_outs(&buf[i+1]);
+}
+
+int32_t dbug( char* s )
+{
+    rtx_dbug_outs(s);
+    return rtx_dbug_outs("\r\n");
+}
+
+int32_t dbug_uint( char* s, uint32_t num)
+{
+    rtx_dbug_outs(s); 
+    rtx_dbug_uint(num);
+    return rtx_dbug_outs("\r\n");
+}
+
+int32_t dbug_hex( char *s, uint32_t hex)
+{
+    return dbug_ptr(s, (void *) hex);
+}
+
+int32_t dbug_ptr( char *s, void * ptr)
+{
+    rtx_dbug_outs(s);
+    rtx_dbug_outs("0x");
+
+    char * map = "0123456789ABCDEF";
+    uint32_t nptr = (uint32_t) ptr;
+    if (nptr == 0)
+    {
+        return rtx_dbug_outs("0\r\n");
+    }
+
+    char buf[128];
+    buf[127] = '\0';
+    int i = 126;
+    while (nptr)
+    {
+        buf[i--] = map[nptr % 16];
+        nptr /= 16;
+    }
+    rtx_dbug_outs(&buf[i+1]);
+    return rtx_dbug_outs("\r\n");
+}
+

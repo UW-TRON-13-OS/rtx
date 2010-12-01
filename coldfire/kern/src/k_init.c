@@ -4,11 +4,7 @@
 #include "k_globals.h"
 #include "msg_env_queue.h"
 
-// We need this function because of gcc
-int __main(void)
-{
-    return 0;
-}
+pcb_context_t main_context;
 
 SINT32 coldfire_vbr_init( VOID )
 {
@@ -31,7 +27,7 @@ void init_uart()
     /*
      * Store the serial ISR at user vector #64
      */
-    asm( "move.l #asm_serial_entry,%d0" );
+    asm( "move.l #asm_uart_entry,%d0" );
     asm( "move.l %d0,0x10000100" );
 
     /* Reset the entire UART */
@@ -82,7 +78,7 @@ void init_uart()
 void init_kern_swi()
 {
     // TRAP #0
-    asm( "move.l #kern_swi_entry, %d0" );
+    asm( "move.l #asm_kern_swi, %d0" );
     asm( "move.l %d0,0x10000080" );
 }
 
@@ -128,22 +124,57 @@ void init_timer()
     SIM_IMR = mask;    
 }
 
-void init_msg_envs()
+void init_ipc()
 {
+#define BUF_SIZE = (sizeof(*send_trace_buf.buf) * IPC_MESSAGE_TRACE_HISTORY_SIZE)
     free_env_q = msg_env_queue_create();
+    send_trace_buf.tail = 0;
+    send_trace_buf.buf = k_malloc(sizeof(*send_trace_buf.buf) * 
+                                  IPC_MESSAGE_TRACE_HISTORY_SIZE);
+    recv_trace_buf.tail = 0;
+    recv_trace_buf.buf = k_malloc(sizeof(*recv_trace_buf.buf) * 
+                                  IPC_MESSAGE_TRACE_HISTORY_SIZE);
 }
 
-int k_init ()
+int k_init(pcb_init_t process_init[], uint32_t num_processes)
 {
     /* Disable all interupts */
-    asm( "move.w #0x2700,%sr" );
+ //   asm("move.w #0x2700,%sr");
 
+    dbug("Initializing vbr...");
     coldfire_vbr_init();
+    dbug("Initializing uart...");
     init_uart();
+    dbug("Initializing kern swi...");
     init_kern_swi();
+    dbug("Initializing kern ipc...");
+    init_ipc();
+
+    dbug("Initializing priority queues...");
+    ready_pq = proc_pq_create(NUM_PRIORITIES + ADDITIONAL_NULL_PRIORITY);
+    blocked_request_env_pq = proc_pq_create(NUM_PRIORITIES);
+    rtx_dbug_outs("ready_pq ");
+    rtx_dbug_uint((uint32_t)ready_pq);
+    dbug("");
+    rtx_dbug_outs("blocked_request_env_pq ");
+    rtx_dbug_uint((uint32_t)blocked_request_env_pq);
+    dbug("");
+
+    // Initialize all of the processes
+    dbug("Initializing processes...");
+    init_processes(process_init, num_processes);
 
     /* Enable all interupts */
-    asm( "move.w #0x2000,%sr" );
+//    asm("move.w #0x2000,%sr");
+
+    rtx_dbug_outs("Dequeueing ");
+    current_process = proc_pq_dequeue(ready_pq);
+    current_process->state = P_EXECUTING;
+    //dbug(current_process->name);
+    dbug("Starting OS!");
+    k_context_switch(&main_context, &current_process->context);
+
+    rtx_dbug_outs("SHOULD NOT ARRIVE HERE\r\n");
 
     return 0;
 }

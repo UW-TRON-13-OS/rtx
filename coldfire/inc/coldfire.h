@@ -27,8 +27,8 @@
  *
  ******************************************************************/
 
-#if !defined( RTX_BASE_H__ )
-#define RTX_BASE_H__
+#ifndef _COLDFIRE_H_
+#define _COLDFIRE_H_
 
 /******************************************************************
  *                      CONSTANTS
@@ -43,7 +43,7 @@
 #define UINT16  unsigned short int
 #define SINT8   signed char
 #define UINT8   unsigned char
-#define CHAR    signed char
+#define CHAR    char
 #define BYTE    unsigned char
 #define VOID    void
 #define BOOLEAN signed long int
@@ -57,11 +57,13 @@ typedef signed long int     uint8_t;
 typedef unsigned char       byte;
 typedef signed long int     bool;
 
+#define MAX_UINT32 ((uint32_t) -1)
 
 #define ESC                 0x1B
 #define BKSP                '\b'
 #define CR                  '\r'
 #define LF                  '\n'
+#define CRLF                "\r\n"
 
 
 #if !defined( TRUE )
@@ -76,6 +78,12 @@ typedef signed long int     bool;
 #define NULL 0
 #endif
 
+/*
+ * Memory Layouts
+ */
+extern byte __end;
+#define HEAP_START ((uint32_t)&__end)
+#define MEMORY_END 0x10200000
 
 /*
  * Coldfire system defines

@@ -9,6 +9,7 @@
 
 static pcb_t* interrupted_process;
 
+#ifdef DEBUG_KERN
 void print_status_info()
 {
     MsgEnv env;
@@ -43,6 +44,8 @@ void print_status_info()
         printf(" %d\n",*data++);
     }
 }
+#endif // DEBUG_KERN
+
 void handle_signal(int sig_num)
 {
     atomic(ON);
@@ -54,9 +57,11 @@ void handle_signal(int sig_num)
     switch (sig_num)
     {
         case SIGINT: 
+#ifdef DEBUG_KERN
             printf("Interrupted in process %s\n", current_process->name);
             printf("Num free envelopes: %d\n", msg_env_queue_size(free_env_q));
             print_status_info();
+#endif
         case SIGBUS: 
         case SIGHUP: 
         case SIGILL: 
@@ -64,7 +69,9 @@ void handle_signal(int sig_num)
         case SIGSEGV: 
         case SIGTERM: 
         case SIGABRT: 
+#ifdef DEBUG_KERN
             printf("Terminating with signal %d\n", sig_num);
+#endif
             k_terminate();
             break;
         case SIGALRM: 
@@ -77,7 +84,9 @@ void handle_signal(int sig_num)
             k_i_process_enter(&p_table[CRT_I_PROCESS_PID]);
             break;
         default:
+#ifdef DEBUG_KERN
             printf("Unknown signal: %d/n",sig_num);
+#endif
             k_terminate();
     }
 
