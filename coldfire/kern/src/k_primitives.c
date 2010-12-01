@@ -1,14 +1,22 @@
 #include "k_primitives.h"
 #include "k_structs.h"
 #include "k_globals.h"
+#include "k_clock.h"
 #include "dbug.h"
 
 msg_env_queue_t *free_env_q;
 
+#define circle_index(i) ((i)%IPC_MESSAGE_TRACE_HISTORY_SIZE)
+static int _find_trace_buf_head(trace_circle_buf_t *buf);
+static void _log_msg_event(trace_circle_buf_t *buf, MsgEnv *msg_env);
+
+trace_circle_buf_t send_trace_buf;
+trace_circle_buf_t recv_trace_buf;
+
 /** 5.1 Interprocess Communication **/
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
-    if(msg_env == NULL)
+    if(msg_env == NULL || msg_env->msg == NULL)
     {
         return ERROR_NULL_ARG;
     }
@@ -29,7 +37,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
         proc_pq_enqueue(ready_pq, dest_pcb );
     }
 
-    //_log_msg_event(&_send_trace_buf, msg_env);
+    _log_msg_event(&send_trace_buf, msg_env);
 
     return CODE_SUCCESS;
 }
@@ -46,7 +54,7 @@ MsgEnv * k_receive_message()
     }
 
     MsgEnv *msg_env = msg_env_queue_dequeue(current_process->recv_msgs);
-//    _log_msg_event(&_recv_trace_buf, msg_env);
+    _log_msg_event(&recv_trace_buf, msg_env);
 
     return msg_env;
 }
@@ -70,7 +78,7 @@ MsgEnv * k_request_msg_env()
 
 int k_release_msg_env(MsgEnv * msg_env)
 {
-    if (msg_env == NULL)
+    if (msg_env == NULL || msg_env->msg == NULL)
     {
         return ERROR_NULL_ARG;
     }
@@ -95,7 +103,7 @@ int k_release_processor()
 
 int k_request_process_status(MsgEnv *msg_env)
 {
-    if (msg_env == NULL)
+    if (msg_env == NULL || msg_env->msg == NULL)
     {
         return ERROR_NULL_ARG;
     }
@@ -174,6 +182,56 @@ int k_send_console_chars(MsgEnv *msg_env)
 /** 5.6 Interprocess Message Trace **/
 int k_get_trace_buffers(MsgEnv* msg_env)
 {
-    msg_env->msg = "Inside the kernel\n";
-    return 0;
+    if (msg_env == NULL || msg_env->msg == NULL)
+    {
+        return ERROR_NULL_ARG;
+    }
+
+    int i, send_head, recv_head;
+
+    // Find the heads of the trace buffers
+    send_head = _find_trace_buf_head(&send_trace_buf);
+    recv_head = _find_trace_buf_head(&recv_trace_buf);
+
+    // Dump the sent messages and received messages
+    ipc_trace_t *send_dump = (ipc_trace_t *) msg_env->msg;
+    ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE;
+
+    for (i = 0; i < IPC_MESSAGE_TRACE_HISTORY_SIZE; i++)
+    {
+        ipc_trace_t *trace = &send_trace_buf.buf[circle_index(send_head+i)];
+        send_dump->dest_pid = trace->dest_pid;
+        send_dump->send_pid = trace->send_pid;
+        send_dump->msg_type = trace->msg_type;
+        send_dump->time_stamp = trace->time_stamp;
+        send_dump++;
+
+        trace = &recv_trace_buf.buf[circle_index(recv_head+i)];
+        recv_dump->dest_pid = trace->dest_pid;
+        recv_dump->send_pid = trace->send_pid;
+        recv_dump->msg_type = trace->msg_type;
+        recv_dump->time_stamp = trace->time_stamp;
+        recv_dump++;
+    }
+    return CODE_SUCCESS;
+}
+
+int _find_trace_buf_head(trace_circle_buf_t *tbuf)
+{
+    int head = circle_index(tbuf->tail);
+    while (tbuf->buf[head].time_stamp == MAX_UINT32 &&
+           head != circle_index(tbuf->tail-1)) 
+    {
+        head = circle_index(head + 1);
+    }
+    return head;
+}
+
+void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
+{
+    tbuf->buf[tbuf->tail].dest_pid = msg_env->dest_pid;
+    tbuf->buf[tbuf->tail].send_pid = msg_env->send_pid;
+    tbuf->buf[tbuf->tail].msg_type = msg_env->msg_type;
+    tbuf->buf[tbuf->tail].time_stamp = k_clock_get_system_time();
+    tbuf->tail = circle_index(tbuf->tail + 1);
 }

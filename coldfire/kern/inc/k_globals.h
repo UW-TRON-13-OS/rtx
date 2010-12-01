@@ -9,7 +9,9 @@
 // process pids
 #define NULL_PID 0
 #define CCI_PID -1
-#define UART_I_PROCESS_PID -2
+#define CRT_PID -2
+#define UART_I_PROCESS_PID -3
+#define TIMER_I_PROCESS_PID -4
 
 // Process priorities
 #define NUM_PRIORITIES 3
@@ -17,6 +19,9 @@
 #define HIGHEST_PRIORITY 0
 #define LOWEST_PRIORITY  2
 #define NULL_PRIORITY    3
+
+// Msg
+#define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
 
 // Processes
 extern pcb_t * current_process;
@@ -35,5 +40,7 @@ void * k_malloc(uint32_t size);
 
 // Msg Resources
 extern msg_env_queue_t * free_env_q;
+extern trace_circle_buf_t send_trace_buf;
+extern trace_circle_buf_t recv_trace_buf;
 
 #endif

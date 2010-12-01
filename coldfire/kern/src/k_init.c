@@ -122,26 +122,19 @@ void init_timer()
     SIM_IMR = mask;    
 }
 
-void init_msg_envs()
+void init_ipc()
 {
+#define BUF_SIZE = (sizeof(*send_trace_buf.buf) * IPC_MESSAGE_TRACE_HISTORY_SIZE)
     free_env_q = msg_env_queue_create();
+    send_trace_buf.tail = 0;
+    send_trace_buf.buf = k_malloc(sizeof(*send_trace_buf.buf) * 
+                                  IPC_MESSAGE_TRACE_HISTORY_SIZE);
+    recv_trace_buf.tail = 0;
+    recv_trace_buf.buf = k_malloc(sizeof(*recv_trace_buf.buf) * 
+                                  IPC_MESSAGE_TRACE_HISTORY_SIZE);
 }
 
-void init_fake_stack_frame(pcb_t * pcb)
-{
-#define FORMAT 0x40000000  // Assume 'a7' was previous aligned on 0 modulo 4
-#define FS_3_2 0x0     // No fault
-#define Vector_7_0 (32<<(2+16))   // Trap interrupt
-#define FS_1_0 0x0     // No fault
-#define STATUS_REG 0x70 // Interrupt 7 - cleared CSR
-#define FAKE_FV_STATUS_CONSTANT (FORMAT|FS_3_2|Vector_7_0|FS_1_0|STATUS_REG)
-    uint32_t * fake_stack_ptr = ((uint32_t *) pcb->stack_end) - 1;
-    *fake_stack_ptr-- = (uint32_t) pcb->start;
-    *fake_stack_ptr = FAKE_FV_STATUS_CONSTANT;
-    pcb->context.stack_ptr = *fake_stack_ptr;
-}
-
-int k_init ()
+int k_init(pcb_init_t process_init[], uint32_t num_processes)
 {
     /* Disable all interupts */
     asm("move.w #0x2700,%sr");
@@ -149,6 +142,10 @@ int k_init ()
     coldfire_vbr_init();
     init_uart();
     init_kern_swi();
+    init_ipc();
+
+    // Initialize all of the processes
+    init_processes(process_init, num_processes);
 
     /* Enable all interupts */
     asm("move.w #0x2000,%sr");
