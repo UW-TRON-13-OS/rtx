@@ -1,6 +1,7 @@
 #include "proc_pq.h"
 #include "proc_queue.h"
 #include "k_globals.h"
+#include "dbug.h"
 
 struct proc_pq {
     uint32_t num_priorities;
@@ -16,6 +17,12 @@ proc_pq_t * proc_pq_create(uint32_t num_priorities)
 
     proc_pq_t * ppq = k_malloc(sizeof(*ppq));
     ppq->priority_queues = k_malloc(sizeof(*ppq->priority_queues) * num_priorities);
+    ppq->num_priorities = num_priorities;
+    int i;
+    for (i = 0; i < num_priorities; i++)
+    {
+        ppq->priority_queues[i] = proc_queue_create();
+    }
     return ppq;
 }
 
@@ -66,3 +73,16 @@ pcb_t * proc_pq_remove(proc_pq_t * ppq, pcb_t *pcb)
 
     return NULL;
 }
+
+void proc_pq_print(proc_pq_t* ppq)
+{
+    dbug_uint("ppq # priorities ", ppq->num_priorities);
+    int i;
+    for (i = 0; i < ppq->num_priorities; i++)
+    {
+        rtx_dbug_outs("     priority ");
+        rtx_dbug_uint(i);
+        proc_queue_print(ppq->priority_queues[i]);
+    }
+}
+

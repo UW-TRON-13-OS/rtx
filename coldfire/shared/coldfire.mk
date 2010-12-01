@@ -67,7 +67,7 @@ clean:
 $(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
 	@echo "	   Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@.bin $(START_ASM) $(ASM) $(LIB) $<
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< $(LIB)
 	@$(OBJCPY) $@.bin $@.s19
 	@$(OBJDMP) $@.bin > $@.lst
 	@chmod u+x $@.s19
