@@ -13,7 +13,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env,
     int num_processes = *data++;
     int i;
 	send_env->msg = "PID | STATUS                | PRIORITY\n\0";
-    RTX_printf(send_env);
+    send_console_chars(send_env);
     for (i=0;i<num_processes;i++)
     {
 		CHAR format = "  %d   \0";
