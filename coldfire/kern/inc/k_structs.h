@@ -20,6 +20,7 @@ typedef struct pcb {
     start_pc            start;
     byte *              stack_begin;
     uint32_t *          stack_bottom;
+    bool                first_time;
 } pcb_t;
 
 typedef struct pcb_init {
