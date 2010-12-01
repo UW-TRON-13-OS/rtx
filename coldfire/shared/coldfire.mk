@@ -12,6 +12,8 @@ LDFLAGS=-T$(TOP_DIR)/shared/rtx.ld -Wl,-Map=hello.map
 MKDIR=mkdir -p
 CD =cd
 
+ASM=$(wildcard $(SRC_DIR)/*.s)
+
 MODULE=$(shell basename $(shell pwd))
 
 SRC_DIR:=src
@@ -22,7 +24,8 @@ SHARED_DIR:=$(TOP_DIR)/shared
 LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
-CFLAGS=-Wall -m5307 -pipe -nostdlib -I$(INC_DIR) -I$(TOP_DIR)/inc
+INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc
+CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE)
 
 vpath %.c $(SRC_DIR)
 vpath %.h $(INC_DIR)
@@ -46,12 +49,13 @@ DIS_ASM_FILES:=$(addprefix $(BIN_DIR)/,  \
 LIB:=$(LIB_DIR)/lib$(MODULE).a
 APP=
 TESTS:=$(addprefix $(TEST_DIR)/, $(notdir $(basename $(TEST_FILES))))
-ifeq ($(MODULE), "kern")
-	APP=rtx
+ifeq ($(MODULE),kern)
+	APP=$(TOP_DIR)/rtx
 endif
 
 # TARGETS
 all: $(APP) $(LIB) $(TESTS)
+	@echo "Building $(APP) $(MODULE)"
 	
 show: $(DIS_ASM_FILES)
 	@echo "Showing dis-assemblies in $(BIN_DIR)"
@@ -60,17 +64,17 @@ clean:
 	@rm -rf $(BIN_DIR) *.s19 *.o *.bin *.lst *.map $(LIB)
 
 # RULES
-$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM)
+$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
 	@echo "	   Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@.bin $(START_ASM) $(LIB) $<
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< $(LIB)
 	@$(OBJCPY) $@.bin $@.s19
 	@$(OBJDMP) $@.bin > $@.lst
 	@chmod u+x $@.s19
 
-$(APP): $(LIB) $(MAIN_FILE) $(START_ASM)
+$(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM)
 	@echo "Makeing app $(APP)"
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) $(LIB)
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst
 	@chmod u+x $(APP).s19

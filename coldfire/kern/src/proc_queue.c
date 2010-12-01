@@ -1,6 +1,6 @@
 #include "proc_queue.h"
-
-#include <stdlib.h>
+#include "k_globals.h"
+#include "dbug.h"
 
 struct proc_queue {
     pcb_t *head;
@@ -9,17 +9,16 @@ struct proc_queue {
 
 proc_queue_t * proc_queue_create()
 {
-    proc_queue_t * queue = malloc(sizeof(*queue));
+    proc_queue_t * queue = k_malloc(sizeof(*queue));
     if (queue)
     {
         queue->head = queue-> tail = NULL;
     }
+    else
+    {
+        dbug("WTFFF");
+    }
     return queue;
-}
-
-void proc_queue_destroy(proc_queue_t * queue)
-{
-    free(queue);
 }
 
 int proc_queue_is_empty(proc_queue_t* queue)
@@ -59,7 +58,6 @@ int proc_queue_enqueue(proc_queue_t * queue, pcb_t * pcb)
         return ERROR_NULL_ARG;
     }
 
-    assert(pcb->next == NULL);
     if (proc_queue_is_empty(queue))
     {
         queue->head = pcb;
@@ -102,3 +100,18 @@ pcb_t * proc_queue_remove(proc_queue_t * queue, pcb_t *pcb)
 
     return NULL;
 }
+
+void proc_queue_print(proc_queue_t * queue)
+{
+    rtx_dbug_outs("     [ -> ");
+    pcb_t *node = queue->head;
+    while (node != NULL)
+    {
+        //rtx_dbug_uint((uint32_t) node);
+        rtx_dbug_outs(node->name);
+        rtx_dbug_outs(" -> ");
+        node = node->next;
+    }
+    dbug("]");
+}
+

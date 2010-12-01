@@ -1,9 +1,10 @@
-#include "timer_isr.h"
-#include "k_ipc.h"
+#include "timer_i_process.h"
+#include "rtx.h"
 #include "k_clock.h"
+#include "k_primitives.h"
 #include "timeout_queue.h"
 
-void timer_isr()
+void timer_i_process()
 {
     //Acknowledge the interrupt
     TIMER0_TER = 2;
