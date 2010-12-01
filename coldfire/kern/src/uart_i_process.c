@@ -34,7 +34,7 @@ void uart_i_process()
         else // enter key is pressed
         {
             SERIAL1_WD = '\n';
-            MsgEnv* message = k_request_message();
+            MsgEnv* message = k_request_msg_env();
             if (message != NULL)
             {
                 for (i = 0; i < inputIndex; i++)
