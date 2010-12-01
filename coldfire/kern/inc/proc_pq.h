@@ -16,4 +16,6 @@ uint32_t proc_pq_get_num_prorities(proc_pq_t *ppq);
 
 pcb_t * proc_pq_remove(proc_pq_t * ppq, pcb_t *pcb);
 
+void proc_pq_print(proc_pq_t* ppq);
+
 #endif

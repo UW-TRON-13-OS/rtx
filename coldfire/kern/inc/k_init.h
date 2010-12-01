@@ -4,6 +4,8 @@
 #include "coldfire.h"
 #include "k_structs.h"
 
+extern pcb_context_t main_context;
+
 SINT32 coldfire_vbr_init( VOID );
 void init_uart();
 void init_ipc();

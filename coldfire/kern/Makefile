@@ -2,8 +2,8 @@
 # Author: Chris Wu
 #
 
-TOP_DIR := ..
-MAIN_FILE := src/main.c
+TOP_DIR = ..
+MAIN_FILE = src/main.c
 
 # Add source file name (without .c) here
 OBJ_NAMES=k_api dbug k_init k_primitives k_scheduler k_process \
@@ -11,7 +11,8 @@ OBJ_NAMES=k_api dbug k_init k_primitives k_scheduler k_process \
 		  proc_queue proc_pq timer_i_process timeout_queue k_clock
 
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
-COMMON_INC:=rtx.h k_globals.h k_structs.h dbug.h coldfire.h
+COMMON_INC=rtx.h k_globals.h k_structs.h dbug.h coldfire.h
+TEST_FILES=
 
 #all: $(OBJS)
 include $(TOP_DIR)/shared/coldfire.mk
@@ -22,7 +23,7 @@ bin/k_init.o: $(COMMON_INC) msg_env_queue.h
 bin/k_primitives.o: $(COMMON_INC) k_primitives.h
 bin/k_scheduler.o: $(COMMON_INC)
 bin/k_process.o: $(COMMON_INC)
-bin/k_malloc.o: memory_layout.h k_globals.h
+bin/k_malloc.o: coldfire.h k_globals.h dbug.h
 bin/uart_i_process.o: $(COMMON_INC) msg_env_queue.h uart_i_process.h
 bin/crt_process.o: $(COMMON_INC) crt_process.h msg_env_queue.h
 bin/msg_env_queue.o: $(COMMON_INC) msg_env_queue.h
