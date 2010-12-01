@@ -63,6 +63,7 @@ typedef signed long int     bool;
 #define BKSP                '\b'
 #define CR                  '\r'
 #define LF                  '\n'
+#define CRLF                "\r\n"
 
 
 #if !defined( TRUE )
@@ -77,6 +78,12 @@ typedef signed long int     bool;
 #define NULL 0
 #endif
 
+/*
+ * Memory Layouts
+ */
+extern byte __end;
+#define HEAP_START ((uint32_t)&__end)
+#define MEMORY_END 0x10200000
 
 /*
  * Coldfire system defines
