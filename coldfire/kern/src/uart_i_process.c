@@ -1,7 +1,6 @@
 #include "uart_i_process.h"
 #include "rtx.h"
 #include "k_primitives.h"
-#include "msg_env_queue.h"
 #include "dbug.h"
 #include "k_globals.h"
 
@@ -10,8 +9,6 @@ CHAR OutBuffer[100] = {0};
 CHAR InBuffer[100] = {0};
 int inputIndex = 0;
 int outputIndex = 0;
-msg_env_queue_t* input_queue;
-msg_env_queue_t* output_queue;
 
 /*
  * This function is called by the assembly STUB function
@@ -22,32 +19,7 @@ void uart_i_process()
     BYTE temp;
     temp = SERIAL1_UCSR;    // Ack the interrupt
     volatile BYTE CharIn = ' ';
-    if (input_queue == NULL)
-    {
-        input_queue = msg_env_queue_create();
-    }
-    if (output_queue == NULL)
-    {
-        output_queue = msg_env_queue_create();
-    }
-    
-    MsgEnv* message = k_receive_message();
-    if (message != NULL)
-    {
-        if (message->msg_type == CONSOLE_INPUT)
-        {
-            msg_env_queue_enqueue(input_queue, message);
-        }
-        else if (message->msg_type == CONSOLE_INPUT)
-        {
-            msg_env_queue_enqueue(output_queue, message);
-        }
-        else
-        {
-            rtx_dbug_outs("ERROR"); // should never get here
-        }
-    }
-
+        
     // There is data to be read
     if( temp & 1 )
     {
@@ -62,13 +34,14 @@ void uart_i_process()
         else // enter key is pressed
         {
             SERIAL1_WD = '\n';
-            message = msg_env_queue_dequeue(input_queue);
+            MsgEnv* message = k_request_message();
             if (message != NULL)
             {
                 for (i = 0; i < inputIndex; i++)
                 {
                     message->msg[i] = InBuffer[i];
                 }
+                message->msg_type = CONSOLE_INPUT;
                 k_send_message(CCI_PID, message);
             }
             inputIndex = 0;
@@ -79,7 +52,7 @@ void uart_i_process()
     {
         if (outputIndex == 0)
         {
-            message = msg_env_queue_dequeue(output_queue);
+            MsgEnv* message = k_receive_message();;
             if (message != NULL)
             {
                 i = 0;
