@@ -1,11 +1,10 @@
-#include "memory_layout.h"
+#include "coldfire.h"
 #include "k_globals.h"
-#define MEMORY_START 0x10100000
-#define MEMORY_END   0x10200000
+#include "dbug.h"
 
 void * k_malloc(uint32_t size)
 {
-    static uint32_t origin = MEMORY_START;
+    static uint32_t origin = HEAP_START;
 
     //align to even boundary
     size = (size+1) & 0xfffffffe;
@@ -15,5 +14,9 @@ void * k_malloc(uint32_t size)
     }
     uint32_t ret = origin;
     origin += size;
+    if (ret % 2 != 0)
+    {
+        dbug("k_malloc: foul!!!");
+    }
     return (void *) ret;
 }
