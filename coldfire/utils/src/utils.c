@@ -92,3 +92,19 @@ CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str)
 	void * params[] = {cpy_str};
 	return rtx_spritf(CHAR * str, "%s", params);
 }
+
+int rtx_strcmp(const CHAR * str1, const CHAR * str2)
+{
+	if(str1 == NULL && str2 == NULL)
+		return 1;
+	else if((str1 == NULL && str2 != NULL) || (str1 != NULL && str2 == NULL))
+		return 0;
+	
+	int k = 0;
+	while (str1[k] != '\0' && str2[k] != '\0')
+	{
+		if(str1[k] != str2[k])
+			return 0;
+	}
+	return 1;
+}
