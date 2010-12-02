@@ -22,6 +22,8 @@
 
 // Msg
 #define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
+#define IPC_MSG_ENV_MSG_SIZE 1024
+#define IPC_NUM_FREE_MSG_ENVS 32
 
 // Processes
 extern pcb_t * current_process;

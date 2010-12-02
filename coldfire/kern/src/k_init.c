@@ -128,6 +128,17 @@ void init_ipc()
 {
 #define BUF_SIZE = (sizeof(*send_trace_buf.buf) * IPC_MESSAGE_TRACE_HISTORY_SIZE)
     free_env_q = msg_env_queue_create();
+    MsgEnv *env_pool = k_malloc(sizeof(*env_pool)*IPC_NUM_FREE_MSG_ENVS);
+    int env_no;
+    for (env_no = 0; env_no < IPC_NUM_FREE_MSG_ENVS; env_no++)
+    {
+        env_pool[env_no].next = NULL;
+        env_pool[env_no].msg_type = 0;
+        env_pool[env_no].msg = k_malloc(IPC_MSG_ENV_MSG_SIZE);
+        env_pool[env_no].msg[0] = '\0';
+        msg_env_queue_enqueue(free_env_q, &env_pool[env_no]);
+    }
+
     send_trace_buf.tail = 0;
     send_trace_buf.buf = k_malloc(sizeof(*send_trace_buf.buf) * 
                                   IPC_MESSAGE_TRACE_HISTORY_SIZE);
