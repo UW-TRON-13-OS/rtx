@@ -183,7 +183,10 @@ int k_request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
 /** 5.5 System Console I/O **/
 int k_send_console_chars(MsgEnv *msg_env)
 {
-    return -1;
+    if (msg_env == NULL)
+        return ERROR_NULL_ARG;
+    msg_env->msg_type = CONSOLE_OUTPUT;
+    return k_send_message(CRT_I_PROCESS_PID, msg_env);
 }
 
 /** 5.6 Interprocess Message Trace **/
