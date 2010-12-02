@@ -1,5 +1,6 @@
 #include "rtx.h"
 #include "utils.h"
+#include "trace.h"
 
 int _findChar (CHAR ch, const CHAR * str);
 
@@ -128,10 +129,25 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 	return str;
 }
 
-CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str)
+CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str, int str_size)
 {
-	void * params[] = {cpy_str};
-	return rtx_sprintf(str, "%s", params);
+    int i = 0, j = 0;
+    while (cpy_str[i] != '\0')
+    {
+        if(str_size > i - 1)
+        {
+            str[j] = cpy_str[i];
+        }
+        else
+        {
+            trace(ALWAYS, "String size for rtx_strcpy is too small for given string!");
+            break;
+        }
+        j++;
+        i++;
+    }
+    str[j] = '\0';    
+	return str;
 }
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2)
