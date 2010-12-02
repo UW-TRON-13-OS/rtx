@@ -1,6 +1,7 @@
 #include "rtx.h"
 #include "k_globals.h"
 #include "null_process.h"
+#include "crt_process.h"
 #include "cci.h"
 #include "uart_i_process.h"
 #include "k_init.h"
@@ -13,7 +14,7 @@ int __main(void)
 
 int main()
 {
-    pcb_init_t itable[4];
+    pcb_init_t itable[5];
 
     itable[0].pid = NULL_PID;
     itable[0].name = "null";
@@ -31,24 +32,31 @@ int main()
     itable[1].is_i_process = 1;
     itable[1].is_sys_process = 0;
 
-    itable[1].pid = TIMER_I_PROCESS_PID;
-    itable[1].name = "timer_i_process";
-    itable[1].priority = 0;
-    itable[1].start = uart_i_process;
-    itable[1].stack_size = 4096;
-    itable[1].is_i_process = 1;
-    itable[1].is_sys_process = 0;
-
-    itable[2].pid = CCI_PID;
-    itable[2].name = "cci";
+    itable[2].pid = TIMER_I_PROCESS_PID;
+    itable[2].name = "timer_i_process";
     itable[2].priority = 0;
-    itable[2].start = start_cci;
+    itable[2].start = uart_i_process;
     itable[2].stack_size = 4096;
-    itable[2].is_i_process = 0;
-    itable[2].is_sys_process = 1;
+    itable[2].is_i_process = 1;
+    itable[2].is_sys_process = 0;
 
+    itable[3].pid = CCI_PID;
+    itable[3].name = "cci";
+    itable[3].priority = 0;
+    itable[3].start = start_cci;
+    itable[3].stack_size = 4096;
+    itable[3].is_i_process = 0;
+    itable[3].is_sys_process = 1;
+
+    itable[4].pid = CRT_PID;
+    itable[4].name = "crt";
+    itable[4].priority = 1;
+    itable[4].start = start_crt_process;
+    itable[4].stack_size = 4096;
+    itable[4].is_i_process = 0;
+    itable[4].is_sys_process = 1;
     
-    k_init(itable, 4);
+    k_init(itable, 5);
 
     return 0;
 }
