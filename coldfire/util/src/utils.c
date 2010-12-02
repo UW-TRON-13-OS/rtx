@@ -30,7 +30,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                         spaces--;
                     }  
                     
-					str[j] = (params[i])[0];
+					str[j] = ((CHAR *)(params[i]))[0];
 					i++;
 					j++;
 					k++;                      
@@ -54,12 +54,12 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 				{
 					int size = 0, div = 1;
 					int num = *((int *) params[i]);
-					bool neg = false;
+					int neg = 0;
 					i++;
 
 					if(num < 0)
 					{
-						neg = true;
+						neg = 1;
 						num *= -1;
 					}
 
@@ -86,7 +86,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                         }
                     }
                     
-					if(neg)
+					if(neg == 1)
 					{
 						str[j] = '-';
 						j++;
@@ -131,7 +131,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str)
 {
 	void * params[] = {cpy_str};
-	return rtx_sprintf(CHAR * str, "%s", params);
+	return rtx_sprintf(str, "%s", params);
 }
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2)
