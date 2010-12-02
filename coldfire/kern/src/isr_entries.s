@@ -19,7 +19,7 @@ asm_uart_entry:
 	move.l %a5, -(%a7)
 	move.l %a6, -(%a7)
 
-    move.l #2, %d1
+    move.l #1, %d1
     move.l %d1, -(%a7)
 		
 	jsr isr_handler
@@ -67,7 +67,7 @@ asm_timer_entry:
 	move.l %a5, -(%a7)
 	move.l %a6, -(%a7)
 
-    move.l #1, %d1
+    move.l #2, %d1
     move.l %d1, -(%a7)
 		
 	jsr isr_handler

@@ -69,6 +69,7 @@ void uart_i_process()
             MsgEnv* message = k_receive_message();
             if (message != NULL)
             {
+                trace_str(ALWAYS, "message ", message->msg);
                 i = 0;
                 while (message->msg[i] != '\0')
                 {
@@ -77,8 +78,13 @@ void uart_i_process()
                 }
                 OutBuffer[i] = '\0';
                 output_print_char = TRUE;
+                k_release_msg_env(message);
             }
-            k_release_msg_env(message);
+            else
+            {
+                trace(ERROR, "Uart i process expected an env but received NULL");
+                SERIAL1_IMR = 2; // Disable tx interrupt
+            }
         }
         if (output_print_char)
         {
