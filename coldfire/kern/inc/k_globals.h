@@ -26,8 +26,9 @@
 #define IPC_NUM_FREE_MSG_ENVS 32
 
 // Processes
-extern pcb_t * current_process;
-extern pcb_t * interrupted_process;
+extern pcb_t *      current_process;
+extern pcb_t *      interrupted_process;
+extern int32_t *    pid_table;
 
 int32_t k_get_num_processes();
 pcb_t * k_get_process(int32_t pid);

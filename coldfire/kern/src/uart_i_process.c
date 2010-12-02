@@ -4,6 +4,7 @@
 #include "trace.h"
 #include "k_globals.h"
 #include "proc_pq.h"
+#include "k_hotkeys.h"
 
 #define INPUT_BUFFER_SIZE 100
 
@@ -29,11 +30,14 @@ void uart_i_process()
         CharIn = SERIAL1_RD;
         if (CharIn != '\0' && inputIndex < INPUT_BUFFER_SIZE - 2) // enter in a character
         {
-            InBuffer[inputIndex] = CharIn;
-            inputIndex++;
-            SERIAL1_IMR = 3;
-            SERIAL1_WD = CharIn;
-            SERIAL1_IMR = 2;
+            if (!hotkey(CharIn))
+            {
+                InBuffer[inputIndex] = CharIn;
+                inputIndex++;
+                SERIAL1_IMR = 3;
+                SERIAL1_WD = CharIn;
+                SERIAL1_IMR = 2;
+            }
         }
         else if (CharIn == '\0') // enter key is pressed
         {
