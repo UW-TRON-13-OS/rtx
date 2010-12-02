@@ -66,20 +66,17 @@ MsgEnv * get_timeout_queue()
 
 MsgEnv * check_timeout_queue(MsgEnv* msg_env)
 {
-    if(msg_env != NULL);
-	{	
-		if(!timeout_queue_is_empty())
-		{
-			while (timeout_queue && 
-				   *((int *) timeout_queue->msg) <= k_clock_get_system_time())
-			{
-				// Dequeue the head
-				msg_env = timeout_queue;
-				timeout_queue = timeout_queue->next;
+    if(!timeout_queue_is_empty())
+    {
+        while (timeout_queue && 
+               *((int *) timeout_queue->msg) <= k_clock_get_system_time())
+        {
+            // Dequeue the head
+            msg_env = timeout_queue;
+            timeout_queue = timeout_queue->next;
 
-				return msg_env;
-			}
-		}
-	}
+            return msg_env;
+        }
+    }
 	return NULL;
 }
