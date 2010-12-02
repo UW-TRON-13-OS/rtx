@@ -77,6 +77,7 @@ void init_uart()
 
     inputIndex = 0;
     outputIndex = 0;
+    output_print_char = FALSE;
 }
 
 void init_kern_swi()

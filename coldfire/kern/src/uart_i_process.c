@@ -9,7 +9,7 @@ CHAR OutBuffer[100] = {0};
 CHAR InBuffer[100] = {0};
 uint32_t inputIndex;
 uint32_t outputIndex;
-bool output_print_char = FALSE;
+bool output_print_char;
 
 /*
  * This function is called by the assembly STUB function
@@ -78,6 +78,8 @@ void uart_i_process()
                     OutBuffer[i] = message->msg[i];
                     i++;
                 }
+                trace(ALWAYS, message->msg);
+                trace_uint(ALWAYS, "Length of msg is ", i);
                 output_print_char = TRUE;
             }
         }
