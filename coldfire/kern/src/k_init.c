@@ -3,6 +3,7 @@
 #include "dbug.h"
 #include "k_globals.h"
 #include "msg_env_queue.h"
+#include "timeout_queue.h"
 #include "uart_i_process.h"
 
 pcb_context_t main_context;
@@ -126,6 +127,9 @@ void init_timer()
     mask = SIM_IMR;
     mask &= 0x0003fdff;
     SIM_IMR = mask;    
+    
+    //Init timeout_queue
+    timeout_queue = NULL;
 }
 
 void init_ipc()
@@ -160,6 +164,8 @@ int k_init(pcb_init_t process_init[], uint32_t num_processes)
     coldfire_vbr_init();
     dbug("Initializing uart...");
     init_uart();
+    dbug("Initializing timer...");
+    init_timer();
     dbug("Initializing kern swi...");
     init_kern_swi();
     dbug("Initializing kern ipc...");
