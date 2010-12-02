@@ -4,6 +4,14 @@
 #include "processes.h"
 #include "utils.h"
 #include "wallclock.h"
+#include "k_globals.h"
+
+void CCI_print(char * msg)
+{
+    MsgEnv *env = request_msg_env();
+    rtx_strcpy(env->msg, msg, IPC_MSG_ENV_MSG_SIZE);
+    send_console_chars(env);
+}
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)

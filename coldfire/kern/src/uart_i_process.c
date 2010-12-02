@@ -78,7 +78,7 @@ void uart_i_process()
                 OutBuffer[i] = '\0';
                 output_print_char = TRUE;
             }
-            k_release_msg(message);
+            k_release_msg_env(message);
         }
         if (output_print_char)
         {

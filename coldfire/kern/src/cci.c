@@ -8,10 +8,10 @@
 
 void cci_intro(MsgEnv *send_env)
 {
-	send_env->msg = "Welcome to AwesomeOS\n"
-                    "==========================\n";
-    k_send_console_chars(send_env);
+	CCI_print( "Welcome to P.OS.\n"
+               "==========================\n");
 }
+
 
 /** CCI entry point and main loop **/
 void start_cci()
@@ -21,9 +21,8 @@ void start_cci()
 
     msg_env_queue_t *msgQ = msg_env_queue_create();
     MsgEnv *send_env, *status_env, *proc_a_env;
-    send_env = k_request_msg_env();
-    status_env = k_request_msg_env();
-    proc_a_env = k_request_msg_env();
+    status_env = request_msg_env();
+    proc_a_env = request_msg_env();
     char str_a[100], format_a[100];
     char *str, *format;
     str = (char *)str_a;
@@ -34,8 +33,7 @@ void start_cci()
     cci_intro(send_env);
 
     //print CCI prompt
-	send_env->msg = "CCI: ";
-    k_send_console_chars(send_env);
+    CCI_print("CCI: ");
 
     while (1)
     {
@@ -43,7 +41,7 @@ void start_cci()
         //First check for messages received but processed by clock fcns 
         if( msg_env_queue_is_empty(msgQ))
         {
-            env = k_receive_message(); 
+            env = receive_message(); 
         }
         else
         {
@@ -65,19 +63,17 @@ void start_cci()
                         status = k_send_message (PROCESS_A_PID, proc_a_env);
                         if (status != CODE_SUCCESS)
                         {
-							format = "Error: could not jumpstart process A."
-                                     "errno %d\n";
 							params[0] = &status;
                             params[1] = NULL;
-							send_env->msg = rtx_sprintf(str, format, params);
-                            k_send_console_chars(send_env);
+							rtx_sprintf(str, "Error: could not jumpstart process A."
+                                              "errno %d\r\n", params);
+                            CCI_print(str);
                         }
                         proc_a_env = NULL;
                     }
                     else
                     {
-						send_env->msg = "Process A has already been started.\n";
-                        k_send_console_chars(send_env);
+						CCI_print("Process A has already been started.\r\n");
                     }
                 }
                 //displays process statuses
