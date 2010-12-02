@@ -170,7 +170,10 @@ int k_change_priority(int new_priority, int target_process_id)
 /** 5.4 Timing Servicies **/
 int k_request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
 {
-    return -1;
+    msg_env->msg_type = wakeup_code;
+    int * delay_data = (int *) msg_env->msg;
+    *delay_data = time_delay;
+    return k_send_message(TIMER_I_PROCESS_PID, msg_env);
 }
 
 /** 5.5 System Console I/O **/
