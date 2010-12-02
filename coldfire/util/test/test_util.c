@@ -27,9 +27,9 @@ int main ()
     //trace (ALWAYS, rtx_sprintf (str,"Too few params %s %4d %d %d",params));
     //trace (ALWAYS, rtx_sprintf (str,"Mismatch %s, %s, %d", params));
 
-    trace (ALWAYS, rtx_strcpy (str_p, tok_p));//should be fine 
+    trace (ALWAYS, rtx_strcpy (str_p, tok_p, 100));//should be fine 
     str_p = "Really long string thing";
-    //trace (ALWAYS, rtx_strcpy (tok_p, str_p));//should fail 
+    //trace (ALWAYS, rtx_strcpy (tok_p, str_p, 20));//should fail 
     
     trace_uint (ALWAYS,"0", rtx_strcmp("abc","abc")); //0 
     trace_uint (ALWAYS,"1", rtx_strcmp("","abc")); //1
@@ -60,7 +60,7 @@ int main ()
 /*
 CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[]);
 
-CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str);
+CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str, 100);
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2);
 
