@@ -41,7 +41,7 @@ int main()
     rtx_dbug_outs("Beginning of test/n");
     rtx_dbug_outs("Messages will be changed so 1st and 2nd char are @ and #\n");
      
-    enable_debug = 0;
+    enable_debug = 1;
     
     pcb_init_t itable[3];
     itable[0].pid = CRT_PID;
