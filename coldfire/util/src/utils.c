@@ -48,11 +48,21 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 					}
 					k++;
 				}
-				else if(format[k] == 'i')
+				else if(format[k] == 'i' || 
+                        format[k] == 'd' || 
+                        format[k] == 'u')
 				{
 					int size = 0, div = 1;
 					int num = *((int *) params[i]);
+					bool neg = false;
 					i++;
+
+					if(num < 0)
+					{
+						neg = true;
+						num *= -1;
+					}
+
 					while(num/div > 0)
 					{
 						size++;
@@ -75,6 +85,12 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                             spaces--;
                         }
                     }
+                    
+					if(neg)
+					{
+						str[j] = '-';
+						j++;
+					}
                     
                     while(size > 0)
                     {
