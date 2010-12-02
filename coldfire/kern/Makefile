@@ -6,7 +6,7 @@ TOP_DIR = ..
 MAIN_FILE = src/main.c
 
 # Add source file name (without .c) here
-OBJ_NAMES=k_api dbug k_init k_primitives k_scheduler k_process \
+OBJ_NAMES=k_api k_init k_primitives k_scheduler k_process \
 		  k_malloc uart_i_process crt_process msg_env_queue \
 		  proc_queue proc_pq timer_i_process timeout_queue k_clock
 
@@ -18,7 +18,6 @@ TEST_FILES=
 include $(TOP_DIR)/shared/coldfire.mk
 
 bin/k_api.o: $(COMMON_INC) trap_table.h 
-bin/dbug.o: coldfire.h dbug.h 
 bin/k_init.o: $(COMMON_INC) msg_env_queue.h
 bin/k_primitives.o: $(COMMON_INC) k_primitives.h
 bin/k_scheduler.o: $(COMMON_INC)
