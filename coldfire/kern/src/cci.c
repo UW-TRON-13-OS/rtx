@@ -139,6 +139,13 @@ void start_cci()
                         k_send_console_chars(send_env);
                     }
                 }
+                //terminate RTX
+                else if (rtx_strcmp(cmd,"t") == 0)
+                {
+                    send_env->msg = "Sayonara\n";
+                    k_send_console_chars(send_env);
+                    terminate();
+                }
                 //change process priority
                 else if (rtx_strcmp(cmd,"n") == 0) 
                 {
