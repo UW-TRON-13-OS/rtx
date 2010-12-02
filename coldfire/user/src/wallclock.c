@@ -16,7 +16,7 @@
 #define SEC_IN_HR 86400
 
 uint32_t offset;
-uint64_t ref;
+uint32_t ref;
 char clock_display_en;
 
 MsgEnv *timeout_env, *send_env;
@@ -24,7 +24,7 @@ MsgEnv *timeout_env, *send_env;
 int _setWallClock (char* timeParam);
 void _displayWallClock (int disp_b);
 
-char str[100], format[100];
+char str[100];
 void * params [11];
 
 void start_wallclock()
@@ -40,9 +40,9 @@ void start_wallclock()
     status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env); 
     if (status != CODE_SUCCESS)
     {
-        format = "request_delay failed with status %d\n";
-        params = { &status, NULL };
-        send_env->msg = rtx_sprintf(str, format, params);
+        params[0] = &status;
+        params[1] = NULL;
+        rtx_sprintf(send_env->msg, "request_delay failed with status %d\n", params);
         send_console_chars(send_env);       
     }
     
@@ -56,9 +56,9 @@ void start_wallclock()
             status = request_delay( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
             {
-                format = "request_delay failed with status %d\n";
-                params = { &status, NULL };
-                send_env->msg = rtx_sprintf(str, format, params);
+                params[0] = &status;
+                params[1] = NULL;
+                rtx_sprintf(send_env->msg, "request_delay failed with status %d\n", params);
                 send_console_chars(send_env);       
             }
             //86400 = 24hrs in secs
@@ -71,9 +71,12 @@ void start_wallclock()
                 min = (clock_time%3600)/60;
                 sec = clock_time%60;
 
-                format = SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT RESTORE_CURSOR;
-                params = { &hr, &min, &sec, NULL };
-                send_env->msg = rtx_sprintf(str, format, params);
+                params[0] = &hr;
+                params[1] = &min;
+                params[2] = &sec;
+                params[3] = NULL;
+                rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT
+                            RESTORE_CURSOR, params);
                 send_console_chars(send_env);       
             }
         }
@@ -115,7 +118,7 @@ int _setWallClock (char* timeParam)
     char hr_s [3];
     char min_s [3];
     char sec_s [3];
-    int32_t i, hr, min, sec;
+    int i, hr, min, sec, ret;
     for (i=0;i<2;i++)
     {
         hr_s[i] =timeParam[i];
@@ -125,11 +128,11 @@ int _setWallClock (char* timeParam)
     hr_s[2]='\0';
     min_s[2]='\0';
     sec_s[2]='\0';
-    hr = rtx_atoi(hr_s); 
-    min = rtx_atoi(min_s);
-    sec = rtx_atoi(sec_s);
+    ret = rtx_atoi(hr_s, &hr); 
+    ret += rtx_atoi(min_s, &min);
+    ret += rtx_atoi(sec_s, &sec);
 
-    if (hr>23 || min>59 || sec > 59)
+    if (hr>23 || min>59 || sec > 59 || ret < 3)
         return ERROR_ILLEGAL_ARG;
     offset = (hr*3600 + min*60 + sec);
     ref = clock_get_system_time(); 
@@ -145,9 +148,8 @@ void _displayWallClock (int disp_b)
     }
     else
     {
-        format = SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR;
-        params = { &hr, &min, &sec, NULL };
-        send_env->msg = rtx_sprintf(str, format, params);
+        params[0] = NULL;
+        rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR, params);
         send_console_chars(send_env);       
         clock_display_en = 0;
     }
