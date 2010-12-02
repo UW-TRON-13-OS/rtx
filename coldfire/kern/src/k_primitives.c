@@ -121,11 +121,6 @@ int k_request_process_status(MsgEnv *msg_env)
     return CODE_SUCCESS;
 }
 
-int k_terminate()
-{
-    return -1;
-}
-
 int k_change_priority(int new_priority, int target_process_id)
 {
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
