@@ -225,7 +225,7 @@ int main(int argc, char * argv[])
     itable[5].is_i_process = 0;
     itable[5].is_sys_process = 0;
 
-    k_init(itable, 6);
+    k_init(itable, 6, FALSE, FALSE);
 
     return 0;
 }

@@ -156,17 +156,33 @@ void init_ipc()
                                   IPC_MESSAGE_TRACE_HISTORY_SIZE);
 }
 
-int k_init(pcb_init_t process_init[], uint32_t num_processes)
+int k_init(pcb_init_t processes[], uint32_t num_processes, bool enable_uart,
+           bool enable_timer)
 {
     /* Disable all interupts */
+    trace(DEBUG, "Disabling Interrupts...");
     asm("move.w #0x2700,%sr");
 
     trace(DEBUG, "Initializing vbr...");
     coldfire_vbr_init();
-    trace(DEBUG, "Initializing uart...");
-    init_uart();
-    trace(DEBUG, "Initializing timer...");
-    init_timer();
+    if (enable_uart)
+    {
+        trace(DEBUG, "Initializing uart...");
+        init_uart();
+    }
+    else
+    {
+        trace(DEBUG, "Not Initializing uart...");
+    }
+    if (enable_timer)
+    {
+        trace(DEBUG, "Initializing timer...");
+        init_timer();
+    }
+    else
+    {
+        trace(DEBUG, "Not Initializing timer...");
+    }
     trace(DEBUG, "Initializing kern swi...");
     init_kern_swi();
     trace(DEBUG, "Initializing kern ipc...");
@@ -180,9 +196,10 @@ int k_init(pcb_init_t process_init[], uint32_t num_processes)
 
     // Initialize all of the processes
     trace(DEBUG, "Initializing processes...");
-    init_processes(process_init, num_processes);
+    init_processes(processes, num_processes);
 
     /* Enable all interupts */
+    trace(DEBUG, "Enabling Interrupts...");
     asm("move.w #0x2000,%sr");
 
     rtx_dbug_outs("Dequeueing ");

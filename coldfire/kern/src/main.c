@@ -56,7 +56,7 @@ int main()
     itable[4].is_i_process = 0;
     itable[4].is_sys_process = 1;
     
-    k_init(itable, 5);
+    k_init(itable, 5, TRUE, TRUE);
 
     return 0;
 }
