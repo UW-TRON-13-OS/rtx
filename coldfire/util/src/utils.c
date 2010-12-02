@@ -133,21 +133,15 @@ int rtx_strcmp(const CHAR * str1, const CHAR * str2)
 	return 0;
 }
 
-CHAR * rtx_strtok(CHAR * str, const CHAR * delimiters)
+void rtx_strtok(const CHAR * str, CHAR * ret, const CHAR * delimiters)
 {
     static char copy [100] = "";
     static BYTE i = 0;
-    static CHAR ret [10] = "";
 
     if ( str != NULL )
     {
         rtx_strcpy ( copy, str );
         i = 0;
-    }
-
-    if ( *copy == '\0' )
-    {
-        return NULL;
     }
 
     BYTE j = 0;
@@ -165,8 +159,47 @@ CHAR * rtx_strtok(CHAR * str, const CHAR * delimiters)
         j++;
     }
     ret[j]='\0';
+}
+
+int rtx_atoi (const CHAR * str, int *num_p)
+{
+    if (str == NULL || num == NULL)
+    {
+        return 0;
+    }
+
+    int neg, i, num, ret;
+    i = num = ret = 0;
+    neg = 1;
     
-    return ret; 
+    while (str[i] == ' ')
+    {
+        i++;
+    }
+
+    if (str[i] == '-')
+    {
+        neg = -1;
+        i++;
+    }
+    else (str[i] == '+')
+    {
+        i++;
+    }
+
+    while (str[i] != '\0')
+    {
+        char tmp = str[i] - '0';    
+        if (tmp < 0 || tmp > 10)
+        {
+            return 0;
+        }
+        num *= 10;
+        num += tmp;
+        ret = 1;
+    }
+    *num_p = neg*num;
+    return ret;
 }
 
 int _findChar (CHAR ch, const CHAR * str)
