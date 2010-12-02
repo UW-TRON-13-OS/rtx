@@ -72,7 +72,7 @@ int main()
    
     trace(ALWAYS,"Starting initialization");
     
-    k_init(itable, 3);
+    k_init(itable, 3, FALSE, TRUE);
   
     return 0;
 }
