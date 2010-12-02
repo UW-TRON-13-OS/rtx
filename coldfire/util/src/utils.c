@@ -135,8 +135,9 @@ int rtx_strcmp(const CHAR * str1, const CHAR * str2)
 
 CHAR * rtx_strtok(CHAR * str, const CHAR * delimiters)
 {
-    static char copy [100] == "";
+    static char copy [100] = "";
     static BYTE i = 0;
+    static CHAR ret [10] = "";
 
     if ( str != NULL )
     {
@@ -149,7 +150,6 @@ CHAR * rtx_strtok(CHAR * str, const CHAR * delimiters)
         return NULL;
     }
 
-    CHAR ret [10] = "";
     BYTE j = 0;
     
     //skip leading characters to be ignored
