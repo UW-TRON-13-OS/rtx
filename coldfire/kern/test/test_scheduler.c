@@ -71,7 +71,6 @@ void start_b()
                 {
                     dbug("YAY IT WORKS!!!");
                 }
-                dbug("wait it didnt work");
                 utest_assert(rtx_strcmp(result, expected) == 0, "Result did not match expected sequence");
                 if (rtx_strcmp(result, expected) != 0)
                 {
@@ -169,6 +168,7 @@ void start_f()
 
 int main(int argc, char * argv[])
 {
+    utest_start();
     enable_debug = 1;
 
     append_i = 0;
