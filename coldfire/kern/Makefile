@@ -14,6 +14,7 @@ OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC=rtx.h k_globals.h k_structs.h dbug.h coldfire.h
 TEST_FILES=
 LOCAL_CFLAGS=-D_CFSERVER_
+DEPS=util user
 
 #all: $(OBJS)
 include $(TOP_DIR)/shared/coldfire.mk
