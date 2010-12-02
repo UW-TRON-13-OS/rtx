@@ -21,7 +21,8 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
         return ERROR_NULL_ARG;
     }
 
-    if(dest_pid < 0 || dest_pid >= k_get_num_processes())
+    pcb_t *dest_pcb = k_get_process(dest_pid);
+    if(dest_pcb == NULL)
     {
         return ERROR_ILLEGAL_ARG;
     }
@@ -29,7 +30,6 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     msg_env->send_pid = current_process->pid;
     msg_env->dest_pid = dest_pid;
 
-    pcb_t *dest_pcb = k_get_process(dest_pid);
     msg_env_queue_enqueue(dest_pcb->recv_msgs, msg_env);
     if (dest_pcb->state == P_BLOCKED_ON_RECEIVE)
     {
@@ -125,14 +125,14 @@ int k_request_process_status(MsgEnv *msg_env)
 
 int k_change_priority(int new_priority, int target_process_id)
 {
-    if (new_priority < 0 || new_priority >= NUM_PRIORITIES ||
-        target_process_id < 0 || target_process_id >= k_get_num_processes())
+    if (new_priority < 0 || new_priority >= NUM_PRIORITIES)
     {
         return ERROR_ILLEGAL_ARG;
     }
 
+
     pcb_t *pcb = k_get_process(target_process_id);
-    if (pcb->is_i_process || pcb->pid == NULL_PID)
+    if (pcb->is_i_process || pcb->pid < 0 || pcb->pid == NULL_PID)
     {
         return ERROR_ILLEGAL_ARG;
     }
