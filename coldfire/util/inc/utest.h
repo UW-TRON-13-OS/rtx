@@ -14,7 +14,7 @@ extern int num_test_passed;
 
 #define utest_assert(condition, errMsg) do { \
         if (!(condition)) { \
-            dbug(errMsg "\n"); \
+            trace(ALWAYS,errMsg); \
         } else { \
             num_test_passed++; \
         } \
@@ -23,7 +23,7 @@ extern int num_test_passed;
 
 #define utest_assert_str(str1,str2,errMsg) do { \
         if (!rtx_strcmp((str1), (str2)) == 0) { \
-            printf(errMsg "\n"); \
+            trace(ALWAYS, errMsg); \
         } else { \
             num_test_passed++; \
         } \
@@ -37,7 +37,7 @@ extern int num_test_passed;
             rtx_dbug_uint(num_test_passed); \
             rtx_dbug_outs(" / "); \
             rtx_dbug_uint(num_tests); \
-            dbug("\033[0m"); \
+            rtx_dbug_outs("\033[0m\r\n"); \
         } \
         else \
         { \
@@ -45,7 +45,7 @@ extern int num_test_passed;
             rtx_dbug_uint(num_test_passed); \
             rtx_dbug_outs(" / "); \
             rtx_dbug_uint(num_tests); \
-            dbug("\033[0m"); \
+            rtx_dbug_outs("\033[0m\r\n"); \
         } \
         /* Store fake value of 0 for return value from main */ \
         asm("move.l #0, %d7"); \

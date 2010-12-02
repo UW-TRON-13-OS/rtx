@@ -2,7 +2,7 @@
 #include "utest.h"
 #include "k_init.h"
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 #include "proc_pq.h"
 #include "utils.h"
 
@@ -12,10 +12,10 @@ int append_i = 0;
 
 void append_result()
 {
-    dbug_uint("append i ", append_i);
+    trace_uint(ALWAYS,"append i ", append_i);
     result[append_i++] = current_process->name[0];
     result[append_i] = '\0';
-    dbug(result);
+    trace(ALWAYS,result);
 }
 
 void start_a()
@@ -31,15 +31,15 @@ void start_a()
                 release_msg_env(env);
                 break;
             case 10:
-                dbug("10");
+                trace(ALWAYS,"10");
                 release_processor();
                 break;
             default:
-                dbug_uint("append_i ", append_i);
+                trace_uint(ALWAYS,"append_i ", append_i);
                 utest_assert(0, "b process append_i not recongized");
                 break;
         }
-        dbug("end of loop");
+        trace(ALWAYS,"end of loop");
         release_processor();
     }
 }
@@ -59,31 +59,30 @@ void start_b()
                 release_msg_env(env);
                 break;
             case 11:
-                dbug("doneee !!!");
-                dbug_ptr("rtx_strcmp ", rtx_strcmp);
-                dbug_ptr("result ", result);
-                dbug_ptr("expected ", expected);
-                dbug("result");
-                dbug(result);
-                dbug("expected");
-                dbug(expected);
+                trace(ALWAYS,"doneee !!!");
+                trace_ptr(ALWAYS,"rtx_strcmp ", rtx_strcmp);
+                trace_ptr(ALWAYS,"result ", result);
+                trace_ptr(ALWAYS,"expected ", expected);
+                trace(ALWAYS,"result");
+                trace(ALWAYS,result);
+                trace(ALWAYS,"expected");
+                trace(ALWAYS,expected);
                 if (rtx_strcmp(result, expected) == 0)
                 {
-                    dbug("YAY IT WORKS!!!");
+                    trace(ALWAYS,"YAY IT WORKS!!!");
                 }
                 utest_assert(rtx_strcmp(result, expected) == 0, "Result did not match expected sequence");
                 if (rtx_strcmp(result, expected) != 0)
                 {
-                    rtx_dbug_outs("expected : "); dbug(expected);
-                    rtx_dbug_outs("got      : "); dbug(result);
+                    trace_str(ALWAYS, "expected : ", expected);
+                    trace_str(ALWAYS, "got      : ", result);
                 }
-                dbug("test result timeee");
+                trace(ALWAYS,"test result timeee");
 
                 utest_test_results();
-                while (1) {}
                 break;
             default:
-                dbug_uint("append_i ", append_i);
+                trace_uint(ALWAYS,"append_i ", append_i);
                 utest_assert(0, "b process append_i not recongized");
                 break;
         }
@@ -119,7 +118,7 @@ void start_d()
                 utest_assert(0, "D should not run for a second time");
                 break;
             default:
-                dbug_uint("append_i ", append_i);
+                trace_uint(ALWAYS,"append_i ", append_i);
                 utest_assert(0, "d process append_i not recongized");
                 break;
         }
@@ -143,7 +142,7 @@ void start_e()
                 utest_assert(0, "D should not run for a second time");
                 break;
             default:
-                dbug_uint("append_i ", append_i);
+                trace_uint(ALWAYS,"append_i ", append_i);
                 utest_assert(0, "d process append_i not recongized");
                 break;
         }
@@ -172,9 +171,9 @@ int main(int argc, char * argv[])
     enable_debug = 1;
 
     append_i = 0;
-    dbug_uint("append i ", append_i);
-    dbug_ptr("expected ", expected);
-    dbug(expected);
+    trace_uint(ALWAYS,"append i ", append_i);
+    trace_ptr(ALWAYS,"expected ", expected);
+    trace(ALWAYS,expected);
 
     pcb_init_t itable[6];
 

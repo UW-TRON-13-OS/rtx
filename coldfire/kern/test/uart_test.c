@@ -1,4 +1,4 @@
-#include "dbug.h"
+#include "trace.h"
 #include "uart_i_process.h"
 #include "crt_process.h"
 #include "k_globals.h"
@@ -35,10 +35,9 @@ void fake_cci ()
 
 int main()
 {
-    dbug("Beginning of test");
-    dbug("Messages will be changed so 1st and 2nd char are @ and #\n");
+    trace(ALWAYS,"Beginning of test");
+    trace(ALWAYS,"Messages will be changed so 1st and 2nd char are @ and #\n");
      
-    enable_debug = 1;
     
     pcb_init_t itable[4];
     itable[0].pid = CRT_PID;
@@ -73,7 +72,7 @@ int main()
     itable[3].is_i_process = 0;
     itable[3].is_sys_process = 1;
    
-    dbug("Starting initialization");
+    trace(ALWAYS,"Starting initialization");
     
     k_init(itable, 4);
     return 0;

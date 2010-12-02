@@ -1,5 +1,5 @@
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 
 #define TIMER_ISR 1
 #define UART_ISR 2
@@ -26,7 +26,7 @@ void isr_handler(uint32_t int_source)
     }
     else
     {
-        dbug_uint("ISR Error: could not find int_source for ", int_source);
+        trace_uint(ALWAYS, "ISR Error: could not find int_source for ", int_source);
     }
 
     current_process = interrupted_process;
