@@ -5,7 +5,7 @@
 TOP_DIR := ..
 
 # Add source file name (without .c) here
-OBJ_NAMES=null_process a b  c
+OBJ_NAMES=null_process a b c 
 
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC:=rtx.h dbug.h
