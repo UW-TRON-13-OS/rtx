@@ -56,6 +56,7 @@ void uart_i_process()
                     message->msg[i] = InBuffer[i];
                 }
                 message->msg_type = CONSOLE_INPUT;
+                trace_str(DEBUG, "Sending to CCI: ", message->msg);
                 k_send_message(CCI_PID, message);
             }
             inputIndex = 0;
@@ -83,7 +84,6 @@ void uart_i_process()
             else
             {
                 trace(ERROR, "Uart i process expected an env but received NULL");
-                SERIAL1_IMR = 2; // Disable tx interrupt
             }
         }
         if (output_print_char)
@@ -92,7 +92,24 @@ void uart_i_process()
             {
                 outputIndex = 0;
                 output_print_char = FALSE;
-                SERIAL1_IMR = 2; // Disable tx interrupt
+                MsgEnv* message = k_receive_message();
+                if (message != NULL)
+                {
+                        trace_str(ALWAYS, "message ", message->msg);
+                            i = 0;
+                                while (message->msg[i] != '\0')
+                                        {
+                                                    OutBuffer[i] = message->msg[i];
+                                                            i++;
+                                                                }
+                                    OutBuffer[i] = '\0';
+                                        output_print_char = TRUE;
+                                            k_release_msg_env(message);
+                }
+                else
+                {
+                    SERIAL1_IMR = 2; // Disable tx interrupt
+                }
             }
             else
             {
