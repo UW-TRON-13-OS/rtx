@@ -5,8 +5,9 @@
 #define STACK_OFFSET 16
 
 pcb_t * current_process;
-static uint32_t num_processes = 0;
-static pcb_t *p_table = NULL;
+static uint32_t num_processes;
+static pcb_t *p_table;
+int32_t *pid_table;
 
 pcb_t * k_get_process(int32_t pid)
 {
@@ -69,6 +70,7 @@ void init_processes(pcb_init_t process_init[], uint32_t num_procs)
 {
     trace_uint(TRACE, "Entered init processes. num_proces ", num_procs);
     p_table = k_malloc(sizeof(*p_table) * num_procs);
+    pid_table = k_malloc(sizeof(*pid_table) * num_procs);
     trace_uint(TRACE, "  p_table ", (uint32_t) p_table);
     trace_uint(TRACE, "  size of pcb_t ", sizeof(pcb_t));
     trace_uint(TRACE, "  num_procs  ", num_procs);
@@ -78,6 +80,7 @@ void init_processes(pcb_init_t process_init[], uint32_t num_procs)
     {
         pcb_t * process = &p_table[process_num];
         pcb_init_t * init = &process_init[process_num];
+        pid_table[process_num] = init->pid;
 
         process->next = NULL;
         process->pid = init->pid;
