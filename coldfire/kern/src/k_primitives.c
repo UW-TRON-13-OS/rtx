@@ -123,6 +123,17 @@ int k_request_process_status(MsgEnv *msg_env)
     return CODE_SUCCESS;
 }
 
+int k_terminate()
+{       
+    /* Store fake value of 0 for return value from main */ \
+    asm("move.l #0, %d7"); \
+    /* Get back to the monitor */ \
+    asm("move.l #0,%d0"); \
+    asm("trap #15"); \
+
+    return -1;
+}
+
 int k_change_priority(int new_priority, int target_process_id)
 {
     if (new_priority < 0 || new_priority >= NUM_PRIORITIES)

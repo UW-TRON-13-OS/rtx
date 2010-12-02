@@ -213,6 +213,7 @@ int rtx_atoi (const CHAR * str, int *num_p)
         num *= 10;
         num += tmp;
         ret = 1;
+        i++;
     }
     *num_p = neg*num;
     return ret;
