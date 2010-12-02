@@ -1,7 +1,7 @@
 #include "rtx.h"
 #include "k_primitives.h"
 #include "msg_env_queue.h"
-#include "dbug.h"
+#include "trace.h"
 #include "crt_process.h"
 #include "k_globals.h"
 
@@ -11,7 +11,7 @@ void start_crt_process()
     {
         MsgEnv* message = k_receive_message();
         enable_debug = 1;
-        dbug_ptr("message ", message);
+        trace_ptr(ALWAYS, "message ", message);
         if (message != NULL)
         {
             // Enable TX Interrupt

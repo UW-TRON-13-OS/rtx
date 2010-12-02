@@ -2,7 +2,7 @@
 #include "k_structs.h"
 #include "k_globals.h"
 #include "k_clock.h"
-#include "dbug.h"
+#include "trace.h"
 
 msg_env_queue_t *free_env_q;
 
@@ -30,7 +30,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     msg_env->dest_pid = dest_pid;
 
     pcb_t *dest_pcb = k_get_process(dest_pid);
-    msg_env_queue_enqueue(dest_pcb ->recv_msgs, msg_env);
+    msg_env_queue_enqueue(dest_pcb->recv_msgs, msg_env);
     if (dest_pcb->state == P_BLOCKED_ON_RECEIVE)
     {
         dest_pcb->state = P_READY;
@@ -50,8 +50,7 @@ MsgEnv * k_receive_message()
         {
             return NULL;
         }
-        rtx_dbug_outs("k_receive blocking: ");
-        dbug(current_process->name);
+        trace_str(TRACE, "k_receive blocking: ", current_process->name);
         k_process_switch(P_BLOCKED_ON_RECEIVE);
     }
 
@@ -70,8 +69,7 @@ MsgEnv * k_request_msg_env()
         {
             return NULL;
         }
-        rtx_dbug_outs("k_request blocking: ");
-        dbug(current_process->name);
+        trace_str(TRACE, "k_request blocking: ", current_process->name);
         proc_pq_enqueue(blocked_request_env_pq, current_process);
         k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
     }
@@ -123,11 +121,6 @@ int k_request_process_status(MsgEnv *msg_env)
         *data++ = process->priority;
     }
     return CODE_SUCCESS;
-}
-
-int k_terminate()
-{
-    return -1;
 }
 
 int k_change_priority(int new_priority, int target_process_id)

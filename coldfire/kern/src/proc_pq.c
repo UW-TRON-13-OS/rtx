@@ -1,7 +1,7 @@
 #include "proc_pq.h"
 #include "proc_queue.h"
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 
 struct proc_pq {
     uint32_t num_priorities;
@@ -76,12 +76,11 @@ pcb_t * proc_pq_remove(proc_pq_t * ppq, pcb_t *pcb)
 
 void proc_pq_print(proc_pq_t* ppq)
 {
-    dbug_uint("ppq # priorities ", ppq->num_priorities);
+    trace_uint(ALWAYS, "ppq # priorities ", ppq->num_priorities);
     int i;
     for (i = 0; i < ppq->num_priorities; i++)
     {
-        rtx_dbug_outs("     priority ");
-        rtx_dbug_uint(i);
+        trace_uint(ALWAYS, "     priority ", i);
         proc_queue_print(ppq->priority_queues[i]);
     }
 }

@@ -1,5 +1,5 @@
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 
 proc_pq_t *ready_pq;
 proc_pq_t *blocked_request_env_pq;
@@ -9,7 +9,11 @@ void k_process_switch(enum process_state transition_to)
     pcb_t *old_proc = current_process;
     old_proc->state = transition_to;
 
-    proc_pq_print(ready_pq);
+    if (TRACE >= TRACE_LEVEL)
+    {
+        proc_pq_print(ready_pq);
+    }
+
     current_process = proc_pq_dequeue(ready_pq);
     current_process->state = P_EXECUTING;
     k_context_switch(&old_proc->context, &current_process->context);
@@ -19,11 +23,12 @@ uint32_t temp;
 void k_context_switch(pcb_context_t * old_context, pcb_context_t * new_context)
 {
     // Save the current registers onto the stack
-    dbug("Enter context switch");
+
+    trace(TRACE, "Enter context switch");
 
     if (old_context)
     {
-        dbug("    Saving registers");
+        trace(CHATTY, "    Saving registers");
         asm("move.l %d0, -(%a7)");
         asm("move.l %d1, -(%a7)");
         asm("move.l %d2, -(%a7)");
@@ -42,11 +47,10 @@ void k_context_switch(pcb_context_t * old_context, pcb_context_t * new_context)
         asm("move.l %a6, -(%a7)");
     }
 
-    dbug_hex("    Saving to ", old_context->stack_ptr);
-    dbug_hex("    Restoring from ", new_context->stack_ptr);
-    dbug_ptr("    Current process ptr : ", current_process);
-    rtx_dbug_outs("    Current process : ");
-    dbug(current_process->name);
+    trace_hex(TRACE, "    Saving to ", old_context->stack_ptr);
+    trace_hex(TRACE, "    Restoring from ", new_context->stack_ptr);
+    trace_ptr(TRACE, "    Current process ptr : ", current_process);
+    trace_str(TRACE, "    Current process : ", current_process->name);
 
     // Save the current stack
     asm("move.l %%a7, %0": "=m" (old_context->stack_ptr) : );
@@ -73,15 +77,12 @@ void k_context_switch(pcb_context_t * old_context, pcb_context_t * new_context)
 
     if (current_process->first_time)
     {
-        dbug("   First time ");
+        trace(TRACE, "   First time ");
         asm("move.l %%a7, %0": "=m" (temp));
-        dbug_hex("    rte from ", temp);
-        dbug_hex("      ->pc is ", ((uint32_t*)temp)[1]);
-        //asm("move.l #0x45672000, (%a7)");
-        //asm("move.l (%a7), %a1");
-        //asm("move.l 4(%a7), %a2");
+        trace_hex(TRACE, "    rte from ", temp);
+        trace_hex(TRACE, "      ->pc is ", ((uint32_t*)temp)[1]);
         current_process->first_time = 0;
         asm("rte");
     }
-    dbug("  ->End context switch");
+    trace(TRACE, "  ->End context switch");
 }

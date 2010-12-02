@@ -1,4 +1,4 @@
-#include "dbug.h"
+#include "trace.h"
 #include "uart_i_process.h"
 #include "crt_process.h"
 #include "k_globals.h"
@@ -16,20 +16,20 @@ int __main(void)
 void fake_cci ()
 {
     enable_debug = 1;
-    dbug("check if called");
+    trace(ALWAYS,"check if called");
     enable_debug = 0;
     while (1)
     {
         MsgEnv* message = k_receive_message(); // sent from uart to "cci" after enter key
         enable_debug = 1;
-        dbug("CCI check");
+        trace(ALWAYS,"CCI check");
         if (message != NULL)
         {
-            dbug(message->msg);
-            dbug("Message was sent to CCI");
+            trace(ALWAYS,message->msg);
+            trace(ALWAYS,"Message was sent to CCI");
             if (message->msg[0] == '\0' || message->msg[1] == '\0')
             {
-                dbug("Short message given in");
+                trace(ALWAYS,"Short message given in");
                 message->msg[2] = '\0';
             }
             message->msg[0] = '@';
@@ -42,8 +42,8 @@ void fake_cci ()
 
 int main()
 {
-    dbug("Beginning of test");
-    dbug("Messages will be changed so 1st and 2nd char are @ and #\n");
+    trace(ALWAYS,"Beginning of test");
+    trace(ALWAYS,"Messages will be changed so 1st and 2nd char are @ and #\n");
      
     enable_debug = 0;
     
@@ -80,7 +80,7 @@ int main()
     itable[3].is_i_process = 0;
     itable[3].is_sys_process = 0;
    
-    dbug("Starting initialization");
+    trace(ALWAYS,"Starting initialization");
     
     k_init(itable, 4);
     return 0;

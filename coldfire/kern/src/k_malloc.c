@@ -1,6 +1,6 @@
 #include "coldfire.h"
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 
 void * k_malloc(uint32_t size)
 {
@@ -16,7 +16,7 @@ void * k_malloc(uint32_t size)
     origin += size;
     if (ret % 2 != 0)
     {
-        dbug("k_malloc: foul!!!");
+        trace(ALWAYS, "k_malloc: foul!!!");
     }
     return (void *) ret;
 }
