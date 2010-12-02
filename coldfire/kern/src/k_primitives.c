@@ -50,6 +50,8 @@ MsgEnv * k_receive_message()
         {
             return NULL;
         }
+        rtx_dbug_outs("k_receive blocking: ");
+        dbug(current_process->name);
         k_process_switch(P_BLOCKED_ON_RECEIVE);
     }
 
@@ -68,6 +70,8 @@ MsgEnv * k_request_msg_env()
         {
             return NULL;
         }
+        rtx_dbug_outs("k_request blocking: ");
+        dbug(current_process->name);
         proc_pq_enqueue(blocked_request_env_pq, current_process);
         k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
     }
