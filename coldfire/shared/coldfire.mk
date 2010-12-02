@@ -53,6 +53,7 @@ APP=
 TESTS:=$(addprefix $(TEST_DIR)/, $(notdir $(basename $(TEST_FILES))))
 ifeq ($(MODULE),kern)
 	APP=$(TOP_DIR)/rtx
+	APPDEPS=$(addprefix $(LIB_DIR)/lib, $(addsuffix .a, $(DEPS)))
 endif
 
 # TARGETS
@@ -66,19 +67,19 @@ clean:
 	@rm -rf $(BIN_DIR) *.s19 *.o *.bin *.lst *.map $(LIB)
 
 # RULES
-$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
+$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM) $(APPDEPS)
 	@echo "	   Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
 	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< \
-		$(LIB) -L$(LIB_DIR) -lutil
+		$(LIB) $(APPDEPS)
 	@$(OBJCPY) $@.bin $@.s19
 	@$(OBJDMP) $@.bin > $@.lst
 	@chmod u+x $@.s19
 
-$(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM)
+$(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM) $(APPDEPS)
 	@echo "Makeing app $(APP)"
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) \
-		$(LIB) -L$(LIB_DIR) -lutil
+		$(LIB) $(APPDEPS)
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst
 	@chmod u+x $(APP).s19
@@ -97,3 +98,9 @@ $(BIN_DIR)/%.o: %.c
 $(BIN_DIR)/%.s: %.c
 	@$(MKDIR) $(dir $@)
 	@$(CC) $(CFLAGS) -S -o $@ $<
+
+$(LIB_DIR)/lib%.a: .FORCE
+	@echo "Building Dependency $(notdir $@)"
+	@make -C $(TOP_DIR)/$* --no-print-directory
+
+.FORCE:
