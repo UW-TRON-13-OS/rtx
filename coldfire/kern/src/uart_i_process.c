@@ -14,6 +14,7 @@ int outputIndex = 0;
  */
 void uart_i_process()
 {
+    dbug("Checking if this gets entered into");
     int i;
     BYTE temp;
     temp = SERIAL1_UCSR;    // Ack the interrupt
