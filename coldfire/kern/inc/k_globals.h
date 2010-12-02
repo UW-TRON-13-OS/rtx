@@ -9,9 +9,8 @@
 // process pids
 #define NULL_PID 0
 #define CCI_PID -1
-#define CRT_PID -2
-#define UART_I_PROCESS_PID -3
-#define TIMER_I_PROCESS_PID -4
+#define UART_I_PROCESS_PID -2
+#define TIMER_I_PROCESS_PID -3
 
 // Process priorities
 #define NUM_PRIORITIES 3
