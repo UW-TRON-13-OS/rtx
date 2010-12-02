@@ -1,5 +1,5 @@
-#ifndef _CONSOLE_H_
-#define _CONSOLE_H_
+#ifndef _KERN_CONSOLE_H_
+#define _KERN_CONSOLE_H_
 
 #include <rtx.h>
 
