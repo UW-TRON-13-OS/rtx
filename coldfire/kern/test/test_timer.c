@@ -23,7 +23,6 @@ void fake_cci ()
     {
         trace(ALWAYS,"request delay of 5 sec.");
         k_request_delay( 500, 123 , env);
-        dbug ("durrrrr.");
         k_receive_message ();
         
         trace(ALWAYS,"request delay of 2 sec.");
