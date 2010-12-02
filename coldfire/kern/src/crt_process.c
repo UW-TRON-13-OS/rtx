@@ -1,7 +1,7 @@
 #include "rtx.h"
 #include "k_primitives.h"
 #include "msg_env_queue.h"
-#include "dbug.h"
+#include "trace.h"
 #include "crt_process.h"
 #include "k_globals.h"
 
