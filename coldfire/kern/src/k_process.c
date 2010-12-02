@@ -28,14 +28,9 @@ int32_t k_get_num_processes()
 
 void init_fake_stack_frame(pcb_t * pcb, bool is_sys_process)
 {
-#define FORMAT 0x40000000  // Assume 'a7' was previous aligned on 0 modulo 4
-#define FS_3_2 0x0     // No fault
-#define Vector_7_0 (32<<(2+16))   // Trap interrupt
-#define FS_1_0 0x0     // No fault
-#define STATUS_REG 0x700 // Interrupt 7 - cleared CSR
-#define USER_MODE 0x0000
-#define SUPERVISOR_MODE 0x2000
-#define FAKE_FV_STATUS_CONSTANT (FORMAT|FS_3_2|Vector_7_0|FS_1_0|STATUS_REG)
+#define FAKE_ISR_USER 0x456720000
+#define FAKE_ISR_SUPERVISOR 0x45672000
+#define FAKE_ISR_INTERRUPT 0x456727000
     uint32_t * fake_stack_ptr = pcb->stack_bottom;
     *fake_stack_ptr = (uint32_t) pcb->start;
     dbug_ptr("fake stack ptr ", fake_stack_ptr);
