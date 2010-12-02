@@ -1,7 +1,6 @@
 #include "rtx.h"
 #include "k_globals.h"
 #include "null_process.h"
-#include "crt_process.h"
 #include "cci.h"
 #include "uart_i_process.h"
 #include "k_init.h"
