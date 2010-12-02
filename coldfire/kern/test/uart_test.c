@@ -34,8 +34,8 @@ void fake_cci ()
 int main()
 {
     // You need this?
-    asm( "move.l #asm_serial_entry,%d0" );
-    asm( "move.l %d0,0x10000100" );
+//    asm( "move.l #asm_serial_entry,%d0" );
+ //   asm( "move.l %d0,0x10000100" );
     
     rtx_dbug_outs("Beginning of test/n");
     rtx_dbug_outs("Messages will be changed so 1st and 2nd char are @ and #\n");

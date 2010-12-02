@@ -24,12 +24,14 @@ SHARED_DIR:=$(TOP_DIR)/shared
 LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
-INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc
+INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc -I$(TOP_DIR)/util/inc
 CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE)
 
 vpath %.c $(SRC_DIR)
 vpath %.h $(INC_DIR)
 vpath %.h $(TOP_DIR)/$(INC_DIR)
+vpath %.h $(TOP_DIR)/util/inc
+vpath %.h $(TOP_DIR)/user/inc
 
 SRC_FILES:=$(wildcard $(SRC_DIR)/*.c)
 LIB_SRC:=$(filter-out $(basename $(MAIN_FILE)), $(OBJ_NAMES))
@@ -67,14 +69,16 @@ clean:
 $(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
 	@echo "	   Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< \
+		$(LIB) -L$(LIB_DIR) -lutil
 	@$(OBJCPY) $@.bin $@.s19
 	@$(OBJDMP) $@.bin > $@.lst
 	@chmod u+x $@.s19
 
 $(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM)
 	@echo "Makeing app $(APP)"
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) \
+		$(LIB) -L$(LIB_DIR) -lutil
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst
 	@chmod u+x $(APP).s19

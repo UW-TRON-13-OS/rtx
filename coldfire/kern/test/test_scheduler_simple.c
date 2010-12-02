@@ -56,7 +56,7 @@ void null_process()
 
 int main()
 {
-    enable_debug = 0;
+    enable_debug = 1;
 
     pcb_init_t itable[3];
     itable[0].pid = 0;
