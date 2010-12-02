@@ -1,5 +1,13 @@
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#include "utils.h"
+
+int main ()
+{
+
+    while (1)
+    {
+    }
+    return 0;
+}
 
 CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[]);
 
@@ -10,5 +18,3 @@ int rtx_strcmp(const CHAR * str1, const CHAR * str2);
 void rtx_strtok(CHAR * str, const CHAR * delimiters);
 
 int rtx_atoi (const CHAR * str, int *num_p);
-
-#endif

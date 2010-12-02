@@ -24,7 +24,7 @@ SHARED_DIR:=$(TOP_DIR)/shared
 LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
-INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc
+INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc -I$(TOP_DIR)/util/inc
 CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE)
 
 vpath %.c $(SRC_DIR)
@@ -73,7 +73,7 @@ $(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
 	@chmod u+x $@.s19
 
 $(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM)
-	@echo "Makeing app $(APP)"
+	@echo "Making app $(APP)"
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) $(LIB)
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst

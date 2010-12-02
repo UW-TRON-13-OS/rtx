@@ -5,8 +5,6 @@
 #include "msg_env_queue.h"
 #include "rtx_util.h"
 
-//TODO: sscanf
-
 void cci_intro(MsgEnv *send_env, msg_env_queue_t *msgQ)
 {
 	send_env->msg = "Welcome to AwesomeOS\n"
@@ -52,7 +50,8 @@ void start_cci()
         if (env->msg_type == CONSOLE_INPUT)
         {
             char cmd [3];
-            if (sscanf(env->msg,"%s", cmd)==1)
+            rtx_strtok (env->msg, cmd, " \t");
+            if ( *cmd != '\0')
             {
                 //send empty envelope to process A. should only do so once.
                 if (rtx_strcmp(cmd,"s") == 0) 
@@ -143,8 +142,14 @@ void start_cci()
                 //change process priority
                 else if (rtx_strcmp(cmd,"n") == 0) 
                 {
-                    int priority, pid; 
-                    if (sscanf(env->msg, "%*s %d %d", &priority, &pid)!=2)
+                    int priority, pid, ret; 
+                    char priorityStr[6], pidStr[6];
+                    rtx_strTok ( NULL, priorityStr, " \t" );
+                    rtx_strTok ( NULL, pidStr, " \t" );
+                    ret = rtx_atoi ( priorityStr, &priority );
+                    ret += rtx_atoi ( pidStr, &pid );
+
+                    if ( ret < 2 )
                     {
 						send_env->msg = "Error Bad command format: "
                                         "Usage: n <priority> <processID>\n";
@@ -174,7 +179,8 @@ void start_cci()
                 else if (rtx_strcmp(cmd,"c") == 0) 
                 {
                     char newTime [9];
-                    if (sscanf(env->msg, "%*s %s",newTime) != 1)
+                    rtx_strtok (NULL, newTime, " \t");
+                    if ( *newTime == '\0' )
                     {
 						send_env->msg = "c\n"
 									"Sets the console clock.\n"
@@ -210,7 +216,7 @@ void start_cci()
 					send_env->msg = rtx_sprintf(str, format, params);
                     send_console_chars(send_env);
                 }
-            }//end if (sscanf(env->msg,"%s",cmd)==1)
+            }//end if (*cmd != '\0')
             else
             {
 				send_env->msg = "Please enter a command.\n";
