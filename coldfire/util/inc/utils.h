@@ -9,7 +9,7 @@ CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str);
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2);
 
-void rtx_strtok(CHAR * str, const CHAR * delimiters);
+void rtx_strtok(const CHAR * str, CHAR * ret, const CHAR * delimiters);
 
 int rtx_atoi (const CHAR * str, int *num_p);
 
