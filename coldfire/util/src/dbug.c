@@ -17,11 +17,6 @@ bool enable_debug = 0;
 
 void rtx_dbug_out_char( char c )
 {
-    if (!enable_debug)
-    {
-        return;
-    }
-	
     /* Store registers */
     asm( "move.l %d0, -(%a7)" );
     asm( "move.l %d1, -(%a7)" );
