@@ -3,6 +3,7 @@
 #include "null_process.h"
 #include "cci.h"
 #include "uart_i_process.h"
+#include "timer_i_process.h"
 #include "k_init.h"
 
 // We need this function because of gcc
@@ -34,7 +35,7 @@ int main()
     itable[2].pid = TIMER_I_PROCESS_PID;
     itable[2].name = "timer_i_process";
     itable[2].priority = 0;
-    itable[2].start = uart_i_process;
+    itable[2].start = timer_i_process;
     itable[2].stack_size = 4096;
     itable[2].is_i_process = 1;
     itable[2].is_sys_process = 0;
