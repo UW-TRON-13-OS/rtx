@@ -62,7 +62,7 @@ void start_wallclock()
                 send_console_chars(send_env);       
             }
             //86400 = 24hrs in secs
-            int32_t clock_time = (int32_t)((clock_get_system_time()-ref)/10
+            int32_t clock_time = (int32_t)((get_system_time()-ref)/10
                                  +offset)%SEC_IN_HR;
             if (clock_display_en)
             {
@@ -135,7 +135,7 @@ int _setWallClock (char* timeParam)
     if (hr>23 || min>59 || sec > 59 || ret < 3)
         return ERROR_ILLEGAL_ARG;
     offset = (hr*3600 + min*60 + sec);
-    ref = clock_get_system_time(); 
+    ref = get_system_time(); 
     return CODE_SUCCESS;
 }
 
