@@ -15,21 +15,28 @@ int __main(void)
 
 void fake_cci ()
 {
+    enable_debug = 1;
+    dbug("check if called");
+    enable_debug = 0;
     while (1)
     {
         MsgEnv* message = k_receive_message(); // sent from uart to "cci" after enter key
+        enable_debug = 1;
+        dbug("CCI check");
         if (message != NULL)
         {
-            rtx_dbug_outs("Message was sent to CCI\n");
+            dbug(message->msg);
+            dbug("Message was sent to CCI");
             if (message->msg[0] == '\0' || message->msg[1] == '\0')
             {
-                rtx_dbug_outs("Short message given in");
+                dbug("Short message given in");
                 message->msg[2] = '\0';
             }
             message->msg[0] = '@';
             message->msg[1] = '#';
             k_send_message(CRT_PID, message);
         }
+        enable_debug = 0;
     }
 }
 
@@ -38,7 +45,7 @@ int main()
     dbug("Beginning of test");
     dbug("Messages will be changed so 1st and 2nd char are @ and #\n");
      
-    enable_debug = 1;
+    enable_debug = 0;
     
     pcb_init_t itable[4];
     itable[0].pid = CRT_PID;
@@ -47,7 +54,7 @@ int main()
     itable[0].start = start_crt_process;
     itable[0].stack_size = 4096;
     itable[0].is_i_process = 0;
-    itable[0].is_sys_process = 0;
+    itable[0].is_sys_process = 1;
 
     itable[1].pid = UART_I_PROCESS_PID;
     itable[1].name = "uart_i_process";
@@ -71,7 +78,7 @@ int main()
     itable[3].start = null_process;
     itable[3].stack_size = 4096;
     itable[3].is_i_process = 0;
-    itable[3].is_sys_process = 1;
+    itable[3].is_sys_process = 0;
    
     dbug("Starting initialization");
     
