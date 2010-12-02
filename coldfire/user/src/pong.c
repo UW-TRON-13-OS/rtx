@@ -6,6 +6,7 @@
 #define PADDLE_LENGTH 5
 #define BOARD_ROWS 20
 #define BOARD_COLS 80
+#define DELAY_AMOUNT 10
 
 char board[20][80];
 int left_paddle_pos; // 0 to 15
@@ -110,6 +111,7 @@ void update_board ()
             ball_r += r_speed;
             ball_c += c_speed;
             board[ball_r][ball_c] = 'X';
+            request_delay(DELAY_AMOUNT, WAKEUP_10, message);
         }
         
         print_board();
