@@ -1,7 +1,6 @@
 	.globl asm_uart_entry
 	.even		
 asm_uart_entry:
-    move.w #0x2700, %sr 
 
 	move.l %d0, -(%a7)
 	move.l %d1, -(%a7)
@@ -37,7 +36,6 @@ asm_uart_entry:
 	move.l (%a7)+, %d1
 	move.l (%a7)+, %d0
 
-    move.w #0x2000, %sr 
 	
 	rte
 
