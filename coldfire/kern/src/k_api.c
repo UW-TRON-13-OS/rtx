@@ -117,20 +117,6 @@ int request_process_status(MsgEnv *msg_env)
     return retCode;
 }
 
-int terminate()
-{
-    int retCode = 0;
-
-    // Call kernel primitive
-    asm( "move.l #" STR(TRAP_TABLE_TERMINATE) ", %d0" );
-    asm( "TRAP #" STR(KERN_SWI) );
-
-    // Retrieve the return code
-    asm( "move.l %d0, -4(%a6)" );
-    
-    return retCode;
-}
-
 int change_priority(int new_priority, int target_process_id)
 {
     int retCode = 0;
@@ -264,9 +250,6 @@ void kern_swi_handler()
         case TRAP_TABLE_REQUEST_PROCESS_STATUS:
             asm("move.l %%d2, %0" : "=m" (arg_msg));
             ret_value = k_request_process_status(arg_msg);
-            break;
-        case TRAP_TABLE_TERMINATE:
-            ret_value = k_terminate();
             break;
         case TRAP_TABLE_CHANGE_PRIORITY:
             asm("move.l %%d2, %0" : "=m" (arg_int1));
