@@ -47,6 +47,12 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 						j++;
 						temp_i++;
 					}
+                    int x = 0;
+                    for(x = 0; x < spaces; x++)
+                    {
+                        str[j] = ' ';
+						j++;
+                    }
 					k++;
 				}
 				else if(format[k] == 'i' || 
