@@ -1,6 +1,8 @@
 #include "rtx.h"
 #include "utils.h"
 
+int _findChar (CHAR ch, const CHAR * str);
+
 CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 {
 	int i = 0, j = 0, k = 0;
@@ -129,4 +131,59 @@ int rtx_strcmp(const CHAR * str1, const CHAR * str2)
         k++;
 	}
 	return 0;
+}
+
+CHAR * rtx_strtok(CHAR * str, const CHAR * delimiters)
+{
+    static char copy [100] == "";
+    static BYTE i = 0;
+
+    if ( str != NULL )
+    {
+        rtx_strcpy ( copy, str );
+        i = 0;
+    }
+
+    if ( *copy == '\0' )
+    {
+        return NULL;
+    }
+
+    CHAR ret [10] = "";
+    BYTE j = 0;
+    
+    //skip leading characters to be ignored
+    while ( _findChar( copy[i], delimiters ) == 1 )
+    {
+        i++;
+    }
+    
+    while ( copy[i] != '\0' && _findChar( copy[i], delimiters ) == 0 )
+    {
+        ret[j] = copy [i];
+        i++;
+        j++;
+    }
+    ret[j]='\0';
+    
+    return ret; 
+}
+
+int _findChar (CHAR ch, const CHAR * str)
+{
+    if (str == NULL)
+    {
+        return -1;
+    }
+
+    int i = 0;
+    while ( str[i] != '\0' )
+    {
+        if ( ch == str[i] )
+        {
+            return 1;
+        }
+        i++;
+    }
+    return 0;
 }
