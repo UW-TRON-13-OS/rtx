@@ -10,8 +10,6 @@ void start_crt_process()
     while (1)
     {
         MsgEnv* message = k_receive_message();
-        enable_debug = 1;
-        trace_ptr(ALWAYS, "message ", message);
         if (message != NULL)
         {
             // Enable TX Interrupt

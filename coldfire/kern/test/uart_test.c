@@ -15,9 +15,6 @@ int __main(void)
 
 void fake_cci ()
 {
-    enable_debug = 1;
-    trace(ALWAYS,"check if called");
-    enable_debug = 0;
     while (1)
     {
         MsgEnv* message = k_receive_message(); // sent from uart to "cci" after enter key
@@ -25,7 +22,6 @@ void fake_cci ()
         trace(ALWAYS,"CCI check");
         if (message != NULL)
         {
-            trace(ALWAYS,message->msg);
             trace(ALWAYS,"Message was sent to CCI");
             if (message->msg[0] == '\0' || message->msg[1] == '\0')
             {
