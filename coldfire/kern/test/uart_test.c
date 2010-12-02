@@ -5,6 +5,7 @@
 #include "rtx.h"
 #include "k_primitives.h"
 #include "k_init.h"
+#include "null_process.h"
 
 // We need this function because of gcc
 int __main(void)
@@ -34,16 +35,12 @@ void fake_cci ()
 
 int main()
 {
-    // You need this?
-//    asm( "move.l #asm_serial_entry,%d0" );
- //   asm( "move.l %d0,0x10000100" );
-    
-    rtx_dbug_outs("Beginning of test/n");
-    rtx_dbug_outs("Messages will be changed so 1st and 2nd char are @ and #\n");
+    dbug("Beginning of test");
+    dbug("Messages will be changed so 1st and 2nd char are @ and #\n");
      
     enable_debug = 1;
     
-    pcb_init_t itable[3];
+    pcb_init_t itable[4];
     itable[0].pid = CRT_PID;
     itable[0].name = "crt_process";
     itable[0].priority = 3;
@@ -66,10 +63,18 @@ int main()
     itable[2].start = fake_cci;
     itable[2].stack_size = 4096;
     itable[2].is_i_process = 0;
-    itable[2].is_sys_process = 0;
+    itable[2].is_sys_process = 1;
+
+    itable[3].pid = NULL_PID;
+    itable[3].name = "null";
+    itable[3].priority = 0;
+    itable[3].start = null_process;
+    itable[3].stack_size = 4096;
+    itable[3].is_i_process = 0;
+    itable[3].is_sys_process = 1;
    
     dbug("Starting initialization");
     
-    k_init(itable, 3);
+    k_init(itable, 4);
     return 0;
 }
