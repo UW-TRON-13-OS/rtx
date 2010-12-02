@@ -179,7 +179,7 @@ void rtx_strtok(const CHAR * str, CHAR * ret, const CHAR * delimiters)
 
 int rtx_atoi (const CHAR * str, int *num_p)
 {
-    if (str == NULL || num == NULL)
+    if (str == NULL || num_p == NULL)
     {
         return 0;
     }
@@ -198,7 +198,7 @@ int rtx_atoi (const CHAR * str, int *num_p)
         neg = -1;
         i++;
     }
-    else (str[i] == '+')
+    else if (str[i] == '+')
     {
         i++;
     }
