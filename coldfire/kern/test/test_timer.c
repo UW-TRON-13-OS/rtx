@@ -1,6 +1,7 @@
 #include "rtx.h"
 #include "dbug.h"
 #include "timer_i_process.h"
+#include "timeout_queue.h"
 #include "k_primitives.h"
 #include "k_globals.h"
 #include "k_init.h"
@@ -15,13 +16,15 @@ int __main(void)
 
 void fake_cci ()
 {   
+    enable_debug = 1;
+    dbug ("request envelopes and stuff.");
+    MsgEnv *env = k_request_msg_env ();
+
     while (1)
     {
-        dbug ("request envelopes and stuff.");
-        MsgEnv *env = k_request_msg_env ();
-        
         dbug ("request delay of 5 sec.");
         k_request_delay( 500, 123 , env);
+        dbug ("durrrrr.");
         k_receive_message ();
         
         dbug ("request delay of 2 sec.");
@@ -42,8 +45,8 @@ void fake_cci ()
 
 int main()
 {
+    timeout_queue = NULL; 
     enable_debug = 1;
- 
     pcb_init_t itable[3];
 
     itable[0].pid = TIMER_I_PROCESS_PID; 
