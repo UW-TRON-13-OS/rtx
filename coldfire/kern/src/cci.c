@@ -1,15 +1,16 @@
 #include "cci.h"
 #include "cci_util.h"
 #include "rtx.h"
+#include "k_primitives.h"
 #include "processes.h"
 #include "msg_env_queue.h"
-#include "rtx_util.h"
+#include "utils.h"
 
-void cci_intro(MsgEnv *send_env, msg_env_queue_t *msgQ)
+void cci_intro(MsgEnv *send_env)
 {
 	send_env->msg = "Welcome to AwesomeOS\n"
                     "==========================\n";
-    send_console_chars(send_env);
+    k_send_console_chars(send_env);
 }
 
 /** CCI entry point and main loop **/
@@ -20,26 +21,29 @@ void start_cci()
 
     msg_env_queue_t *msgQ = msg_env_queue_create();
     MsgEnv *send_env, *status_env, *proc_a_env;
-    send_env = request_msg_env();
-    status_env = request_msg_env();
-    proc_a_env = request_msg_env();
-    char str[100], format[100];
+    send_env = k_request_msg_env();
+    status_env = k_request_msg_env();
+    proc_a_env = k_request_msg_env();
+    char str_a[100], format_a[100];
+    char *str, *format;
+    str = (char *)str_a;
+    format = (char *) format_a;
     void * params [11];
 
     // Print the introduction
-    cci_intro(send_env, msgQ);
+    cci_intro(send_env);
 
     //print CCI prompt
 	send_env->msg = "CCI: ";
-    send_console_chars(send_env);
+    k_send_console_chars(send_env);
 
     while (1)
     {
         MsgEnv* env;
-        //First check for messages received but not processed by RTX_printf
+        //First check for messages received but processed by clock fcns 
         if( msg_env_queue_is_empty(msgQ))
         {
-            env = receive_message(); 
+            env = k_receive_message(); 
         }
         else
         {
@@ -58,21 +62,22 @@ void start_cci()
                 {
                     if ( proc_a_env != NULL )
                     {
-                        status = send_message (PROCESS_A_PID, proc_a_env);
+                        status = k_send_message (PROCESS_A_PID, proc_a_env);
                         if (status != CODE_SUCCESS)
                         {
 							format = "Error: could not jumpstart process A."
                                      "errno %d\n";
-							params = { &status, NULL };
+							params[0] = &status;
+                            params[1] = NULL;
 							send_env->msg = rtx_sprintf(str, format, params);
-                            send_console_chars(send_env);
+                            k_send_console_chars(send_env);
                         }
                         proc_a_env = NULL;
                     }
                     else
                     {
 						send_env->msg = "Process A has already been started.\n";
-                        send_console_chars(send_env);
+                        k_send_console_chars(send_env);
                     }
                 }
                 //displays process statuses
@@ -83,21 +88,22 @@ void start_cci()
                     {
 						format = 	"Error: could not get the process statues. "
 										"errno %d\n";
-						params = { &status, NULL };
+						params[0] = &status;
+                        params[1] = NULL;
 						send_env->msg = rtx_sprintf(str, format, params);
-                        send_console_chars(send_env);
+                        k_send_console_chars(send_env);
                     }
                     else
                     {
-                        status = CCI_printProcessStatuses(status_env->msg,
-                                 send_env, msgQ);
+                        status = CCI_printProcessStatuses(status_env->msg, send_env);
                         if (status != CODE_SUCCESS)
 						{
 							format = 	"CCI_printProcessStatuses failed with "
 											"status %d\n";
-							params = { &status, NULL };
+                            params[0] = &status;
+                            params[1] = NULL;
 							send_env->msg = rtx_sprintf(str, format, params);
-                            send_console_chars(send_env);
+                            k_send_console_chars(send_env);
                         }
                     }
                 }
@@ -118,18 +124,19 @@ void start_cci()
                     if (status != CODE_SUCCESS)
 					{
 						format = "get_trace_buffers failed with status %d\n";
-						params = { &status, NULL };
+                        params[0] = &status;
+                        params[1] = NULL;
 						send_env->msg = rtx_sprintf(str, format, params);
-                        send_console_chars(send_env);
+                        k_send_console_chars(send_env);
                     }
-                    status = CCI_printTraceBuffers (status_env->msg, send_env,
-                             msgQ);
+                    status = CCI_printTraceBuffers (status_env->msg, send_env);
                     if (status != CODE_SUCCESS)
 					{					
 						format = "CCI_printTraceBuffers failed with status %d\n";
-						params = { &status, NULL };
+                        params[0] = &status;
+                        params[1] = NULL;
 						send_env->msg = rtx_sprintf(str, format, params);
-                        send_console_chars(send_env);
+                        k_send_console_chars(send_env);
                     }
                 }
                 //change process priority
@@ -137,8 +144,8 @@ void start_cci()
                 {
                     int priority, pid, ret; 
                     char priorityStr[6], pidStr[6];
-                    rtx_strTok ( NULL, priorityStr, " \t" );
-                    rtx_strTok ( NULL, pidStr, " \t" );
+                    rtx_strtok ( NULL, priorityStr, " \t" );
+                    rtx_strtok ( NULL, pidStr, " \t" );
                     ret = rtx_atoi ( priorityStr, &priority );
                     ret += rtx_atoi ( pidStr, &pid );
 
@@ -146,7 +153,7 @@ void start_cci()
                     {
 						send_env->msg = "Error Bad command format: "
                                         "Usage: n <priority> <processID>\n";
-                        send_console_chars(send_env);
+                        k_send_console_chars(send_env);
                     }
                     else
                     {
@@ -157,14 +164,15 @@ void start_cci()
 											"priority must be 0-2 and "
 											"processID must be a user process other "
 											"than the null process\n";
-                            send_console_chars(send_env);
+                            k_send_console_chars(send_env);
                         }
                         else if (status != CODE_SUCCESS)
 						{
 							format = "CCI_setNewPriority failed with status %d\n";
-							params = { &status, NULL };
+                            params[0] = &status;
+                            params[1] = NULL;
 							send_env->msg = rtx_sprintf(str, format, params);
-                            send_console_chars(send_env);
+                            k_send_console_chars(send_env);
                         }
                     }
                 }
@@ -178,7 +186,7 @@ void start_cci()
 						send_env->msg = "c\n"
 									"Sets the console clock.\n"
 									"Usage: c <hh:mm:ss>\n";
-                        send_console_chars(send_env);
+                        k_send_console_chars(send_env);
                     }
                     else
                     {
@@ -191,33 +199,35 @@ void start_cci()
                                        "hh must be 00-23\n"
                                        "mm must be 00-59\n"
                                        "ss must be 00-59\n";
-                            send_console_chars(send_env);
+                            k_send_console_chars(send_env);
                         }
                         else if (status != CODE_SUCCESS)
                         {
 							format = "CCI_setClock failed with status %d\n";
-							params = { &status, NULL };
+                            params[0] = &status;
+                            params[1] = NULL;
 							send_env->msg = rtx_sprintf(str, format, params);
-                            send_console_chars(send_env);
+                            k_send_console_chars(send_env);
                         }
                     }
                 }
                 else
                 {
 					format = "Invalid command '%s'\n";
-					params = { &cmd, NULL };
+					params[0] = &cmd;
+                    params[1] = NULL;
 					send_env->msg = rtx_sprintf(str, format, params);
-                    send_console_chars(send_env);
+                    k_send_console_chars(send_env);
                 }
             }//end if (*cmd != '\0')
             else
             {
 				send_env->msg = "Please enter a command.\n";
-                send_console_chars(send_env);
+                k_send_console_chars(send_env);
             }
 			
 			send_env->msg = "CCI: ";
-            send_console_chars(send_env);
+            k_send_console_chars(send_env);
         }//end if env->msg_type == CONSOLE_INPUT
     }
 }

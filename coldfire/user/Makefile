@@ -14,9 +14,9 @@ LOCAL_CFLAGS=
 include $(TOP_DIR)/shared/coldfire.mk
 
 bin/null_process.o: $(COMON_INC) null_process.h
-bin/a.o: $(COMON_INC) abc.h
-bin/b.o: $(COMON_INC) abc.h
-bin/c.o: $(COMON_INC) abc.h
+bin/a.o: $(COMMON_INC) abc.h
+bin/b.o: $(COMMON_INC) abc.h
+bin/c.o: $(COMMON_INC) abc.h
 
 # Add an entry above ^^^ where its the form of:
 # bin/<filename>.o: <header files the .h depends on>
