@@ -190,7 +190,9 @@ int k_send_console_chars(MsgEnv *msg_env)
     if (msg_env == NULL)
         return ERROR_NULL_ARG;
     msg_env->msg_type = CONSOLE_OUTPUT;
-    return k_send_message(CRT_PID, msg_env);
+    int ret = k_send_message(UART_I_PROCESS_PID, msg_env);
+    SERIAL1_IMR = 3;
+    return ret;
 }
 
 /** 5.6 Interprocess Message Trace **/
