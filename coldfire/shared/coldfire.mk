@@ -25,7 +25,7 @@ LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
 INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc -I$(TOP_DIR)/util/inc
-CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE)
+CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE) $(LOCAL_CFLAGS)
 
 vpath %.c $(SRC_DIR)
 vpath %.h $(INC_DIR)

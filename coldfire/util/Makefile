@@ -10,6 +10,7 @@ OBJ_NAMES=utest utils dbug
 
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 TEST_FILES=
+LOCAL_CFLAGS=
 
 #all: $(OBJS)
 include $(TOP_DIR)/shared/coldfire.mk

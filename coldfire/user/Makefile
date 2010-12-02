@@ -9,6 +9,7 @@ OBJ_NAMES=null_process a b  c
 
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC:=rtx.h dbug.h
+LOCAL_CFLAGS=
 
 include $(TOP_DIR)/shared/coldfire.mk
 
