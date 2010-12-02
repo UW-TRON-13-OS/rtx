@@ -20,7 +20,6 @@ uint64_t ref;
 char clock_display_en;
 
 MsgEnv *timeout_env, *send_env;
-msg_env_queue_t *msgQ;
 
 int _setWallClock (char* timeParam);
 void _displayWallClock (int disp_b);
@@ -32,7 +31,6 @@ void start_wallclock()
 {
     uint32_t status;
     //initialise
-    msgQ = msg_env_queue_create();
     offset = 0; 
     ref = 0;
     clock_display_en = 0; //clock not displayed by default
@@ -50,16 +48,7 @@ void start_wallclock()
     
     while (1)
     {
-        MsgEnv* env;
-        //First check for messages received but not processed by CCI_printf
-        if( msg_env_queue_is_empty(msgQ))
-        {
-            env = receive_message(); 
-        }
-        else
-        {
-            env = msg_env_queue_dequeue(msgQ);
-        }
+        MsgEnv* env = receive_message(); 
 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)

@@ -1,29 +1,33 @@
 #include "cci_util.h"
 #include "rtx.h"
+#include "k_primitives.h"
 #include "processes.h"
-#include "rtx_util.h"
+#include "utils.h"
+#include "wallclock.h"
 
 //prints process statuses on console given the envelope message data
-int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env,
-                              msg_env_queue_t* msgQ)
+int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
 {
     if (raw_data == NULL)
         return ERROR_NULL_ARG;
     int * data = (int *) raw_data;
     int num_processes = *data++;
     int i;
-    CHAR format [100]; 
-    CHAR str [100];
+    CHAR format_a [100], str_a[100]; 
+    char *format, *str;
+    format = (char *) format_a;
+    str = (char *) str_a;
     void * params [11];
 
 	send_env->msg = "PID | STATUS                | PRIORITY\n";
-    send_console_chars(send_env);
+    k_send_console_chars(send_env);
     for (i=0;i<num_processes;i++)
     {
         format = "  %d   ";
-        params = { &(*data++), NULL };
-        send_env->msg = rtx_spritf(str, format, params);
-        send_console_chars(send_env);
+        params[0] = &(*data++);
+        params[1] = NULL;
+        send_env->msg = rtx_sprintf(str, format, params);
+        k_send_console_chars(send_env);
         switch(*data)
         {
             case P_READY:
@@ -42,25 +46,28 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env,
                 send_env->msg = "                       ";
                 break;
         }
-        send_console_chars(send_env);
+        k_send_console_chars(send_env);
         data++;
 
         format = " %d\n";
-        params = { &(*data++), NULL };
-        send_env->msg = rtx_spritf(str, format, params);
-        send_console_chars(send_env);
+        params[0] = &(*data++);
+        params[1] = NULL;
+        send_env->msg = rtx_sprintf(str, format, params);
+        k_send_console_chars(send_env);
     }
     return CODE_SUCCESS;
 }
 
 //prints trace buffers on console given the envelope message data
-int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
+int CCI_printTraceBuffers (char* data, MsgEnv* send_env)
 {
     if (data == NULL)
         return ERROR_NULL_ARG;
     int i;
-    CHAR format [100]; 
-    CHAR str [100];
+    CHAR format_a [100], str_a[100]; 
+    char *format, *str;
+    format = (char *) format_a;
+    str = (char *) str_a;
     void * params [11];
 
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
@@ -71,7 +78,7 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
                    " Dest |Sender|Message|  Time  || Dest |Sender|Message|  Time\n"
                    " PID  |PID   |Type   |        || PID  |PID   |Type   |\n"
                    "--------------------------------------------------------------\n";
-    send_console_chars(send_env);
+    k_send_console_chars(send_env);
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE;i++)
     {
         if (send_dump[i].time_stamp != MAX_UINT32)
@@ -79,16 +86,19 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
             //TODO: Fix '%2u' and such in sprintf...
 
             format = "   %2u |   %2u |   %3d | %6u ||";
-            params = { &(send_dump[i].dest_pid), &(send_dump[i].send_pid),
-                       &(send_dump[i].msg_type), &(send_dump[i].time_stamp), NULL };
-            send_env->msg = rtx_spritf(str, format, params);
+            params[0] = &(send_dump[i].dest_pid);
+            params[1] = &(send_dump[i].send_pid);
+            params[2] = &(send_dump[i].msg_type);
+            params[3] = &(send_dump[i].time_stamp);
+            params[4] = NULL;
+            send_env->msg = rtx_sprintf(str, format, params);
 
-            send_console_chars(send_env);
+            k_send_console_chars(send_env);
         }
         else if (recv_dump[i].time_stamp != MAX_UINT32)
         {
             send_env->msg = "      |      |       |       ||";
-            send_console_chars(send_env);
+            k_send_console_chars(send_env);
         }
         else
         {
@@ -100,21 +110,24 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env, msg_env_queue_t* msgQ)
             //TODO: Fix '%2u' and such in sprintf...
 
             format = "   %2u |   %2u |   %3d | %6u\n";
-            params = { &(send_dump[i].dest_pid), &(recv_dump[i].send_pid),
-                                &(recv_dump[i].msg_type), &(recv_dump[i].time_stamp), NULL };
-            send_env->msg = rtx_spritf(str, format, params);
+            params[0] = &(recv_dump[i].dest_pid);
+            params[1] = &(recv_dump[i].send_pid);
+            params[2] = &(recv_dump[i].msg_type);
+            params[3] = &(recv_dump[i].time_stamp);
+            params[4] = NULL;
+            send_env->msg = rtx_sprintf(str, format, params);
 
-            send_console_chars(send_env);
+            k_send_console_chars(send_env);
         }
         else
         {
             send_env->msg = "      |      |       |       \n";
-            send_console_chars(send_env);
+            k_send_console_chars(send_env);
         }
     }        
     
     send_env->msg = "\n";
-    send_console_chars(send_env);
+    k_send_console_chars(send_env);
 
     return CODE_SUCCESS;
 }
@@ -124,11 +137,11 @@ int CCI_setWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, char* newTime)
     int status;
     rtx_strcpy(send_env->msg, newTime);
     send_env->msg_type = CLOCK_SET;
-    send_message(PROCESS_WALLCLOCK_PID,send_env);
+    k_send_message(PROCESS_WALLCLOCK_PID,send_env);
 
     while (1)
     {
-        MsgEnv *env = receive_message();
+        MsgEnv *env = k_receive_message();
         if (env->msg_type == CLOCK_RET)
         {
             status = *((int *)env->msg);
@@ -155,11 +168,11 @@ void CCI_displayWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, int disp_b)
         send_env->msg_type = CLOCK_OFF;
     }
 
-    send_message(PROCESS_WALLCLOCK_PID,send_env);
+    k_send_message(PROCESS_WALLCLOCK_PID,send_env);
 
     while (1)
     {
-        MsgEnv *env = receive_message();
+        MsgEnv *env = k_receive_message();
         if (env->msg_type == CLOCK_RET)
         {
             break;
