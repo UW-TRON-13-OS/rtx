@@ -1,5 +1,6 @@
 #include "msg_env_queue.h"
 #include "k_globals.h"
+#include "trace.h"
 
 struct msg_env_queue {
 	MsgEnv* head;
@@ -81,4 +82,17 @@ int msg_env_queue_size(msg_env_queue_t *queue)
         size++;
     }
     return size;
+}
+
+void msg_env_queue_print(msg_env_queue_t * queue)
+{
+    trace_inline(ALWAYS, "     [ -> ");
+    MsgEnv *node = queue->head;
+    while (node != NULL)
+    {
+        trace_inline(ALWAYS, node->msg);
+        trace_inline(ALWAYS, (" -> "));
+        node = node->next;
+    }
+    trace(ALWAYS, "]");
 }
