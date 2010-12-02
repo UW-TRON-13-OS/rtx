@@ -135,9 +135,9 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env)
 int CCI_setWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, char* newTime)
 {
     int status;
-    rtx_strcpy(send_env->msg, newTime);
+    rtx_strcpy(send_env->msg, newTime, 1024);
     send_env->msg_type = CLOCK_SET;
-    k_send_message(PROCESS_WALLCLOCK_PID,send_env);
+    k_send_message(PROCESS_WALLCLOCK_PID, send_env);
 
     while (1)
     {

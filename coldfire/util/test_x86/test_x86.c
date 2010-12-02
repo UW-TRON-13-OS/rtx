@@ -17,7 +17,7 @@ int main()
 
 
 	char t[50];
-	rtx_strcpy(t, "THIS IS A TEST FOOL! \n\n\0");
+	rtx_strcpy(t, "THIS IS A TEST FOOL! \n\n\0", 50);
 
 	cout<<"\n\n Test two!!! \n\n"<<t;
 
