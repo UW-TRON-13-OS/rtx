@@ -1,5 +1,8 @@
-#include "dbug.h"
 #include "rtx.h"
+#include "k_globals.h"
+#include "null_process.h"
+#include "cci.h"
+#include "uart_i_process.h"
 #include "k_init.h"
 
 // We need this function because of gcc
@@ -10,39 +13,42 @@ int __main(void)
 
 int main()
 {
-    char buf[1024];
-    MsgEnv msg_env;
-    msg_env.msg = buf;
-    k_init(NULL, 0);
-    rtx_dbug_uint((uint32_t)&msg_env);
-    rtx_dbug_out_char('\n');
-    rtx_dbug_uint((uint32_t)msg_env.msg);
-    rtx_dbug_out_char('\n');
-    int retcode = get_trace_buffers(&msg_env);
-    rtx_dbug_outs("Hello world\n");
-    if (retcode == 0)
-    {
-        rtx_dbug_outs("Success\n");
-        if (msg_env.msg == NULL)
-        {
-            rtx_dbug_outs("Oh noes the msg is still null\n");
-        }
-        else
-        {
-            rtx_dbug_outs(msg_env.msg);
-        }
-    }
-    else
-    {
-        rtx_dbug_uint(-1);
-        rtx_dbug_out_char('\n');
-        rtx_dbug_uint(123);
-        rtx_dbug_out_char('\n');
-        if (retcode == 1)
-        {
-            rtx_dbug_outs("got 1\n");
-        }
-        rtx_dbug_outs("Failure\n");
-    }
+    pcb_init_t itable[4];
+
+    itable[0].pid = NULL_PID;
+    itable[0].name = "null";
+    itable[0].priority = NULL_PRIORITY;
+    itable[0].start = null_process;
+    itable[0].stack_size = 4096;
+    itable[0].is_i_process = 0;
+    itable[0].is_sys_process = 0;
+
+    itable[1].pid = UART_I_PROCESS_PID;
+    itable[1].name = "uart_i_process";
+    itable[1].priority = 0;
+    itable[1].start = uart_i_process;
+    itable[1].stack_size = 4096;
+    itable[1].is_i_process = 1;
+    itable[1].is_sys_process = 0;
+
+    itable[1].pid = TIMER_I_PROCESS_PID;
+    itable[1].name = "timer_i_process";
+    itable[1].priority = 0;
+    itable[1].start = uart_i_process;
+    itable[1].stack_size = 4096;
+    itable[1].is_i_process = 1;
+    itable[1].is_sys_process = 0;
+
+    itable[2].pid = CCI_PID;
+    itable[2].name = "cci";
+    itable[2].priority = 0;
+    itable[2].start = start_cci;
+    itable[2].stack_size = 4096;
+    itable[2].is_i_process = 0;
+    itable[2].is_sys_process = 1;
+
+    
+    k_init(itable, 4);
+
     return 0;
 }
