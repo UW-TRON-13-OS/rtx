@@ -1,5 +1,6 @@
 #include "rtx.h"
 #include "dbug.h"
+#include "timer_i_process.h"
 #include "k_primitives.h"
 #include "k_globals.h"
 #include "k_init.h"
