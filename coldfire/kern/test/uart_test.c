@@ -70,6 +70,6 @@ int main()
    
     trace(ALWAYS,"Starting initialization");
     
-    k_init(itable, 4, TRUE, FALSE);
+    k_init(itable, 3, TRUE, FALSE);
     return 0;
 }
