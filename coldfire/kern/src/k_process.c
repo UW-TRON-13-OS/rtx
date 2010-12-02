@@ -1,6 +1,6 @@
 #include "k_structs.h"
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 
 #define STACK_OFFSET 16
 
@@ -33,8 +33,8 @@ void init_fake_stack_frame(pcb_t * pcb, bool is_sys_process)
 #define FAKE_ISR_INTERRUPT 0x456727000
     uint32_t * fake_stack_ptr = pcb->stack_bottom;
     *fake_stack_ptr = (uint32_t) pcb->start;
-    dbug_ptr("fake stack ptr ", fake_stack_ptr);
-    dbug_hex("getting start address ", *fake_stack_ptr);
+    trace_ptr(TRACE, "fake stack ptr ", fake_stack_ptr);
+    trace_hex(TRACE, "getting start address ", *fake_stack_ptr);
     fake_stack_ptr--;
     if (pcb->is_i_process)
     {
@@ -48,9 +48,9 @@ void init_fake_stack_frame(pcb_t * pcb, bool is_sys_process)
     {
         *fake_stack_ptr = 0x45672000;
     }
-    dbug_ptr("Exception Stack frame ", fake_stack_ptr);
-    dbug_hex("          ISR ", fake_stack_ptr[0]);
-    dbug_hex("          PC ", fake_stack_ptr[1]);
+    trace_ptr(TRACE, "Exception Stack frame ", fake_stack_ptr);
+    trace_hex(TRACE, "          ISR ", fake_stack_ptr[0]);
+    trace_hex(TRACE, "          PC ", fake_stack_ptr[1]);
 
     // Fake some registers
     int i;
@@ -67,11 +67,11 @@ void init_fake_stack_frame(pcb_t * pcb, bool is_sys_process)
 
 void init_processes(pcb_init_t process_init[], uint32_t num_procs)
 {
-    dbug_uint("Entered init processes. num_proces ", num_procs);
+    trace_uint(TRACE, "Entered init processes. num_proces ", num_procs);
     p_table = k_malloc(sizeof(*p_table) * num_procs);
-    dbug_uint("  p_table ", (uint32_t) p_table);
-    dbug_uint("  size of pcb_t ", sizeof(pcb_t));
-    dbug_uint("  num_procs  ", num_procs);
+    trace_uint(TRACE, "  p_table ", (uint32_t) p_table);
+    trace_uint(TRACE, "  size of pcb_t ", sizeof(pcb_t));
+    trace_uint(TRACE, "  num_procs  ", num_procs);
     num_processes = num_procs;
     int process_num;
     for (process_num = 0; process_num < num_procs; process_num++)
@@ -92,8 +92,8 @@ void init_processes(pcb_init_t process_init[], uint32_t num_procs)
         process->stack_bottom = (uint32_t *) (stack_boundary - STACK_OFFSET);
         process->first_time = 1;
 
-        dbug(process->name);
-        dbug_ptr(" stack boundary ", stack_boundary);
+        trace(TRACE, process->name);
+        trace_ptr(TRACE, " stack boundary ", stack_boundary);
 
         // clear the bottom of the stack
         byte * ptr = (byte *) process->stack_bottom;

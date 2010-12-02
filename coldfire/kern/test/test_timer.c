@@ -1,5 +1,5 @@
 #include "rtx.h"
-#include "dbug.h"
+#include "trace.h"
 #include "timer_i_process.h"
 #include "timeout_queue.h"
 #include "k_primitives.h"
@@ -16,37 +16,35 @@ int __main(void)
 
 void fake_cci ()
 {   
-    enable_debug = 1;
-    dbug ("request envelopes and stuff.");
+    trace(ALWAYS,"request envelopes and stuff.");
     MsgEnv *env = k_request_msg_env ();
 
     while (1)
     {
-        dbug ("request delay of 5 sec.");
+        trace(ALWAYS,"request delay of 5 sec.");
         k_request_delay( 500, 123 , env);
         dbug ("durrrrr.");
         k_receive_message ();
         
-        dbug ("request delay of 2 sec.");
+        trace(ALWAYS,"request delay of 2 sec.");
         k_request_delay( 200, 123 , env);
         k_receive_message ();
 
-        dbug ("request delay of 1 sec.");
+        trace(ALWAYS,"request delay of 1 sec.");
         k_request_delay( 100, 123 , env);
         k_receive_message ();
         
-        dbug ("request delay of 0.5 sec.");
+        trace(ALWAYS,"request delay of 0.5 sec.");
         k_request_delay( 50, 123 , env);
         k_receive_message ();
         
-        dbug ("done");
+        trace(ALWAYS,"done");
     }
 }
 
 int main()
 {
     timeout_queue = NULL; 
-    enable_debug = 1;
     pcb_init_t itable[3];
 
     itable[0].pid = TIMER_I_PROCESS_PID; 
@@ -73,7 +71,7 @@ int main()
     itable[2].is_i_process = 0;
     itable[2].is_sys_process = 1;
    
-    dbug("Starting initialization");
+    trace(ALWAYS,"Starting initialization");
     
     k_init(itable, 3);
   

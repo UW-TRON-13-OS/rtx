@@ -1,4 +1,4 @@
-#include "dbug.h"
+#include "trace.h"
 #include "rtx.h"
 #include "k_init.h"
 
@@ -15,13 +15,13 @@ void process1()
     {
         bool debug = enable_debug;
         enable_debug = 1;
-        dbug("Hello from process 1");
+        trace(ALWAYS, "Hello from process 1");
         count++;
         if (count == 1000)
         {
             count = 0;
         }
-        dbug_uint("count proc 1 ", count);
+        trace_uint(ALWAYS, "count proc 1 ", count);
         enable_debug = debug;
         release_processor();
     }
@@ -34,13 +34,13 @@ void process2()
     {
         bool debug = enable_debug;
         enable_debug = 1;
-        dbug("Hello from process 2");
+        trace(ALWAYS,"Hello from process 2");
         count--;
         if (count == 0)
         {
             count = 1000;
         }
-        dbug_uint("count proc 2 ", count);
+        trace_uint(ALWAYS, "count proc 2 ", count);
         enable_debug = debug;
         release_processor();
     }
@@ -56,8 +56,6 @@ void null_process()
 
 int main()
 {
-    enable_debug = 1;
-
     pcb_init_t itable[3];
     itable[0].pid = 0;
     itable[0].name = "null";
@@ -83,7 +81,7 @@ int main()
     itable[2].is_i_process = 0;
     itable[2].is_sys_process = 0;
    
-    dbug("Starting initialization");
+    trace(ALWAYS, "Starting initialization");
     
     k_init(itable, 3);
     return 0;
