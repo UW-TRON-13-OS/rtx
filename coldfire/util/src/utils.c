@@ -9,19 +9,29 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 		if(format[k] == '%')
 		{
             k++;
-            //int spaces = format[k] - '0';
-            //if(spaces < 10 && spaces > 0)
-            //    k++;
+            int spaces = format[k] - '0';
+            if(spaces < 10 && spaces > 0)
+                k++;
+            else
+                spaces = 0;
 			if(params[i] != NULL)
 			{
 				if(format[k] == 'c')
 				{
 					//if((params[i])[0] == NULL)
 					//	return ERROR;
+                    
+                    while(spaces > 1)
+                    {
+                        str[j] = ' ';
+                        j++;
+                        spaces--;
+                    }  
+                    
 					str[j] = (params[i])[0];
 					i++;
 					j++;
-					k++;
+					k++;                      
 				}
 				else if(format[k] == 's')
 				{
@@ -39,7 +49,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 				else if(format[k] == 'i')
 				{
 					int size = 0, div = 1;
-					int num = params[i];
+					int num = *((int *) params[i]);
 					i++;
 					while(num/div > 0)
 					{
@@ -53,16 +63,26 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 						str[j] = '0';
 						j++;
 					}
-					
-					while(size > 0)
-					{
-						int digit = num/div;
-						str[j] = 0x(30 + digit);
-						j++;
-						size--;
-						num -= digit*div;
-						div/=10;
-					}
+                    
+                    if(size < spaces)
+                    {	
+                        while(spaces > size)
+                        {
+                            str[j] = ' ';
+                            j++;
+                            spaces--;
+                        }
+                    }
+                    
+                    while(size > 0)
+                    {
+                        int digit = num/div;
+                        str[j] = '0' + digit;
+                        j++;
+                        size--;
+                        num -= digit*div;
+                        div/=10;
+                    }
 					k++;
 				}
 				else
@@ -76,7 +96,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 			}
 			else
 			{
-				return ERROR;
+				return NULL;
 			}		
 		}
 		else
