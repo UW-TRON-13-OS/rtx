@@ -24,12 +24,12 @@ int main ()
     params[3] = NULL;
     trace (ALWAYS, rtx_sprintf (str,"Mix %s, %4d, %6d",params)); 
     trace (ALWAYS, rtx_sprintf (str,"Too many params %s, %4d",params));
-    trace (ALWAYS, rtx_sprintf (str,"Too few params %s %4d %d %d",params));
-    trace (ALWAYS, rtx_sprintf (str,"Mismatch %s, %s, %d", params));
+    //trace (ALWAYS, rtx_sprintf (str,"Too few params %s %4d %d %d",params));
+    //trace (ALWAYS, rtx_sprintf (str,"Mismatch %s, %s, %d", params));
 
     trace (ALWAYS, rtx_strcpy (str_p, tok_p));//should be fine 
     str_p = "Really long string thing";
-    trace (ALWAYS, rtx_strcpy (tok_p, str_p));//should fail 
+    //trace (ALWAYS, rtx_strcpy (tok_p, str_p));//should fail 
     
     trace_uint (ALWAYS,"0", rtx_strcmp("abc","abc")); //0 
     trace_uint (ALWAYS,"1", rtx_strcmp("","abc")); //1
@@ -46,17 +46,15 @@ int main ()
     trace (ALWAYS, tok_p);
     rtx_strtok (NULL, tok_p, " ");
     trace (ALWAYS, tok_p);
-
+    
+    rtx_atoi("14", &num);
     trace_uint (ALWAYS, "1",rtx_atoi("14", &num));
     trace_uint (ALWAYS, "14",num);
     trace_uint (ALWAYS, "1",rtx_atoi("-14", &num));
-    trace_uint (ALWAYS, "-14",num);
+    trace_uint (ALWAYS, "1",num + 15);
     trace_uint (ALWAYS, "0",rtx_atoi("", &num));
     trace_uint (ALWAYS, "0",rtx_atoi("1sdf4", &num));
 
-    while (1)
-    {
-    }
     return 0;
 }
 /*
