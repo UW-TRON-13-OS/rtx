@@ -14,8 +14,8 @@ TEST_FILES=
 #all: $(OBJS)
 include $(TOP_DIR)/shared/coldfire.mk
 
-bin/utest.o: utest.h 
-bin/utils.o: utils.h
+bin/utest.o: utest.h utils.h
+bin/utils.o: utils.h 
 
 # Add an entry above ^^^ where its the form of:
 # bin/<filename>.o: <header files the .h depends on>
