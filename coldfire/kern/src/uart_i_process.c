@@ -6,8 +6,8 @@
 
 CHAR OutBuffer[100] = {0};
 CHAR InBuffer[100] = {0};
-int inputIndex = 0;
-int outputIndex = 0;
+uint32_t inputIndex;
+uint32_t outputIndex;
 
 /*
  * This function is called by the assembly STUB function
@@ -23,13 +23,18 @@ void uart_i_process()
     // There is data to be read
     if( temp & 1 )
     {
+        dbug("Check if it detects kb input");
         CharIn = SERIAL1_RD;
+        rtx_dbug_out_char(CharIn);
+        dbug_uint("inputIndex", inputIndex);
         InBuffer[inputIndex] = CharIn;
         inputIndex++;
         SERIAL1_IMR = 3;
         if (CharIn != '\0') // enter in a character
         {
+            dbug("Check 0");
             SERIAL1_WD = CharIn;
+            dbug("Check 1");
         }
         else // enter key is pressed
         {
@@ -46,13 +51,15 @@ void uart_i_process()
             }
             inputIndex = 0;
         }
+        dbug("Check 2");
     }
     // Check to see if data can be written out
     else if ( temp & 4 )
     {
+        dbug("Check 3");
         if (outputIndex == 0)
         {
-            MsgEnv* message = k_receive_message();;
+            MsgEnv* message = k_receive_message();
             if (message != NULL)
             {
                 i = 0;
@@ -62,7 +69,7 @@ void uart_i_process()
                 }
             }
         }
-        
+        dbug("Check 4");
         if (OutBuffer[outputIndex] == '\0')
         {
             SERIAL1_IMR = 2;        // Disable tx Interupt
@@ -74,5 +81,6 @@ void uart_i_process()
             outputIndex++;
         }
     }
+    dbug("End Check");
     return;
 }

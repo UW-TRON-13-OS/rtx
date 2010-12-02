@@ -3,6 +3,7 @@
 #include "dbug.h"
 #include "k_globals.h"
 #include "msg_env_queue.h"
+#include "uart_i_process.h"
 
 pcb_context_t main_context;
 
@@ -73,6 +74,9 @@ void init_uart()
     mask = SIM_IMR;
     mask &= 0x0003dfff;
     SIM_IMR = mask;
+
+    inputIndex = 0;
+    outputIndex = 0;
 }
 
 void init_kern_swi()
