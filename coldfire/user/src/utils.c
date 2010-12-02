@@ -1,14 +1,17 @@
 #include "rtx.h"
 #include "utils.h"
 
-CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
+CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 {
 	int i = 0, j = 0, k = 0;
 	while (format[k] != '\0')
 	{
 		if(format[k] == '%')
 		{
-			k++;
+            k++;
+            //int spaces = format[k] - '0';
+            //if(spaces < 10 && spaces > 0)
+            //    k++;
 			if(params[i] != NULL)
 			{
 				if(format[k] == 'c')
@@ -90,21 +93,20 @@ CHAR * rtx_spritf(CHAR * str, const CHAR * format, void * params[])
 CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str)
 {
 	void * params[] = {cpy_str};
-	return rtx_spritf(CHAR * str, "%s", params);
+	return rtx_sprintf(CHAR * str, "%s", params);
 }
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2)
 {
-	if(str1 == NULL && str2 == NULL)
-		return 1;
-	else if((str1 == NULL && str2 != NULL) || (str1 != NULL && str2 == NULL))
-		return 0;
+	if(str1 == NULL || str2 == NULL)
+		return -1;
 	
 	int k = 0;
 	while (str1[k] != '\0' && str2[k] != '\0')
 	{
 		if(str1[k] != str2[k])
-			return 0;
+			return 1;
+        k++;
 	}
-	return 1;
+	return 0;
 }
