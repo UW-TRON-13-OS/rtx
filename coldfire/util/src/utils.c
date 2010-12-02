@@ -30,7 +30,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                         spaces--;
                     }  
                     
-					str[j] = (params[i])[0];
+					str[j] = ((CHAR *)(params[i]))[0];
 					i++;
 					j++;
 					k++;                      
@@ -48,11 +48,21 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 					}
 					k++;
 				}
-				else if(format[k] == 'i')
+				else if(format[k] == 'i' || 
+                        format[k] == 'd' || 
+                        format[k] == 'u')
 				{
 					int size = 0, div = 1;
 					int num = *((int *) params[i]);
+					int neg = 0;
 					i++;
+
+					if(num < 0)
+					{
+						neg = 1;
+						num *= -1;
+					}
+
 					while(num/div > 0)
 					{
 						size++;
@@ -75,6 +85,12 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                             spaces--;
                         }
                     }
+                    
+					if(neg == 1)
+					{
+						str[j] = '-';
+						j++;
+					}
                     
                     while(size > 0)
                     {
@@ -115,7 +131,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str)
 {
 	void * params[] = {cpy_str};
-	return rtx_sprintf(CHAR * str, "%s", params);
+	return rtx_sprintf(str, "%s", params);
 }
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2)

@@ -9,6 +9,7 @@ void k_process_switch(enum process_state transition_to)
     pcb_t *old_proc = current_process;
     old_proc->state = transition_to;
 
+    proc_pq_print(ready_pq);
     current_process = proc_pq_dequeue(ready_pq);
     current_process->state = P_EXECUTING;
     k_context_switch(&old_proc->context, &current_process->context);
@@ -43,6 +44,9 @@ void k_context_switch(pcb_context_t * old_context, pcb_context_t * new_context)
 
     dbug_hex("    Saving to ", old_context->stack_ptr);
     dbug_hex("    Restoring from ", new_context->stack_ptr);
+    dbug_ptr("    Current process ptr : ", current_process);
+    rtx_dbug_outs("    Current process : ");
+    dbug(current_process->name);
 
     // Save the current stack
     asm("move.l %%a7, %0": "=m" (old_context->stack_ptr) : );
@@ -72,9 +76,10 @@ void k_context_switch(pcb_context_t * old_context, pcb_context_t * new_context)
         dbug("   First time ");
         asm("move.l %%a7, %0": "=m" (temp));
         dbug_hex("    rte from ", temp);
+        dbug_hex("      ->pc is ", ((uint32_t*)temp)[1]);
         //asm("move.l #0x45672000, (%a7)");
-        asm("move.l (%a7), %a1");
-        asm("move.l 4(%a7), %a2");
+        //asm("move.l (%a7), %a1");
+        //asm("move.l 4(%a7), %a2");
         current_process->first_time = 0;
         asm("rte");
     }

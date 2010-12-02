@@ -25,11 +25,17 @@ LIB_DIR:=$(TOP_DIR)/lib
 TEST_DIR:=$(TOP_DIR)/test
 
 INCLUDE:=-I$(INC_DIR) -I$(TOP_DIR)/inc -I$(TOP_DIR)/user/inc -I$(TOP_DIR)/util/inc
+<<<<<<< HEAD
 CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE)
+=======
+CFLAGS=-Wall -m5307 -pipe -nostdlib  $(INCLUDE) $(LOCAL_CFLAGS)
+>>>>>>> 43dbc38a202e8475094b2465081e0a7652df8754
 
 vpath %.c $(SRC_DIR)
 vpath %.h $(INC_DIR)
 vpath %.h $(TOP_DIR)/$(INC_DIR)
+vpath %.h $(TOP_DIR)/util/inc
+vpath %.h $(TOP_DIR)/user/inc
 
 SRC_FILES:=$(wildcard $(SRC_DIR)/*.c)
 LIB_SRC:=$(filter-out $(basename $(MAIN_FILE)), $(OBJ_NAMES))
@@ -51,6 +57,7 @@ APP=
 TESTS:=$(addprefix $(TEST_DIR)/, $(notdir $(basename $(TEST_FILES))))
 ifeq ($(MODULE),kern)
 	APP=$(TOP_DIR)/rtx
+	APPDEPS=$(addprefix $(LIB_DIR)/lib, $(addsuffix .a, $(DEPS)))
 endif
 
 # TARGETS
@@ -64,17 +71,19 @@ clean:
 	@rm -rf $(BIN_DIR) *.s19 *.o *.bin *.lst *.map $(LIB)
 
 # RULES
-$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM)
+$(TEST_DIR)/%: $(TEST_SRC_DIR)/%.c $(LIB) $(START_ASM) $(ASM) $(APPDEPS)
 	@echo "	   Compiling Test $@"
 	@$(MKDIR) $(TEST_DIR)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(TEST_FLAGS) -o $@.bin $(START_ASM) $(ASM) $< \
+		$(LIB) $(APPDEPS)
 	@$(OBJCPY) $@.bin $@.s19
 	@$(OBJDMP) $@.bin > $@.lst
 	@chmod u+x $@.s19
 
-$(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM)
+$(APP): $(LIB) $(MAIN_FILE) $(START_ASM) $(ASM) $(APPDEPS)
 	@echo "Making app $(APP)"
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) $(LIB)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(APP).bin $(START_ASM) $(ASM) $(MAIN_FILE) \
+		$(LIB) $(APPDEPS)
 	@$(OBJCPY) $(APP).bin $(APP).s19
 	@$(OBJDMP) $(APP).bin > $(APP).lst
 	@chmod u+x $(APP).s19
@@ -93,3 +102,9 @@ $(BIN_DIR)/%.o: %.c
 $(BIN_DIR)/%.s: %.c
 	@$(MKDIR) $(dir $@)
 	@$(CC) $(CFLAGS) -S -o $@ $<
+
+$(LIB_DIR)/lib%.a: .FORCE
+	@echo "Building Dependency $(notdir $@)"
+	@make -C $(TOP_DIR)/$* --no-print-directory
+
+.FORCE:
