@@ -1,6 +1,7 @@
 #include "rtx.h"
 #include "k_primitives.h"
 #include "trap_table.h"
+#include "k_clock.h"
 #include "dbug.h"
 
 int send_message(int dest_pid, MsgEnv *msg_env)
@@ -232,6 +233,20 @@ int get_trace_buffers(MsgEnv* msg_env)
     return retCode;
 }
 
+uint32_t get_system_time()
+{
+    int retCode = 0;
+
+    // Call kernel primitive
+    asm( "move.l #" STR(TRAP_TABLE_GET_SYSTEM_TIME) ", %d0" );
+    asm( "TRAP #" STR(KERN_SWI) );
+
+    // Retrieve the return code
+    asm( "move.l %d0, -4(%a6)" );
+    
+    return retCode;
+}
+
 void kern_swi_handler()
 {
     // Get the primitive number
@@ -286,6 +301,10 @@ void kern_swi_handler()
         case TRAP_TABLE_GET_TRACE_BUFFERS:
             asm("move.l %%d2, %0" : "=m" (arg_msg));
             ret_value = k_get_trace_buffers(arg_msg);
+            break;
+        case TRAP_TABLE_GET_SYSTEM_TIME:
+            asm("move.l %%d2, %0" : "=m" (arg_msg));
+            ret_value = k_clock_get_system_time(arg_msg);
             break;
         default:
             rtx_dbug_outs("Illegal syscall\n");
