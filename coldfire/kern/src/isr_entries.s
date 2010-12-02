@@ -18,9 +18,14 @@ asm_uart_entry:
 	move.l %a4, -(%a7)
 	move.l %a5, -(%a7)
 	move.l %a6, -(%a7)
+
+    move.l #2, %d1
+    move.l %d1, -(%a7)
 		
-	jsr uart_i_process
+	jsr isr_handler
 	
+    move.l (%a7)+, %d1
+
 	move.l (%a7)+, %a6
 	move.l (%a7)+, %a5
 	move.l (%a7)+, %a4
@@ -61,8 +66,13 @@ asm_timer_entry:
 	move.l %a4, -(%a7)
 	move.l %a5, -(%a7)
 	move.l %a6, -(%a7)
+
+    move.l #1, %d1
+    move.l %d1, -(%a7)
 		
-	jsr	timer_i_process
+	jsr isr_handler
+
+    move.l (%a7)+, %d1
 	
 	move.l (%a7)+, %a6
 	move.l (%a7)+, %a5
