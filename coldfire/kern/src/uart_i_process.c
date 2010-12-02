@@ -4,7 +4,6 @@
 #include "dbug.h"
 #include "k_globals.h"
 
-volatile BYTE CharOut = '\0';
 CHAR OutBuffer[100] = {0};
 CHAR InBuffer[100] = {0};
 int inputIndex = 0;
@@ -29,7 +28,7 @@ void uart_i_process()
         SERIAL1_IMR = 3;
         if (CharIn != '\0') // enter in a character
         {
-            SERIAL1_WD = CharOut;
+            SERIAL1_WD = CharIn;
         }
         else // enter key is pressed
         {
