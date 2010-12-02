@@ -140,7 +140,7 @@ int rtx_strcmp(const CHAR * str1, const CHAR * str2)
 		return -1;
 	
 	int k = 0;
-	while (str1[k] != '\0' && str2[k] != '\0')
+	while (str1[k] != '\0' || str2[k] != '\0')
 	{
 		if(str1[k] != str2[k])
 			return 1;
