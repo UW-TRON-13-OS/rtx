@@ -33,7 +33,7 @@ void process_C()
             if (*((int *)(deq_msg->msg)) % 20 == 0)
             {
                 //copys the 'Process C' string into the dequeued msg env
-                rtx_strcpy(deq_msg->msg, "\nProcess C\n\0");
+                rtx_strcpy(deq_msg->msg, "\nProcess C\n\0", 1024);
                 //send the message env to the console for printing
                 send_console_chars(deq_msg);
 

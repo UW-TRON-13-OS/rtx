@@ -5,7 +5,7 @@
 
 CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[]);
 
-CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str);
+CHAR * rtx_strcpy(CHAR * str, const CHAR * cpy_str, int str_size);
 
 int rtx_strcmp(const CHAR * str1, const CHAR * str2);
 

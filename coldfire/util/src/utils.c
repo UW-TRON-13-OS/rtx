@@ -172,7 +172,7 @@ void rtx_strtok(const CHAR * str, CHAR * ret, const CHAR * delimiters)
 
     if ( str != NULL )
     {
-        rtx_strcpy ( copy, str );
+        rtx_strcpy ( copy, str, 100 );
         i = 0;
     }
 
