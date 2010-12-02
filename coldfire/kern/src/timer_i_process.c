@@ -3,6 +3,7 @@
 #include "k_clock.h"
 #include "k_primitives.h"
 #include "timeout_queue.h"
+#include "trace.h"
 
 void timer_i_process()
 {
@@ -20,7 +21,6 @@ void timer_i_process()
     }
 
     msg_env = check_timeout_queue(msg_env);
-    
     if (msg_env != NULL)
     {
         // Send the envelope back
