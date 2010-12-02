@@ -43,7 +43,7 @@ int main()
     pcb_init_t itable[4];
     itable[0].pid = CRT_PID;
     itable[0].name = "crt_process";
-    itable[0].priority = 3;
+    itable[0].priority = 1;
     itable[0].start = start_crt_process;
     itable[0].stack_size = 4096;
     itable[0].is_i_process = 0;
@@ -67,7 +67,7 @@ int main()
 
     itable[3].pid = NULL_PID;
     itable[3].name = "null";
-    itable[3].priority = 0;
+    itable[3].priority = 3;
     itable[3].start = null_process;
     itable[3].stack_size = 4096;
     itable[3].is_i_process = 0;
