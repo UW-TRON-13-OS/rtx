@@ -87,6 +87,8 @@ asm_timer_entry:
     .globl asm_kern_swi
     .even
 asm_kern_swi:
+    move.w #0x2700, %sr 
 	jsr	kern_swi_handler
+    move.w #0x2000, %sr 
 	
 	rte
