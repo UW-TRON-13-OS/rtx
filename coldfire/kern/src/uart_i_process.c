@@ -1,7 +1,7 @@
 #include "uart_i_process.h"
 #include "rtx.h"
 #include "k_primitives.h"
-#include "dbug.h"
+#include "trace.h"
 #include "k_globals.h"
 #include "proc_pq.h"
 
@@ -16,7 +16,6 @@ bool output_print_char = FALSE;
  */
 void uart_i_process()
 {
-    enable_debug = 1;
     int i;
     BYTE temp;
     temp = SERIAL1_UCSR;    // Ack the interrupt
@@ -30,7 +29,7 @@ void uart_i_process()
         {
             if (CharIn == '`')
             {
-                dbug(interrupted_process->name);
+                trace(ALWAYS,interrupted_process->name);
                 proc_pq_print(ready_pq);
             }
             InBuffer[inputIndex] = CharIn;
@@ -49,7 +48,7 @@ void uart_i_process()
             InBuffer[inputIndex] = '\0';
             inputIndex++;
             MsgEnv* message = k_request_msg_env();
-            dbug_ptr("request env ", message);
+            trace_ptr(ALWAYS, "request env ", message);
             if (message != NULL)
             {
                 for (i = 0; i < inputIndex; i++)
@@ -57,7 +56,7 @@ void uart_i_process()
                     message->msg[i] = InBuffer[i];
                 }
                 message->msg_type = CONSOLE_INPUT;
-                dbug("Sending message off to CCI");
+                trace(ALWAYS,"Sending message off to CCI");
                 k_send_message(CCI_PID, message);
             }
             inputIndex = 0;
@@ -68,9 +67,9 @@ void uart_i_process()
     {
         if (outputIndex == 0 && output_print_char == FALSE)
         {
-            dbug("Check 5");
+            trace(ALWAYS,"Check 5");
             MsgEnv* message = k_receive_message();
-            dbug_ptr("message check ", message);
+            trace_ptr(ALWAYS, "message check ", message);
             if (message != NULL)
             {
                 i = 0;
@@ -86,19 +85,18 @@ void uart_i_process()
         {
             if (OutBuffer[outputIndex] == '\0')
             {
-                dbug("Check 6");
+                trace(ALWAYS,"Check 6");
                 SERIAL1_IMR = 2;        // Disable tx Interupt
                 outputIndex = 0;
                 output_print_char = FALSE;
             }
             else
             {
-                dbug("Check 7");
+                trace(ALWAYS,"Check 7");
                 SERIAL1_WD = OutBuffer[outputIndex]; // Write data
                 outputIndex++;
             }
         }
     }
-    enable_debug = 0;
     return;
 }

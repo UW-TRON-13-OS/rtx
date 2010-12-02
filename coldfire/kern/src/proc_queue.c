@@ -1,6 +1,6 @@
 #include "proc_queue.h"
 #include "k_globals.h"
-#include "dbug.h"
+#include "trace.h"
 
 struct proc_queue {
     pcb_t *head;
@@ -13,10 +13,6 @@ proc_queue_t * proc_queue_create()
     if (queue)
     {
         queue->head = queue-> tail = NULL;
-    }
-    else
-    {
-        dbug("WTFFF");
     }
     return queue;
 }
@@ -103,15 +99,14 @@ pcb_t * proc_queue_remove(proc_queue_t * queue, pcb_t *pcb)
 
 void proc_queue_print(proc_queue_t * queue)
 {
-    rtx_dbug_outs("     [ -> ");
+    trace_inline(ALWAYS, "     [ -> ");
     pcb_t *node = queue->head;
     while (node != NULL)
     {
-        //rtx_dbug_uint((uint32_t) node);
-        rtx_dbug_outs(node->name);
-        rtx_dbug_outs(" -> ");
+        trace_inline(ALWAYS, node->name);
+        trace_inline(ALWAYS, (" -> "));
         node = node->next;
     }
-    dbug("]");
+    trace(ALWAYS, "]");
 }
 
