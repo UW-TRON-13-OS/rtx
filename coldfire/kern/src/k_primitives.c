@@ -31,6 +31,8 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
     msg_env->dest_pid = dest_pid;
 
     msg_env_queue_enqueue(dest_pcb->recv_msgs, msg_env);
+    dest_pcb->env_owned++;
+    current_process->env_owned--;
     if (dest_pcb->state == P_BLOCKED_ON_RECEIVE)
     {
         dest_pcb->state = P_READY;
@@ -75,6 +77,7 @@ MsgEnv * k_request_msg_env()
     }
 
     MsgEnv *env = msg_env_queue_dequeue(free_env_q);
+    current_process->env_owned++;
     return env;
 }
 
@@ -86,6 +89,7 @@ int k_release_msg_env(MsgEnv * msg_env)
     }
 
     msg_env_queue_enqueue(free_env_q, msg_env);
+    current_process->env_owned--;
     pcb_t * blocked_process = proc_pq_dequeue(blocked_request_env_pq);
     if (blocked_process)
     {
