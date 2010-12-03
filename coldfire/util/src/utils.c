@@ -91,6 +91,10 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                             j++;
                             spaces--;
                         }
+                        if(neg == 1)
+                        {
+                            j--;
+                        }
                     }
                     
 					if(neg == 1)
