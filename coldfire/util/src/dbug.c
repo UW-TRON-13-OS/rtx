@@ -15,6 +15,11 @@
 
 bool enable_debug = 0;
 
+int32_t abs(int32_t n)
+{
+    return (n < 0) ? -n : n;
+}
+
 void rtx_dbug_out_char( char c )
 {
     /* Store registers */
@@ -55,7 +60,7 @@ int32_t rtx_dbug_uint(uint32_t num)
 {
     if (num == 0)
     {
-        rtx_dbug_outs("0");
+        return rtx_dbug_outs("0");
     }
 
     char buf[128];
@@ -67,6 +72,15 @@ int32_t rtx_dbug_uint(uint32_t num)
         num /= 10;
     }
     return rtx_dbug_outs(&buf[i+1]);
+}
+
+int32_t rtx_dbug_int(int32_t num)
+{
+    if (num < 0)
+    {
+        rtx_dbug_out_char('-');
+    }
+    return rtx_dbug_uint(abs(num));
 }
 
 int32_t rtx_dbug_hex(uint32_t hex)

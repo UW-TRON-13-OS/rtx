@@ -1,11 +1,13 @@
 #include "k_hotkeys.h"
 #include "k_globals.h"
+#include "k_mem.h"
 #include "trace.h"
 #include "dbug.h"
 
 bool hotkey(char c)
 {
     int i;
+    char buf[128];
     switch(c)
     {
         case '`':
@@ -37,6 +39,18 @@ bool hotkey(char c)
                 trace_str(ALWAYS, "msg env queue of ", pcb->name);
                 trace_inline(ALWAYS, "     -> ");
                 msg_env_queue_print(pcb->recv_msgs);
+            }
+            return 1;
+       case '@':
+            trace(ALWAYS, "Memory summary");
+            trace_uint(ALWAYS, "    Available: ", k_mem_get_available());
+            trace_uint(ALWAYS, "    Used: ", k_mem_get_used());
+            for (i = 0; i < k_get_num_processes(); i++)
+            {
+                pcb_t * pcb = k_get_process(pid_table[i]);
+                trace_inline(ALWAYS, "    ");
+                trace_inline(ALWAYS, pcb->name);
+                trace_uint(ALWAYS, " stack space : ", k_mem_get_stack_left(pcb->pid));
             }
             return 1;
     }

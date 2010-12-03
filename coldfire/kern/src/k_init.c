@@ -163,6 +163,9 @@ int k_init(pcb_init_t processes[], uint32_t num_processes, bool enable_uart,
     trace(DEBUG, "Disabling Interrupts...");
     asm("move.w #0x2700,%sr");
 
+    trace(DEBUG, "Initializing dynamic memory allocation...");
+    init_mem();
+
     trace(DEBUG, "Initializing vbr...");
     coldfire_vbr_init();
     if (enable_uart)
