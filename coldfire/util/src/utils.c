@@ -1,4 +1,5 @@
 #include "rtx.h"
+#include "msg_env_queue.h"
 #include "utils.h"
 #include "trace.h"
 
@@ -320,4 +321,24 @@ void strConvert(CHAR * str, const CHAR * con_str)
         }
         i++;
     }
+}
+
+MsgEnv * print_ack(char * msg, MsgEnv* print_env, msg_env_queue_t *queue)
+{
+    rtx_strcpy(print_env->msg, msg, 1024);
+    send_console_chars(print_env, TRUE);
+    
+    while (1)
+    {
+        MsgEnv *env = receive_message();
+        if (env->msg_type == DISPLAY_ACK)
+        {
+            return env;
+        }
+        else
+        {
+            msg_env_queue_enqueue(queue, env);
+        }
+    }
+    return NULL;
 }

@@ -6,13 +6,8 @@
 #include "wallclock.h"
 #include "k_globals.h"
 #include "trace.h"
+#include "msg_env_queue.h"
 
-void CCI_print(char * msg)
-{
-    MsgEnv *env = request_msg_env();
-    rtx_strcpy(env->msg, msg, IPC_MSG_ENV_MSG_SIZE);
-    send_console_chars(env);
-}
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
@@ -27,29 +22,29 @@ int CCI_printProcessStatuses (char* raw_data)
     CHAR str[100]; 
     void * params [11];
 
-	CCI_print( "PID | STATUS                | PRIORITY\r\n" );
+	print_ack( "PID | STATUS                | PRIORITY\r\n" , print_env, msg_queue);
     for (i=0;i<num_processes;i++)
     {
         params[0] = &(*data++);
         params[1] = NULL;
         rtx_sprintf(str, "%4d   ", params);
-        CCI_print(str);
+        print_ack(str, print_env, msg_queue);
         switch(*data)
         {
             case P_READY:
-                CCI_print("ready                  ");
+                print_ack("ready                  ", print_env, msg_queue);
                 break;
             case P_EXECUTING:
-                CCI_print("executing              ");
+                print_ack("executing              ", print_env, msg_queue);
                 break;
             case P_BLOCKED_ON_ENV_REQUEST:
-                CCI_print("blocked on env request ");
+                print_ack("blocked on env request ", print_env, msg_queue);
                 break;
             case P_BLOCKED_ON_RECEIVE:
-                CCI_print("blocked on receive     ");
+                print_ack("blocked on receive     ", print_env, msg_queue);
                 break;
             default :
-                CCI_print("                       ");
+                print_ack("                       ", print_env, msg_queue);
                 break;
         }
         data++;
@@ -57,7 +52,7 @@ int CCI_printProcessStatuses (char* raw_data)
         params[0] = &(*data++);
         params[1] = NULL;
         rtx_sprintf(str, "%2d\r\n", params);
-        CCI_print(str);
+        print_ack(str, print_env, msg_queue);
     }
     return CODE_SUCCESS;
 }
@@ -74,11 +69,12 @@ int CCI_printTraceBuffers (char* data)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    CCI_print("MESSAGE TRACE BUFFERS\r\n\r\n"
+    print_ack("MESSAGE TRACE BUFFERS\r\n\r\n"
               " Send Trace                   || Receive Trace\r\n"
               " Dest |Sender|Message|  Time  || Dest |Sender|Message|  Time\r\n"
               " PID  |PID   |Type   |        || PID  |PID   |Type   |\r\n"
-              "--------------------------------------------------------------\r\n");
+              "--------------------------------------------------------------\r\n",
+              print_env, msg_queue);
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE;i++)
     {
         if (send_dump[i].time_stamp != MAX_UINT32)
@@ -91,11 +87,11 @@ int CCI_printTraceBuffers (char* data)
             params[3] = &(send_dump[i].time_stamp);
             params[4] = NULL;
             rtx_sprintf(str, "   %2u |   %2u |   %3d | %6u ||", params);
-            CCI_print (str);
+            print_ack(str,print_env,msg_queue);
         }
         else if (recv_dump[i].time_stamp != MAX_UINT32)
         {
-            CCI_print("      |      |       |       ||");
+            print_ack("      |      |       |       ||", print_env, msg_queue);
         }
         else
         {
@@ -112,15 +108,15 @@ int CCI_printTraceBuffers (char* data)
             params[3] = &(recv_dump[i].time_stamp);
             params[4] = NULL;
             rtx_sprintf(str, "   %2u |   %2u |   %3d | %6u\r\n", params);
-            CCI_print (str);
+            print_ack (str, print_env, msg_queue);
         }
         else
         {
-            CCI_print("      |      |       |       \r\n");
+            print_ack("      |      |       |       \r\n", print_env, msg_queue);
         }
     }        
     
-    CCI_print("\r\n");
+    print_ack("\r\n", print_env, msg_queue);
 
     return CODE_SUCCESS;
 }

@@ -42,7 +42,7 @@ void start_wallclock()
         params[0] = &status;
         params[1] = NULL;
         rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
-        send_console_chars(send_env);       
+        send_console_chars(send_env, 0);       
     }
     
     while (1)
@@ -59,7 +59,7 @@ void start_wallclock()
                 params[0] = &status;
                 params[1] = NULL;
                 rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
-                send_console_chars(send_env);       
+                send_console_chars(send_env, 0);       
             }
             //86400 = 24hrs in secs
             int32_t clock_time = (int32_t)((get_system_time()-ref)/100
@@ -78,7 +78,7 @@ void start_wallclock()
                 params[3] = NULL;
                 rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT
                             RESTORE_CURSOR, params);
-                send_console_chars(send_env);       
+                send_console_chars(send_env, 0);       
             }
         }
         else if (env->msg_type == CLOCK_ON)
@@ -103,14 +103,14 @@ void start_wallclock()
                            "hh must be 00-23\r\n"
                            "mm must be 00-59\r\n"
                            "ss must be 00-59\r\n", params );
-                send_console_chars(env);
+                send_console_chars(env, 0);
             }
             else if (status != CODE_SUCCESS)
             {
                 params[0] = &status;
                 params[1] = NULL;
                 rtx_sprintf( env->msg, "CCI_setClock failed with status %d\r\n", params);
-                send_console_chars(env);
+                send_console_chars(env, 0);
             }
             else
             {
@@ -169,7 +169,7 @@ void _displayWallClock (int disp_b)
         MsgEnv *send_env = request_msg_env();
         params[0] = NULL;
         rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR, params);
-        send_console_chars(send_env);       
+        send_console_chars(send_env, 0);       
         clock_display_en = 0;
     }
 }

@@ -51,9 +51,9 @@ DIS_ASM_FILES:=$(addprefix $(BIN_DIR)/,  \
 LIB:=$(LIB_DIR)/lib$(MODULE).a
 APP=
 TESTS:=$(addprefix $(TEST_DIR)/, $(notdir $(basename $(TEST_FILES))))
+APPDEPS=$(addprefix $(LIB_DIR)/lib, $(addsuffix .a, $(DEPS)))
 ifeq ($(MODULE),kern)
 	APP=$(TOP_DIR)/rtx
-	APPDEPS=$(addprefix $(LIB_DIR)/lib, $(addsuffix .a, $(DEPS)))
 endif
 
 # TARGETS

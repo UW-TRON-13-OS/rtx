@@ -29,7 +29,7 @@ void fake_cci ()
             }
             message->msg[0] = '@';
             message->msg[1] = '#';
-            send_console_chars(message);
+            send_console_chars(message, 0);
         }
         enable_debug = 0;
     }

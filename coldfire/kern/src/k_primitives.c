@@ -59,9 +59,7 @@ MsgEnv * k_request_msg_env()
 {
     if (msg_env_queue_is_empty(free_env_q))
     {
-        trace_uint(ALWAYS, " is i sys process ", current_process->is_sys_process);
-        trace_uint(ALWAYS, " is  sys empty ", msg_env_queue_is_empty(sys_free_env_q));
-        if (current_process->is_sys_process && 
+        if (current_process->is_i_process && 
                 !msg_env_queue_is_empty(sys_free_env_q))
         {
             current_process->env_owned++;
@@ -199,11 +197,18 @@ int k_request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
 }
 
 /** 5.5 System Console I/O **/
-int k_send_console_chars(MsgEnv *msg_env)
+int k_send_console_chars(MsgEnv *msg_env, bool request_ack)
 {
     if (msg_env == NULL)
         return ERROR_NULL_ARG;
-    msg_env->msg_type = CONSOLE_OUTPUT;
+    if (request_ack)
+    {
+        msg_env->msg_type = CONSOLE_OUTPUT_REQUEST_ACK;
+    }
+    else
+    {
+        msg_env->msg_type = CONSOLE_OUTPUT;
+    }
     int ret = k_send_message(UART_I_PROCESS_PID, msg_env);
     SERIAL1_IMR = 3;
     return ret;

@@ -187,21 +187,24 @@ int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
     return retCode;
 }
 
-int send_console_chars(MsgEnv *msg_env)
+int send_console_chars(MsgEnv *msg_env, bool request_ack)
 {
     int retCode = 0;
 
     // Save registers 
     asm( "move.l %d2, -(%a7)" );
+    asm( "move.l %d3, -(%a7)" );
 
     // Set the parameters
     asm( "move.l 8(%a6), %d2" );  // msg_env
+    asm( "move.l 12(%a6), %d3" );  // request_ack
 
     // Call kernel primitive
     asm( "move.l #" STR(TRAP_TABLE_SEND_CONSOLE_CHARS) ", %d0" );
     asm( "TRAP #" STR(KERN_SWI) );
 
     // Restore data registers
+    asm( "move.l (%a7)+, %d3" );
     asm( "move.l (%a7)+, %d2" );
 
     // Retrieve the return code
@@ -296,7 +299,8 @@ void kern_swi_handler()
             break;
         case TRAP_TABLE_SEND_CONSOLE_CHARS:
             asm("move.l %%d2, %0" : "=m" (arg_msg));
-            ret_value = k_send_console_chars(arg_msg);
+            asm("move.l %%d3, %0" : "=m" (arg_int1));
+            ret_value = k_send_console_chars(arg_msg, arg_int1);
             break;
         case TRAP_TABLE_GET_TRACE_BUFFERS:
             asm("move.l %%d2, %0" : "=m" (arg_msg));

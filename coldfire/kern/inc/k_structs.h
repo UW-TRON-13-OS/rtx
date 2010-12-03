@@ -16,7 +16,6 @@ typedef struct pcb {
     enum process_state  state;
     pcb_context_t       context;
     bool                is_i_process;
-    bool                is_sys_process;
     msg_env_queue_t *   recv_msgs;
     start_pc            start;
     byte *              stack_begin;

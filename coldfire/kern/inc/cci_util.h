@@ -4,7 +4,9 @@
 #include "rtx.h"
 #include "msg_env_queue.h"
 
-void CCI_print(char * msg);
+extern msg_env_queue_t *msg_queue;
+extern MsgEnv *print_env;
+MsgEnv * CCI_print(char * msg);
 
 //gets and prints process statuses
 int CCI_printProcessStatuses (char* raw_data);

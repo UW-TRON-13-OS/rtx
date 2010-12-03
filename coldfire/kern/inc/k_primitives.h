@@ -21,7 +21,7 @@ int k_change_priority(int new_priority, int target_process_id);
 int k_request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
 
 /** 5.5 System Console I/O **/
-int k_send_console_chars(MsgEnv *msg_env);
+int k_send_console_chars(MsgEnv *msg_env, bool request_ack);
 
 /** 5.6 Interprocess Message Trace **/
 int k_get_trace_buffers(MsgEnv* msg_env);

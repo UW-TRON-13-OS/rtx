@@ -35,7 +35,7 @@ void process_C()
                 //copys the 'Process C' string into the dequeued msg env
                 rtx_strcpy(deq_msg->msg, "\r\nProcess C\r\n", 1024);
                 //send the message env to the console for printing
-                send_console_chars(deq_msg);
+                send_console_chars(deq_msg, 0);
 
                 request_delay(1000, WAKEUP_10, timeout_msg);
 

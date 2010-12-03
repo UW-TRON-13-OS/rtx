@@ -76,7 +76,15 @@ void uart_i_process()
                 }
                 OutBuffer[i] = '\0';
                 output_print_char = TRUE;
-                k_release_msg_env(message);
+                if (message->msg_type == CONSOLE_OUTPUT)
+                {
+                    k_release_msg_env(message);
+                }
+                else
+                {
+                    message->msg_type = DISPLAY_ACK;
+                    k_send_message(message->send_pid, message);
+                }
             }
             else
             {
@@ -100,7 +108,15 @@ void uart_i_process()
                     }
                     OutBuffer[i] = '\0';
                     output_print_char = TRUE;
-                    k_release_msg_env(message);
+                    if (message->msg_type == CONSOLE_OUTPUT)
+                    {
+                        k_release_msg_env(message);
+                    }
+                    else
+                    {
+                        message->msg_type = DISPLAY_ACK;
+                        k_send_message(message->send_pid, message);
+                    }
                 }
                 else
                 {
