@@ -1,8 +1,8 @@
 #include "wallclock.h"
 #include "rtx.h"
 #include "utils.h"
-#include "processes.h"
 #include "msg_env_queue.h"
+#include "trace.h"
 
 #define SAVE_CURSOR "\033[s"
 #define RESTORE_CURSOR "\033[u"
@@ -12,7 +12,7 @@
 #define EMPTY_CLOCK  "        "
 
 #define WAKEUP_CODE 123
-#define ONE_SECOND_DELAY 9 
+#define ONE_SECOND_DELAY 100 
 #define SEC_IN_HR 86400
 
 uint32_t offset;
@@ -83,21 +83,38 @@ void start_wallclock()
         else if (env->msg_type == CLOCK_ON)
         {
             _displayWallClock (1);
-            env->msg_type = CLOCK_RET;
-            send_message(PROCESS_CCI_PID,env);
+            release_msg_env(env);
         }
         else if (env->msg_type == CLOCK_OFF)
         {
             _displayWallClock (0);
-            env->msg_type = CLOCK_RET;
-            send_message(PROCESS_CCI_PID,env);
+            release_msg_env(env);
         }
         else if (env->msg_type == CLOCK_SET) 
         {
             int status = _setWallClock (env->msg);
-            *((int *)env->msg) = status; 
-            env->msg_type = CLOCK_RET;
-            send_message(PROCESS_CCI_PID,env);
+            if (status == ERROR_ILLEGAL_ARG)
+            {
+                params[0] = NULL;
+                rtx_sprintf( env->msg, "c\r\n"
+                           "Sets the console clock (24h).\r\n"
+                           "Usage: c <hh:mm:ss>\r\n"
+                           "hh must be 00-23\r\n"
+                           "mm must be 00-59\r\n"
+                           "ss must be 00-59\r\n", params );
+                send_console_chars(env);
+            }
+            else if (status != CODE_SUCCESS)
+            {
+                params[0] = &status;
+                params[1] = NULL;
+                rtx_sprintf( env->msg, "CCI_setClock failed with status %d\r\n", params);
+                send_console_chars(env);
+            }
+            else
+            {
+                release_msg_env(env);
+            }
         }
     }
 }

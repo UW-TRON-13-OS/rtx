@@ -2,11 +2,11 @@
 #include "cci_util.h"
 #include "rtx.h"
 #include "k_primitives.h"
-#include "processes.h"
+#include "user_processes.h"
 #include "msg_env_queue.h"
 #include "utils.h"
 
-void cci_intro(MsgEnv *send_env)
+void cci_intro()
 {
 	CCI_print( "Welcome to P.OS.\r\n"
                "==========================\r\n");
@@ -18,7 +18,6 @@ void start_cci()
     // initialise 
     uint32_t status;
 
-    msg_env_queue_t *msgQ = msg_env_queue_create();
     MsgEnv *send_env, *status_env, *proc_a_env;
     status_env = request_msg_env();
     proc_a_env = request_msg_env();
@@ -26,23 +25,14 @@ void start_cci()
     void * params [11];
 
     // Print the introduction
-    cci_intro(send_env);
+    cci_intro();
 
     //print CCI prompt
     CCI_print("CCI: ");
 
     while (1)
     {
-        MsgEnv* env;
-        //First check for messages received but processed by clock fcns 
-        if( msg_env_queue_is_empty(msgQ))
-        {
-            env = receive_message(); 
-        }
-        else
-        {
-            env = msg_env_queue_dequeue(msgQ);
-        }
+        MsgEnv* env = receive_message(); 
 
         //envelope with characters from console
         if (env->msg_type == CONSOLE_INPUT)
@@ -56,7 +46,7 @@ void start_cci()
                 {
                     if ( proc_a_env != NULL )
                     {
-                        status = send_message (PROCESS_A_PID, proc_a_env);
+                        status = send_message (PROC_A_PID, proc_a_env);
                         if (status != CODE_SUCCESS)
                         {
 							params[0] = &status;
@@ -101,12 +91,12 @@ void start_cci()
                 //show clock
                 else if (rtx_strcmp(cmd,"cd") == 0) 
                 {
-                    CCI_displayWallClock (send_env, msgQ, 1);
+                    CCI_displayWallClock (request_msg_env(), 1);
                 }
                 //hide clock
                 else if (rtx_strcmp(cmd,"ct") == 0)  
                 {
-                    CCI_displayWallClock (send_env, msgQ, 0);
+                    CCI_displayWallClock (request_msg_env(), 0);
                 }
                 //show send/receive trace buffers
                 else if (rtx_strcmp(cmd,"b") == 0) 
@@ -181,23 +171,7 @@ void start_cci()
                     }
                     else
                     {
-                        status = CCI_setWallClock (send_env, msgQ,newTime);
-                        if (status == ERROR_ILLEGAL_ARG)
-                        {
-                            CCI_print( "c\r\n"
-                                       "Sets the console clock (24h).\r\n"
-                                       "Usage: c <hh:mm:ss>\r\n"
-                                       "hh must be 00-23\r\n"
-                                       "mm must be 00-59\r\n"
-                                       "ss must be 00-59\r\n" );
-                        }
-                        else if (status != CODE_SUCCESS)
-                        {
-                            params[0] = &status;
-                            params[1] = NULL;
-							rtx_sprintf(str, "CCI_setClock failed with status %d\r\n", params);
-                            CCI_print(str);
-                        }
+                        status = CCI_setWallClock (request_msg_env(), newTime);
                     }
                 }
                 else
