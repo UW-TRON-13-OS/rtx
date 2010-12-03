@@ -110,12 +110,12 @@ int k_request_process_status(MsgEnv *msg_env)
         return ERROR_NULL_ARG;
     }
 
-    uint32_t * data = (uint32_t *) msg_env->msg;
+    int32_t * data = (int32_t *) msg_env->msg;
     int pid;
     *data++ = k_get_num_processes();
     for (pid = 0; pid < k_get_num_processes(); pid++)
     {
-        pcb_t * process = k_get_process(pid);
+        pcb_t * process = k_get_process(pid_table[pid]);
         *data++ = process->pid;
         *data++ = process->state;
         *data++ = process->priority;
