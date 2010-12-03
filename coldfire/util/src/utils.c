@@ -76,12 +76,6 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 						div*=10;
 					}
 					div/=10;
-
-					if(size == 0)
-					{
-						str[j] = '0';
-						j++;
-					}
                     
                     if(size < spaces)
                     {	
@@ -96,6 +90,13 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                             j--;
                         }
                     }
+
+					if(size == 0)
+					{
+                        j--;
+						str[j] = '0';
+						j++;
+					}
                     
 					if(neg == 1)
 					{
