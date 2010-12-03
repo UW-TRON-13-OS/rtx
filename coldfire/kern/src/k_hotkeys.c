@@ -37,9 +37,10 @@ bool hotkey(char c)
                         trace_str(ALWAYS, pcb->name, "  interrupted");
                         break;
                     default:
-                            trace_str(ALWAYS, pcb->name, "  unkown state");
+                        trace_str(ALWAYS, pcb->name, "  unkown state");
                         break;
                 }
+                trace_int(ALWAYS, "      -> Env Held : ", pcb->env_owned);
             }
             return 1;
        case '!':

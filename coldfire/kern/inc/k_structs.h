@@ -21,6 +21,7 @@ typedef struct pcb {
     byte *              stack_begin;
     uint32_t *          stack_bottom;
     bool                first_time;
+    int32_t             env_owned;
 } pcb_t;
 
 typedef struct pcb_init {
