@@ -8,7 +8,7 @@
 #define BOARD_COLS 80
 #define DELAY_AMOUNT 10
 
-char board[20][80];
+char board[BOARD_ROWS][BOARD_COLS];
 int left_paddle_pos; // 0 to 15
 int right_paddle_pos; // 0 to 15
 int ball_r, ball c;
@@ -35,7 +35,7 @@ void init_pong ()
     
     ball_r = 10;
     ball_c = 40;
-    board[ball_r][ball_c] = 'X';
+    board[ball_r][ball_c] = 'O';
     
     r_speed = 1;
     c_speed = 1;
@@ -86,11 +86,11 @@ void update_board ()
         {
             if (ball_c == 0)
             {
-                // RIGHT PLAYER SCORED
+                init_pong();// RIGHT PLAYER SCORED
             }
             if (ball_c == 79)
             {
-                // LEFT PLAYER SCORED
+                init_pong();// LEFT PLAYER SCORED
             }
             
             // bouncing checks
