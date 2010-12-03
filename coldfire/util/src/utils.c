@@ -259,3 +259,44 @@ int _findChar (CHAR ch, const CHAR * str)
     }
     return 0;
 }
+
+int strLength(CHAR * str)
+{
+    if (str == NULL)
+        return -1;
+    else if (str == '\0')
+        return 0;
+    int i = 1;
+    while (str++ != '\0')
+        i++;
+    return i;        
+}
+
+void strConvert(CHAR * str, const CHAR * con_str)
+{
+    int i = 0;
+    int j = 0;
+    while(con_str[i] != '\0')
+    {
+        if(con_str[i] == '\r')
+        {
+            str[j] = '\\';
+            j++;
+            str[j] = 'r';     
+            j++;
+        }        
+        else if(con_str[i] == '\n')
+        {
+            str[j] = '\\';
+            j++;
+            str[j] = 'n';     
+            j++;
+        }
+        else
+        {
+            str[j] = con_str[i];
+            j++;
+        }
+        i++;
+    }
+}
