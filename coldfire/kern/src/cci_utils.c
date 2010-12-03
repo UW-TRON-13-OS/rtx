@@ -31,7 +31,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
     {
         params[0] = &(*data++);
         params[1] = NULL;
-        rtx_sprintf(str, "  %2d   ", params);
+        rtx_sprintf(str, "%4d   ", params);
         CCI_print(str);
         switch(*data)
         {
