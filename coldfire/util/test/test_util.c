@@ -47,6 +47,13 @@ int main ()
     rtx_strtok (NULL, tok_p, " ");
     trace (ALWAYS, tok_p);
     
+    rtx_strtok (str_p, tok_p, " ");
+    trace (ALWAYS, tok_p);
+    rtx_strtok (NULL, tok_p, " ");
+    trace (ALWAYS, tok_p);
+    rtx_strtok (NULL, tok_p, "");
+    trace (ALWAYS, tok_p);
+
     rtx_atoi("14", &num);
     trace_uint (ALWAYS, "1",rtx_atoi("14", &num));
     trace_uint (ALWAYS, "14",num);
