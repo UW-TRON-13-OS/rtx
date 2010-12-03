@@ -173,7 +173,7 @@ int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env)
     asm( "move.l 16(%a6), %d4" ); // msg_env
 
     // Call kernel primitive
-    asm( "move.l #" STR(TRAP_TABLE_CHANGE_PRIORITY) ", %d0" );
+    asm( "move.l #" STR(TRAP_TABLE_REQUEST_DELAY) ", %d0" );
     asm( "TRAP #" STR(KERN_SWI) );
 
     // Restore data registers
