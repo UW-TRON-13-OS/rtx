@@ -8,8 +8,8 @@
 
 void cci_intro(MsgEnv *send_env)
 {
-	CCI_print( "Welcome to P.OS.\n"
-               "==========================\n");
+	CCI_print( "Welcome to P.OS.\r\n"
+               "==========================\r\n");
 }
 
 /** CCI entry point and main loop **/
@@ -81,7 +81,7 @@ void start_cci()
 						params[0] = &status;
                         params[1] = NULL;
                         rtx_sprintf(str, "Error: could not get the process "
-                                         "statues. errno %d\n", params);
+                                         "statues. errno %d\r\n", params);
                         CCI_print(str);
                     }
                     else
@@ -93,7 +93,7 @@ void start_cci()
                             params[0] = &status;
                             params[1] = NULL;
                             rtx_sprintf(str,"CCI_printProcessStatuses failed "
-                                            "with status %d\n", params);
+                                            "with status %d\r\n", params);
                             CCI_print(str);
                         }
                     }
@@ -116,7 +116,7 @@ void start_cci()
 					{
                         params[0] = &status;
                         params[1] = NULL;
-                        rtx_sprintf(str, "get_trace_buffers failed with status %d\n", params);
+                        rtx_sprintf(str, "get_trace_buffers failed with status %d\r\n", params);
                         CCI_print(str);
                     }
                     status = CCI_printTraceBuffers (status_env->msg, send_env);
@@ -124,7 +124,7 @@ void start_cci()
 					{					
                         params[0] = &status;
                         params[1] = NULL;
-                        rtx_sprintf(str, "CCI_printTraceBuffers failed with status %d\n", params);
+                        rtx_sprintf(str, "CCI_printTraceBuffers failed with status %d\r\n", params);
                         CCI_print(str);
                     }
                 }
@@ -147,23 +147,23 @@ void start_cci()
                     if ( ret < 2 )
                     {
 						CCI_print ("Error Bad command format: "
-                                   "Usage: n <priority> <processID>\n");
+                                   "Usage: n <priority> <processID>\r\n");
                     }
                     else
                     {
                         status = change_priority(priority, pid);
                         if (status == ERROR_ILLEGAL_ARG)
 						{
-                            CCI_print("Usage: n <priority> <processID>\n"
+                            CCI_print("Usage: n <priority> <processID>\r\n"
                                       "priority must be 0-2 and "
                                       "processID must be a user process other "
-                                      "than the null process\n");
+                                      "than the null process\r\n");
                         }
                         else if (status != CODE_SUCCESS)
 						{
                             params[0] = &status;
                             params[1] = NULL;
-							rtx_sprintf(str, "CCI_setNewPriority failed with status %d\n", params);
+							rtx_sprintf(str, "CCI_setNewPriority failed with status %d\r\n", params);
                             CCI_print(str);
                         }
                     }
@@ -175,27 +175,27 @@ void start_cci()
                     rtx_strtok (NULL, newTime, " \t");
                     if ( *newTime == '\0' )
                     {
-						CCI_print( "c\n"
-								   "Sets the console clock.\n"
-								   "Usage: c <hh:mm:ss>\n");
+						CCI_print( "c\r\n"
+								   "Sets the console clock.\r\n"
+								   "Usage: c <hh:mm:ss>\r\n");
                     }
                     else
                     {
                         status = CCI_setWallClock (send_env, msgQ,newTime);
                         if (status == ERROR_ILLEGAL_ARG)
                         {
-                            CCI_print( "c\n"
-                                       "Sets the console clock (24h).\n"
-                                       "Usage: c <hh:mm:ss>\n"
-                                       "hh must be 00-23\n"
-                                       "mm must be 00-59\n"
-                                       "ss must be 00-59\n" );
+                            CCI_print( "c\r\n"
+                                       "Sets the console clock (24h).\r\n"
+                                       "Usage: c <hh:mm:ss>\r\n"
+                                       "hh must be 00-23\r\n"
+                                       "mm must be 00-59\r\n"
+                                       "ss must be 00-59\r\n" );
                         }
                         else if (status != CODE_SUCCESS)
                         {
                             params[0] = &status;
                             params[1] = NULL;
-							rtx_sprintf(str, "CCI_setClock failed with status %d\n", params);
+							rtx_sprintf(str, "CCI_setClock failed with status %d\r\n", params);
                             CCI_print(str);
                         }
                     }
@@ -204,13 +204,13 @@ void start_cci()
                 {
 					params[0] = &cmd;
                     params[1] = NULL;
-                    rtx_sprintf(str, "Invalid command '%s'\n", params);
+                    rtx_sprintf(str, "Invalid command '%s'\r\n", params);
                     CCI_print(str);
                 }
             }//end if (*cmd != '\0')
             else
             {
-				CCI_print( "Please enter a command.\n" );
+				CCI_print( "Please enter a command.\r\n" );
             }
 			
 			CCI_print( "CCI: " );
