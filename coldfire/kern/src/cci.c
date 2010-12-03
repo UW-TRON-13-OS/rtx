@@ -56,7 +56,7 @@ void start_cci()
                 {
                     if ( proc_a_env != NULL )
                     {
-                        status = k_send_message (PROCESS_A_PID, proc_a_env);
+                        status = send_message (PROCESS_A_PID, proc_a_env);
                         if (status != CODE_SUCCESS)
                         {
 							params[0] = &status;

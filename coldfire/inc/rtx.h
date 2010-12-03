@@ -69,4 +69,6 @@ int send_console_chars(MsgEnv *msg_env);
 /** 5.6 Interprocess Message Trace **/
 int get_trace_buffers(MsgEnv* msg_env);
 
+uint32_t get_system_time();
+
 #endif

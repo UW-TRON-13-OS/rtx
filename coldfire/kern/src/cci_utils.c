@@ -129,11 +129,11 @@ int CCI_setWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, char* newTime)
     int status;
     rtx_strcpy(send_env->msg, newTime, 1024);
     send_env->msg_type = CLOCK_SET;
-    k_send_message(PROCESS_WALLCLOCK_PID, send_env);
+    send_message(PROCESS_WALLCLOCK_PID, send_env);
 
     while (1)
     {
-        MsgEnv *env = k_receive_message();
+        MsgEnv *env = receive_message();
         if (env->msg_type == CLOCK_RET)
         {
             status = *((int *)env->msg);
@@ -160,11 +160,11 @@ void CCI_displayWallClock (MsgEnv *send_env, msg_env_queue_t *msgQ, int disp_b)
         send_env->msg_type = CLOCK_OFF;
     }
 
-    k_send_message(PROCESS_WALLCLOCK_PID,send_env);
+    send_message(PROCESS_WALLCLOCK_PID,send_env);
 
     while (1)
     {
-        MsgEnv *env = k_receive_message();
+        MsgEnv *env = receive_message();
         if (env->msg_type == CLOCK_RET)
         {
             break;
