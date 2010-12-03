@@ -1,5 +1,5 @@
 #include "rtx.h"
-#include "processes.h"
+#include "user_processes.h"
 #include "abc.h"
 
 void process_A()
@@ -18,7 +18,7 @@ void process_A()
         count_msg->msg_type = COUNT_REPORT;
         *((int *) count_msg->msg) = counter;
         //send the message env to process B
-        send_message(PROCESS_B_PID, count_msg);
+        send_message(PROC_B_PID, count_msg);
         //increment the counter by one
         counter++;
         //yield the processor when done
