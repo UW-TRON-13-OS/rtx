@@ -26,6 +26,7 @@ void start_cci()
     uint32_t status;
 
     char *str = k_malloc(1024);
+    char *cmd = k_malloc(1024);
     void * params [11];
 
     msg_queue = msg_env_queue_create(); 
@@ -56,7 +57,6 @@ void start_cci()
         //envelope with characters from console
         if (env->msg_type == CONSOLE_INPUT)
         {
-            char cmd [100];
             rtx_strtok (env->msg, cmd, " \t\r\n");
             if ( *cmd != '\0')
             {
@@ -193,7 +193,7 @@ void start_cci()
                     }
                     else
                     {
-                        status = CCI_setWallClock (request_msg_env(), newTime);
+                        status = CCI_setWallClock (request_msg_env(), str);
                     }
                 }
                 else
