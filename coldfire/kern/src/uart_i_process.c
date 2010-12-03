@@ -14,6 +14,12 @@ uint32_t inputIndex;
 uint32_t outputIndex;
 bool output_print_char;
 
+#ifdef _CFSERVER_
+#define KB_LINE_END '\0'
+#else
+#define KB_LINE_END '\r'
+#endif
+
 /*
  * This function is called by the assembly STUB function
  */
@@ -28,7 +34,7 @@ void uart_i_process()
     if( temp & 1 )
     {
         CharIn = SERIAL1_RD;
-        if (CharIn == '\0')
+        if (CharIn == KB_LINE_END)
         {
             SERIAL1_IMR = 3;
             SERIAL1_WD = '\n';
