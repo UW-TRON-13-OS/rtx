@@ -2,7 +2,6 @@
 #include "rtx.h"
 #include "utils.h"
 #include "msg_env_queue.h"
-#include "trace.h"
 
 #define SAVE_CURSOR "\033[s"
 #define RESTORE_CURSOR "\033[u"
@@ -72,10 +71,6 @@ void start_wallclock()
                 hr = clock_time/3600;
                 min = (clock_time%3600)/60;
                 sec = clock_time%60;
-
-                trace_uint (ALWAYS,"hr ",hr);
-                trace_uint (ALWAYS,"min ",min);
-                trace_uint (ALWAYS,"sec ",sec);
 
                 params[0] = &hr;
                 params[1] = &min;
