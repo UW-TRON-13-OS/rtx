@@ -84,6 +84,23 @@ int msg_env_queue_size(msg_env_queue_t *queue)
     return size;
 }
 
+bool msg_env_queue_has(msg_env_queue_t *queue, MsgEnv *target)
+{
+    if (queue == NULL)
+    {
+        return FALSE;
+    }
+
+    MsgEnv * env = queue->head;
+    while (env != NULL)
+    {
+        if (env == target)
+            return TRUE;
+        env = env->next;
+    }
+    return FALSE;
+}
+
 void msg_env_queue_print(msg_env_queue_t * queue)
 {
     trace_inline(ALWAYS, "     [ -> ");
