@@ -11,6 +11,7 @@
 msg_env_queue_t *msg_queue;
 MsgEnv *print_env;
 MsgEnv *status_env;
+MsgEnv *clock_env;
 
 void cci_intro()
 {
@@ -31,12 +32,13 @@ void start_cci()
 
     msg_queue = msg_env_queue_create(); 
     print_env = request_msg_env();
+    MsgEnv *proc_a_env = request_msg_env();
+    status_env = request_msg_env();
+    clock_env = request_msg_env();
 
     // Print the introduction
     cci_intro();
 
-    MsgEnv *proc_a_env = request_msg_env();
-    status_env = request_msg_env();
 
     //print CCI prompt
     print_ack("CCI: ", print_env, msg_queue);
@@ -109,12 +111,12 @@ void start_cci()
                 //show clock
                 else if (rtx_strcmp(cmd,"cd") == 0) 
                 {
-                    CCI_displayWallClock (request_msg_env(), 1);
+                    CCI_displayWallClock (clock_env,1);
                 }
                 //hide clock
                 else if (rtx_strcmp(cmd,"ct") == 0)  
                 {
-                    CCI_displayWallClock (request_msg_env(), 0);
+                    CCI_displayWallClock (clock_env, 0);
                 }
                 //show send/receive trace buffers
                 else if (rtx_strcmp(cmd,"b") == 0) 
@@ -193,7 +195,8 @@ void start_cci()
                     }
                     else
                     {
-                        status = CCI_setWallClock (request_msg_env(), str);
+                        trace (ALWAYS,"AND MAKE BELIEVE WITH YOU");
+                        status = CCI_setWallClock (clock_env, str);
                     }
                 }
                 else
