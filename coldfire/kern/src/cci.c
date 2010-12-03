@@ -7,6 +7,8 @@
 #include "utils.h"
 #include "trace.h"
 #include "k_globals.h"
+#include "pong.h"
+#include "trace.h"
 
 msg_env_queue_t *msg_queue;
 MsgEnv *print_env;
@@ -197,6 +199,12 @@ void start_cci()
                     {
                         status = CCI_setWallClock (clock_env, str);
                     }
+                }
+                else if (rtx_strcmp(cmd,"pong") == 0)
+                {
+                    trace(ALWAYS, "pong thing started");
+                    init_pong();
+                    print_board();
                 }
                 else
                 {
