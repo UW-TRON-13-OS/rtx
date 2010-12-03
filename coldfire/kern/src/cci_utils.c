@@ -8,6 +8,18 @@
 #include "trace.h"
 #include "msg_env_queue.h"
 
+void wait_for_wallclock()
+{
+    while (1)
+    {
+        MsgEnv *env = receive_message();
+        if (env->msg_type == CLOCK_RET)
+        {
+            return;
+        }
+        msg_env_queue_enqueue(msg_queue, env);
+    }
+}
 
 //prints process statuses on console given the envelope message data
 int CCI_printProcessStatuses (char* raw_data)
@@ -125,7 +137,12 @@ int CCI_setWallClock (MsgEnv *send_env, char* newTime)
 {
     rtx_strcpy(send_env->msg, newTime, 1024);
     send_env->msg_type = CLOCK_SET;
-    return send_message(WALLCLOCK_PID, send_env);
+    int ret = send_message(WALLCLOCK_PID, send_env);
+    if (ret == CODE_SUCCESS)
+    {
+        wait_for_wallclock();
+    }
+    return ret;
 }
 
 void CCI_displayWallClock (MsgEnv *send_env, int disp_b)
@@ -139,6 +156,10 @@ void CCI_displayWallClock (MsgEnv *send_env, int disp_b)
         send_env->msg_type = CLOCK_OFF;
     }
 
-    send_message(WALLCLOCK_PID,send_env);
+    int ret = send_message(WALLCLOCK_PID, send_env);
+    if (ret == CODE_SUCCESS)
+    {
+        wait_for_wallclock();
+    }
 }
 
