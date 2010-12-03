@@ -30,6 +30,15 @@ bool hotkey(char c)
                 }
             }
             return 1;
+       case '!':
+            for (i = 0; i < k_get_num_processes(); i++)
+            {
+                pcb_t * pcb = k_get_process(pid_table[i]);
+                trace_str(ALWAYS, "msg env queue of ", pcb->name);
+                trace_inline(ALWAYS, "     -> ");
+                msg_env_queue_print(pcb->recv_msgs);
+            }
+            return 1;
     }
     return 0;
 }

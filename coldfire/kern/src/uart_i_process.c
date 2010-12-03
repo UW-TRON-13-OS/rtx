@@ -28,24 +28,14 @@ void uart_i_process()
     if( temp & 1 )
     {
         CharIn = SERIAL1_RD;
-        if (CharIn != '\0' && inputIndex < INPUT_BUFFER_SIZE - 2) // enter in a character
+        if (CharIn == '\0')
         {
-            if (!hotkey(CharIn))
-            {
-                InBuffer[inputIndex] = CharIn;
-                inputIndex++;
-                SERIAL1_IMR = 3;
-                SERIAL1_WD = CharIn;
-                SERIAL1_IMR = 2;
-            }
         }
-        else if (CharIn == '\0') // enter key is pressed
+        if (CharIn == '\r') // enter key is pressed
         {
             SERIAL1_IMR = 3;
             SERIAL1_WD = '\n';
             SERIAL1_IMR = 2;
-            InBuffer[inputIndex] = '\n';
-            inputIndex++;
             InBuffer[inputIndex] = '\0';
             inputIndex++;
             MsgEnv* message = k_request_msg_env();
@@ -56,10 +46,20 @@ void uart_i_process()
                     message->msg[i] = InBuffer[i];
                 }
                 message->msg_type = CONSOLE_INPUT;
-                trace_str(DEBUG, "Sending to CCI: ", message->msg);
                 k_send_message(CCI_PID, message);
             }
             inputIndex = 0;
+        }
+        else if (inputIndex < INPUT_BUFFER_SIZE - 2) // enter in a character
+        {
+            if (!hotkey(CharIn))
+            {
+                InBuffer[inputIndex] = CharIn;
+                inputIndex++;
+                SERIAL1_IMR = 3;
+                SERIAL1_WD = CharIn;
+                SERIAL1_IMR = 2;
+            }
         }
     }
     // Check to see if data can be written out
@@ -70,7 +70,6 @@ void uart_i_process()
             MsgEnv* message = k_receive_message();
             if (message != NULL)
             {
-                trace_str(ALWAYS, "message ", message->msg);
                 i = 0;
                 while (message->msg[i] != '\0')
                 {
@@ -95,16 +94,15 @@ void uart_i_process()
                 MsgEnv* message = k_receive_message();
                 if (message != NULL)
                 {
-                        trace_str(ALWAYS, "message ", message->msg);
-                            i = 0;
-                                while (message->msg[i] != '\0')
-                                        {
-                                                    OutBuffer[i] = message->msg[i];
-                                                            i++;
-                                                                }
-                                    OutBuffer[i] = '\0';
-                                        output_print_char = TRUE;
-                                            k_release_msg_env(message);
+                    i = 0;
+                    while (message->msg[i] != '\0')
+                    {
+                        OutBuffer[i] = message->msg[i];
+                        i++;
+                    }
+                    OutBuffer[i] = '\0';
+                    output_print_char = TRUE;
+                    k_release_msg_env(message);
                 }
                 else
                 {
