@@ -18,7 +18,8 @@ uint32_t offset;
 uint32_t ref;
 char clock_display_en;
 
-MsgEnv *timeout_env;
+MsgEnv *timeout_env, *send_env;
+msg_env_queue_t *msg_q;
 
 int _setWallClock (char* timeParam);
 void _displayWallClock (int disp_b);
@@ -34,15 +35,16 @@ void start_wallclock()
     ref = 0;
     clock_display_en = 0; //clock not displayed by default
     timeout_env = request_msg_env();
+    send_env = request_msg_env();
+    msg_q = msg_env_queue_create(); 
 
     status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env); 
     if (status != CODE_SUCCESS)
     {
-        MsgEnv *send_env = request_msg_env();
         params[0] = &status;
         params[1] = NULL;
-        rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
-        send_console_chars(send_env, 0);       
+        rtx_sprintf(str, "request_delay failed with status %d\r\n", params);
+        print_ack(str, send_env, msg_q);
     }
     
     while (1)
@@ -55,11 +57,10 @@ void start_wallclock()
             status = request_delay( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
             {
-                MsgEnv *send_env = request_msg_env();
                 params[0] = &status;
                 params[1] = NULL;
-                rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
-                send_console_chars(send_env, 0);       
+                rtx_sprintf(str, "request_delay failed with status %d\r\n", params);
+                print_ack(str, send_env, msg_q);
             }
             //86400 = 24hrs in secs
             int32_t clock_time = (int32_t)((get_system_time()-ref)/100
@@ -76,9 +77,9 @@ void start_wallclock()
                 params[1] = &min;
                 params[2] = &sec;
                 params[3] = NULL;
-                rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT
+                rtx_sprintf(str, SAVE_CURSOR MOVE_CURSOR CLOCK_FORMAT
                             RESTORE_CURSOR, params);
-                send_console_chars(send_env, 0);       
+                print_ack(str, send_env, msg_q);
             }
         }
         else if (env->msg_type == CLOCK_ON)
@@ -97,24 +98,20 @@ void start_wallclock()
             if (status == ERROR_ILLEGAL_ARG)
             {
                 params[0] = NULL;
-                rtx_sprintf( env->msg, "c\r\n"
+                rtx_sprintf( str, "c\r\n"
                            "Sets the console clock (24h).\r\n"
                            "Usage: c <hh:mm:ss>\r\n"
                            "hh must be 00-23\r\n"
                            "mm must be 00-59\r\n"
                            "ss must be 00-59\r\n", params );
-                send_console_chars(env, 0);
+                print_ack(str, send_env, msg_q);
             }
             else if (status != CODE_SUCCESS)
             {
                 params[0] = &status;
                 params[1] = NULL;
-                rtx_sprintf( env->msg, "CCI_setClock failed with status %d\r\n", params);
-                send_console_chars(env, 0);
-            }
-            else
-            {
-                release_msg_env(env);
+                rtx_sprintf( str, "CCI_setClock failed with status %d\r\n", params);
+                print_ack(str, send_env, msg_q);
             }
         }
     }
@@ -166,10 +163,9 @@ void _displayWallClock (int disp_b)
     }
     else
     {
-        MsgEnv *send_env = request_msg_env();
         params[0] = NULL;
-        rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR, params);
-        send_console_chars(send_env, 0);       
+        rtx_sprintf(str, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR, params);
+        print_ack(str, send_env, msg_q);
         clock_display_en = 0;
     }
 }
