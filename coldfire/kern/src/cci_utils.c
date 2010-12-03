@@ -31,7 +31,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
     {
         params[0] = &(*data++);
         params[1] = NULL;
-        rtx_sprintf(str, "  %d   ", params);
+        rtx_sprintf(str, "%2d   ", params);
         CCI_print(str);
         switch(*data)
         {
@@ -55,7 +55,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
 
         params[0] = &(*data++);
         params[1] = NULL;
-        rtx_sprintf(str, " %d\r\n", params);
+        rtx_sprintf(str, "%1d\r\n", params);
         CCI_print(str);
     }
     return CODE_SUCCESS;
