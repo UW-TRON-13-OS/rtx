@@ -26,7 +26,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
     CHAR str[100]; 
     void * params [11];
 
-	CCI_print( "PID | STATUS                | PRIORITY\n" );
+	CCI_print( "PID | STATUS                | PRIORITY\r\n" );
     for (i=0;i<num_processes;i++)
     {
         params[0] = &(*data++);
@@ -55,7 +55,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
 
         params[0] = &(*data++);
         params[1] = NULL;
-        rtx_sprintf(str, " %d\n", params);
+        rtx_sprintf(str, " %d\r\n", params);
         CCI_print(str);
     }
     return CODE_SUCCESS;
@@ -73,11 +73,11 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env)
     ipc_trace_t *send_dump = (ipc_trace_t *) data;
     ipc_trace_t *recv_dump = send_dump + IPC_MESSAGE_TRACE_HISTORY_SIZE; 
  
-    CCI_print("MESSAGE TRACE BUFFERS\n\n"
-              " Send Trace                   || Receive Trace\n"
-              " Dest |Sender|Message|  Time  || Dest |Sender|Message|  Time\n"
-              " PID  |PID   |Type   |        || PID  |PID   |Type   |\n"
-              "--------------------------------------------------------------\n");
+    CCI_print("MESSAGE TRACE BUFFERS\r\n\r\n"
+              " Send Trace                   || Receive Trace\r\n"
+              " Dest |Sender|Message|  Time  || Dest |Sender|Message|  Time\r\n"
+              " PID  |PID   |Type   |        || PID  |PID   |Type   |\r\n"
+              "--------------------------------------------------------------\r\n");
     for (i=0;i<IPC_MESSAGE_TRACE_HISTORY_SIZE;i++)
     {
         if (send_dump[i].time_stamp != MAX_UINT32)
@@ -110,16 +110,16 @@ int CCI_printTraceBuffers (char* data, MsgEnv* send_env)
             params[2] = &(recv_dump[i].msg_type);
             params[3] = &(recv_dump[i].time_stamp);
             params[4] = NULL;
-            rtx_sprintf(str, "   %2u |   %2u |   %3d | %6u\n", params);
+            rtx_sprintf(str, "   %2u |   %2u |   %3d | %6u\r\n", params);
             CCI_print (str);
         }
         else
         {
-            CCI_print("      |      |       |       \n");
+            CCI_print("      |      |       |       \r\n");
         }
     }        
     
-    CCI_print("\n");
+    CCI_print("\r\n");
 
     return CODE_SUCCESS;
 }
