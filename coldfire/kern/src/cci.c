@@ -141,7 +141,7 @@ void start_cci()
                 //terminate RTX
                 else if (rtx_strcmp(cmd,"t") == 0)
                 {
-                    print_ack("Sayonara ", print_env, msg_queue);
+                    print_ack("Sayonara~", print_env, msg_queue);
                     int i;
                     for ( i = 0; i < 1000000; i++){}
                     terminate();
@@ -195,7 +195,6 @@ void start_cci()
                     }
                     else
                     {
-                        trace (ALWAYS,"AND MAKE BELIEVE WITH YOU");
                         status = CCI_setWallClock (clock_env, str);
                     }
                 }
