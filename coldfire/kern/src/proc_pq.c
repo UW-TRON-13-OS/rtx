@@ -80,7 +80,8 @@ void proc_pq_print(proc_pq_t* ppq)
     int i;
     for (i = 0; i < ppq->num_priorities; i++)
     {
-        trace_uint(ALWAYS, "     priority ", i);
+        rtx_dbug_outs("     priority ");
+        rtx_dbug_uint(i);
         proc_queue_print(ppq->priority_queues[i]);
     }
 }
