@@ -130,8 +130,8 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 			k++;
 			j++;
 		}
-		str[j] = '\0';
 	}
+	str[j] = '\0';
 	return str;
 }
 
