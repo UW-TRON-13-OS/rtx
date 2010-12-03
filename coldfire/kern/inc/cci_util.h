@@ -7,10 +7,10 @@
 void CCI_print(char * msg);
 
 //gets and prints process statuses
-int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env);
+int CCI_printProcessStatuses (char* raw_data);
 
 //prints trace buffers on console given the envelope message data
-int CCI_printTraceBuffers (char* data, MsgEnv* send_env);
+int CCI_printTraceBuffers (char* data);
 
 void CCI_displayWallClock (MsgEnv *send_env, int disp_b);
     

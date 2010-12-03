@@ -94,6 +94,7 @@ void init_processes(pcb_init_t process_init[], uint32_t num_procs)
         byte * stack_boundary = process->stack_begin + init->stack_size;
         process->stack_bottom = (uint32_t *) (stack_boundary - STACK_OFFSET);
         process->first_time = 1;
+        process->env_owned = 0;
 
         trace(TRACE, process->name);
         trace_ptr(TRACE, " stack boundary ", stack_boundary);
