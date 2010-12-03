@@ -5,6 +5,7 @@
 #include "user_processes.h"
 #include "msg_env_queue.h"
 #include "utils.h"
+#include "trace.h"
 
 void cci_intro()
 {
@@ -18,14 +19,13 @@ void start_cci()
     // initialise 
     uint32_t status;
 
-    MsgEnv *send_env, *status_env, *proc_a_env;
-    status_env = request_msg_env();
-    proc_a_env = request_msg_env();
     char str[100];
     void * params [11];
 
     // Print the introduction
     cci_intro();
+
+    MsgEnv *proc_a_env = request_msg_env();
 
     //print CCI prompt
     CCI_print("CCI: ");
@@ -65,6 +65,7 @@ void start_cci()
                 //displays process statuses
                 else if (rtx_strcmp(cmd,"ps") == 0) 
                 {
+                    MsgEnv * status_env = request_msg_env();
                     status = request_process_status(status_env);
                     if (status != CODE_SUCCESS)
                     {
@@ -76,8 +77,7 @@ void start_cci()
                     }
                     else
                     {
-                        status = CCI_printProcessStatuses(status_env->msg,
-                                                          send_env);
+                        status = CCI_printProcessStatuses(status_env->msg);
                         if (status != CODE_SUCCESS)
 						{
                             params[0] = &status;
@@ -87,6 +87,7 @@ void start_cci()
                             CCI_print(str);
                         }
                     }
+                    release_msg_env(status_env);
                 }
                 //show clock
                 else if (rtx_strcmp(cmd,"cd") == 0) 
@@ -101,6 +102,7 @@ void start_cci()
                 //show send/receive trace buffers
                 else if (rtx_strcmp(cmd,"b") == 0) 
                 {
+                    MsgEnv *status_env = request_msg_env();
                     status = get_trace_buffers (status_env);
                     if (status != CODE_SUCCESS)
 					{
@@ -109,7 +111,7 @@ void start_cci()
                         rtx_sprintf(str, "get_trace_buffers failed with status %d\r\n", params);
                         CCI_print(str);
                     }
-                    status = CCI_printTraceBuffers (status_env->msg, send_env);
+                    status = CCI_printTraceBuffers (status_env->msg);
                     if (status != CODE_SUCCESS)
 					{					
                         params[0] = &status;
@@ -117,6 +119,7 @@ void start_cci()
                         rtx_sprintf(str, "CCI_printTraceBuffers failed with status %d\r\n", params);
                         CCI_print(str);
                     }
+                    release_msg_env(status_env);
                 }
                 //terminate RTX
                 else if (rtx_strcmp(cmd,"t") == 0)
@@ -192,5 +195,10 @@ void start_cci()
 			
 			CCI_print( "CCI: " );
         }//end if env->msg_type == CONSOLE_INPUT
+        else
+        {
+            trace_int(ERROR, "CCI: should not be getting type ", env->msg_type);
+        }
+        release_msg_env(env);
     }
 }

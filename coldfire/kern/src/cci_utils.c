@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "wallclock.h"
 #include "k_globals.h"
+#include "trace.h"
 
 void CCI_print(char * msg)
 {
@@ -14,7 +15,7 @@ void CCI_print(char * msg)
 }
 
 //prints process statuses on console given the envelope message data
-int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
+int CCI_printProcessStatuses (char* raw_data)
 {
     if (raw_data == NULL)
     {
@@ -62,7 +63,7 @@ int CCI_printProcessStatuses (char* raw_data, MsgEnv* send_env)
 }
 
 //prints trace buffers on console given the envelope message data
-int CCI_printTraceBuffers (char* data, MsgEnv* send_env)
+int CCI_printTraceBuffers (char* data)
 {
     if (data == NULL)
         return ERROR_NULL_ARG;
