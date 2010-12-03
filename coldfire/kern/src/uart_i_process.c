@@ -30,12 +30,10 @@ void uart_i_process()
         CharIn = SERIAL1_RD;
         if (CharIn == '\0')
         {
-        }
-        if (CharIn == '\r') // enter key is pressed
-        {
             SERIAL1_IMR = 3;
             SERIAL1_WD = '\n';
             SERIAL1_IMR = 2;
+            inputIndex--;
             InBuffer[inputIndex] = '\0';
             inputIndex++;
             MsgEnv* message = k_request_msg_env();

@@ -43,6 +43,15 @@ enum trace_level {
         } \
     } while (0)
 
+#define trace_int(level,msg,num) do { \
+        if ((level) >= TRACE_LEVEL) \
+        { \
+            rtx_dbug_outs(msg); \
+            rtx_dbug_int(num); \
+            rtx_dbug_outs(CRLF); \
+        } \
+    } while (0)
+
 #define trace_uint(level,msg,num) do { \
         if ((level) >= TRACE_LEVEL) \
         { \
