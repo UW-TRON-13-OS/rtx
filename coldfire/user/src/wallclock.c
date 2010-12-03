@@ -25,7 +25,7 @@ msg_env_queue_t *msg_q;
 int _setWallClock (char* timeParam);
 void _displayWallClock (int disp_b);
 
-char str[100];
+char str[1024];
 void * params [11];
 
 void start_wallclock()
@@ -137,7 +137,6 @@ int _setWallClock (char* timeParam)
     {
         return ERROR_NULL_ARG;
     }
-    trace (ALWAYS, "I WANNA BE WITH YOU");
 
     if (rtx_strlen(timeParam) != 8 || timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != '\0')
     {
@@ -161,8 +160,6 @@ int _setWallClock (char* timeParam)
     ret = rtx_atoi(hr_s, &hr); 
     ret += rtx_atoi(min_s, &min);
     ret += rtx_atoi(sec_s, &sec);
-
-    trace_uint (ALWAYS,"ret ",ret);
 
     if (hr>23 || min>59 || sec > 59 || ret < 3)
         return ERROR_ILLEGAL_ARG;
