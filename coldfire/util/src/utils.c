@@ -275,14 +275,14 @@ int _findChar (CHAR ch, const CHAR * str)
     return 0;
 }
 
-int strLength(CHAR * str)
+int rtx_strlen(CHAR * str)
 {
     if (str == NULL)
         return -1;
     else if (str == '\0')
         return 0;
-    int i = 1;
-    while (str++ != '\0')
+    int i = 0;
+    while (*str++ != '\0')
         i++;
     return i;        
 }

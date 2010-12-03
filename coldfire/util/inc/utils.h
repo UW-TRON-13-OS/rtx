@@ -14,7 +14,7 @@ void rtx_strtok(const CHAR * str, CHAR * ret, const CHAR * delimiters);
 
 int rtx_atoi (const CHAR * str, int *num_p);
 
-int strLength(CHAR * str);
+int rtx_strlen(CHAR * str);
 
 void strConvert(CHAR * str, const CHAR * con_str);
 
