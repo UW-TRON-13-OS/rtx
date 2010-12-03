@@ -48,9 +48,18 @@ void start_wallclock()
         print_ack(str, send_env, msg_q);
     }
     
+    MsgEnv* env;
+
     while (1)
     {
-        MsgEnv* env = receive_message(); 
+        if (msg_env_queue_is_empty(msg_q))
+        {
+            env = receive_message();
+        }
+        else
+        {
+            env = msg_env_queue_dequeue(msg_q);
+        }
 
         //envelope from timing services
         if (env->msg_type == WAKEUP_CODE)
@@ -128,6 +137,7 @@ int _setWallClock (char* timeParam)
     {
         return ERROR_NULL_ARG;
     }
+    trace (ALWAYS, "I WANNA BE WITH YOU");
 
     if (rtx_strlen(timeParam) != 8 || timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != '\0')
     {
