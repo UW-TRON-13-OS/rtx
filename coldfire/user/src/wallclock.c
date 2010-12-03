@@ -42,7 +42,7 @@ void start_wallclock()
     {
         params[0] = &status;
         params[1] = NULL;
-        rtx_sprintf(send_env->msg, "request_delay failed with status %d\n", params);
+        rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
         send_console_chars(send_env);       
     }
     
@@ -58,7 +58,7 @@ void start_wallclock()
             {
                 params[0] = &status;
                 params[1] = NULL;
-                rtx_sprintf(send_env->msg, "request_delay failed with status %d\n", params);
+                rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
                 send_console_chars(send_env);       
             }
             //86400 = 24hrs in secs
