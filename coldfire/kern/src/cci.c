@@ -200,7 +200,7 @@ void start_cci()
                 }
                 else
                 {
-					params[0] = &cmd;
+					params[0] = env->msg;
                     params[1] = NULL;
                     rtx_sprintf(str, "Invalid command '%s'\r\n", params);
                     print_ack(str, print_env, msg_queue);
