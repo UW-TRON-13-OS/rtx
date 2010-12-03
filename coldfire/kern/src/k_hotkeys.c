@@ -7,12 +7,15 @@
 bool hotkey(char c)
 {
     int i;
-    char buf[128];
     switch(c)
     {
         case '`':
+            trace(ALWAYS, "Ready priority queue");
             proc_pq_print(ready_pq);
+            trace(ALWAYS, "Blocked Envelope Request priority queue");
             proc_pq_print(blocked_request_env_pq);
+            trace_uint(ALWAYS, "Number of free envelopes ", 
+                                msg_env_queue_size(free_env_q));
             for (i = 0; i < k_get_num_processes(); i++)
             {
                 pcb_t * pcb = k_get_process(pid_table[i]);
@@ -27,7 +30,14 @@ bool hotkey(char c)
                     case P_BLOCKED_ON_RECEIVE:
                         trace_str(ALWAYS, pcb->name, "  blocked on receive");
                         break;
+                    case P_READY:
+                        trace_str(ALWAYS, pcb->name, "  ready");
+                        break;
+                    case P_INTERRUPTED:
+                        trace_str(ALWAYS, pcb->name, "  interrupted");
+                        break;
                     default:
+                            trace_str(ALWAYS, pcb->name, "  unkown state");
                         break;
                 }
             }
