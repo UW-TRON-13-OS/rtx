@@ -48,7 +48,7 @@ int32_t k_mem_get_stack_left(int32_t pid)
 
     if (pcb->state == P_EXECUTING)
     {
-       asm("move.l %a7, -8(%a6)"); 
+       asm("move.l %%a7, %0": : "m"(temp)); 
        return temp - (uint32_t) pcb->stack_begin;
     }
 
