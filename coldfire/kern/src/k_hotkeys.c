@@ -16,6 +16,8 @@ bool hotkey(char c)
             proc_pq_print(blocked_request_env_pq);
             trace_uint(ALWAYS, "Number of free envelopes ", 
                                 msg_env_queue_size(free_env_q));
+            trace_uint(ALWAYS, "Number of sys free envelopes ", 
+                                msg_env_queue_size(sys_free_env_q));
             for (i = 0; i < k_get_num_processes(); i++)
             {
                 pcb_t * pcb = k_get_process(pid_table[i]);

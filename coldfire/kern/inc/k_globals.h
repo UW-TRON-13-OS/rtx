@@ -23,6 +23,7 @@
 #define IPC_MESSAGE_TRACE_HISTORY_SIZE 16
 #define IPC_MSG_ENV_MSG_SIZE 1024
 #define IPC_NUM_FREE_MSG_ENVS 32
+#define IPC_NUM_SYS_FREE_MSG_ENVS 2
 
 // Processes
 extern pcb_t *      current_process;
@@ -44,7 +45,12 @@ void * k_malloc(uint32_t size);
 
 // Msg Resources
 extern msg_env_queue_t * free_env_q;
+extern msg_env_queue_t * sys_free_env_q;
+bool k_is_msg_env_sys_env(MsgEnv *env);
+
 extern trace_circle_buf_t send_trace_buf;
 extern trace_circle_buf_t recv_trace_buf;
+int find_trace_buf_head(trace_circle_buf_t *tbuf);
+void log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env);
 
 #endif

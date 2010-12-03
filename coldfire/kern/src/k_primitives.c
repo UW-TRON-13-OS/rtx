@@ -6,13 +6,6 @@
 
 msg_env_queue_t *free_env_q;
 
-#define circle_index(i) ((i)%IPC_MESSAGE_TRACE_HISTORY_SIZE)
-static int _find_trace_buf_head(trace_circle_buf_t *buf);
-static void _log_msg_event(trace_circle_buf_t *buf, MsgEnv *msg_env);
-
-trace_circle_buf_t send_trace_buf;
-trace_circle_buf_t recv_trace_buf;
-
 /** 5.1 Interprocess Communication **/
 int k_send_message(int dest_pid, MsgEnv *msg_env)
 {
@@ -39,7 +32,7 @@ int k_send_message(int dest_pid, MsgEnv *msg_env)
         proc_pq_enqueue(ready_pq, dest_pcb );
     }
 
-    _log_msg_event(&send_trace_buf, msg_env);
+    log_msg_event(&send_trace_buf, msg_env);
 
     return CODE_SUCCESS;
 }
@@ -56,7 +49,7 @@ MsgEnv * k_receive_message()
     }
 
     MsgEnv *msg_env = msg_env_queue_dequeue(current_process->recv_msgs);
-    _log_msg_event(&recv_trace_buf, msg_env);
+    log_msg_event(&recv_trace_buf, msg_env);
 
     return msg_env;
 }
@@ -64,19 +57,31 @@ MsgEnv * k_receive_message()
 /** 5.2 Storage Management **/
 MsgEnv * k_request_msg_env()
 {
-    while (msg_env_queue_is_empty(free_env_q))
+    if (msg_env_queue_is_empty(free_env_q))
     {
+        trace_uint(ALWAYS, " is i sys process ", current_process->is_sys_process);
+        trace_uint(ALWAYS, " is  sys empty ", msg_env_queue_is_empty(sys_free_env_q));
+        if (current_process->is_sys_process && 
+                !msg_env_queue_is_empty(sys_free_env_q))
+        {
+            current_process->env_owned++;
+            return msg_env_queue_dequeue(sys_free_env_q);
+        }
+
         if (current_process->is_i_process)
         {
             return NULL;
         }
-        proc_pq_enqueue(blocked_request_env_pq, current_process);
-        k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
+
+        while (msg_env_queue_is_empty(free_env_q))
+        {
+            proc_pq_enqueue(blocked_request_env_pq, current_process);
+            k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
+        }
     }
 
-    MsgEnv *env = msg_env_queue_dequeue(free_env_q);
     current_process->env_owned++;
-    return env;
+    return msg_env_queue_dequeue(free_env_q);
 }
 
 int k_release_msg_env(MsgEnv * msg_env)
@@ -86,14 +91,21 @@ int k_release_msg_env(MsgEnv * msg_env)
         return ERROR_NULL_ARG;
     }
 
-    msg_env_queue_enqueue(free_env_q, msg_env);
-    current_process->env_owned--;
-    pcb_t * blocked_process = proc_pq_dequeue(blocked_request_env_pq);
-    if (blocked_process)
+    if (k_is_msg_env_sys_env(msg_env))
     {
-        blocked_process->state = P_READY;
-        proc_pq_enqueue(ready_pq, blocked_process);
+        msg_env_queue_enqueue(sys_free_env_q, msg_env);
     }
+    else
+    {
+        msg_env_queue_enqueue(free_env_q, msg_env);
+        pcb_t * blocked_process = proc_pq_dequeue(blocked_request_env_pq);
+        if (blocked_process)
+        {
+            blocked_process->state = P_READY;
+            proc_pq_enqueue(ready_pq, blocked_process);
+        }
+    }
+    current_process->env_owned--;
     return CODE_SUCCESS;
 }
 
@@ -208,8 +220,8 @@ int k_get_trace_buffers(MsgEnv* msg_env)
     int i, send_head, recv_head;
 
     // Find the heads of the trace buffers
-    send_head = _find_trace_buf_head(&send_trace_buf);
-    recv_head = _find_trace_buf_head(&recv_trace_buf);
+    send_head = find_trace_buf_head(&send_trace_buf);
+    recv_head = find_trace_buf_head(&recv_trace_buf);
 
     // Dump the sent messages and received messages
     ipc_trace_t *send_dump = (ipc_trace_t *) msg_env->msg;
@@ -232,24 +244,4 @@ int k_get_trace_buffers(MsgEnv* msg_env)
         recv_dump++;
     }
     return CODE_SUCCESS;
-}
-
-int _find_trace_buf_head(trace_circle_buf_t *tbuf)
-{
-    int head = circle_index(tbuf->tail);
-    while (tbuf->buf[head].time_stamp == MAX_UINT32 &&
-           head != circle_index(tbuf->tail-1)) 
-    {
-        head = circle_index(head + 1);
-    }
-    return head;
-}
-
-void _log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env)
-{
-    tbuf->buf[tbuf->tail].dest_pid = msg_env->dest_pid;
-    tbuf->buf[tbuf->tail].send_pid = msg_env->send_pid;
-    tbuf->buf[tbuf->tail].msg_type = msg_env->msg_type;
-    tbuf->buf[tbuf->tail].time_stamp = k_clock_get_system_time();
-    tbuf->tail = circle_index(tbuf->tail + 1);
 }

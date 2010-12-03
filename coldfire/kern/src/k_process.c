@@ -88,6 +88,7 @@ void init_processes(pcb_init_t process_init[], uint32_t num_procs)
         process->priority = init->priority;
         process->state = P_READY;
         process->is_i_process = init->is_i_process;
+        process->is_sys_process = init->is_sys_process || init->is_i_process;
         process->recv_msgs = msg_env_queue_create();
         process->start = init->start;
         process->stack_begin = k_malloc(init->stack_size);
