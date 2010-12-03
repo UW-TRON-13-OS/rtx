@@ -154,6 +154,11 @@ void init_ipc()
     recv_trace_buf.tail = 0;
     recv_trace_buf.buf = k_malloc(sizeof(*recv_trace_buf.buf) * 
                                   IPC_MESSAGE_TRACE_HISTORY_SIZE);
+    for (env_no = 0; env_no < IPC_MESSAGE_TRACE_HISTORY_SIZE; env_no++)
+    {
+        send_trace_buf.buf[env_no].time_stamp = MAX_UINT32;
+        recv_trace_buf.buf[env_no].time_stamp = MAX_UINT32;
+    }
 }
 
 int k_init(pcb_init_t processes[], uint32_t num_processes, bool enable_uart,
