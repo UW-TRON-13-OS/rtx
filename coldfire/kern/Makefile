@@ -9,7 +9,7 @@ MAIN_FILE = src/main.c
 OBJ_NAMES=k_api k_init k_primitives k_scheduler k_process \
 		  uart_i_process msg_env_queue proc_queue proc_pq \
 		  timer_i_process timeout_queue k_clock \
-		  isr_handler cci cci_utils k_hotkeys k_mem
+		  isr_handler cci cci_utils k_hotkeys k_mem k_ipc
 
 OBJS=$(addprefix bin/, $(addsuffix .o, $(OBJ_NAMES)))
 COMMON_INC=rtx.h k_globals.h k_structs.h dbug.h coldfire.h
@@ -37,6 +37,7 @@ bin/cci.o: $(COMMON_INC)
 bin/cci_utils.o: $(COMMON_INC) msg_env_queue.h
 bin/k_hotkeys.o: $(COMMON_INC) k_mem.h
 bin/k_malloc.o: $(COMMON_INC) 
+bin/k_ipc.o: $(COMMON_INC) k_init.h
 
 # Add an entry above ^^^ where its the form of:
 # bin/<filename>.o: <header files the .h depends on>

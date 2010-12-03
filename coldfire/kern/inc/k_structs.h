@@ -16,6 +16,7 @@ typedef struct pcb {
     enum process_state  state;
     pcb_context_t       context;
     bool                is_i_process;
+    bool                is_sys_process;
     msg_env_queue_t *   recv_msgs;
     start_pc            start;
     byte *              stack_begin;
@@ -34,6 +35,7 @@ typedef struct pcb_init {
     bool                is_sys_process;
 } pcb_init_t;
 
+#define circle_index(i) ((i)%IPC_MESSAGE_TRACE_HISTORY_SIZE)
 typedef struct trace_circle_buf {
     uint32_t tail;
     ipc_trace_t *buf;

@@ -27,7 +27,7 @@ int main()
     itable[0].start = timer_i_process;
     itable[0].stack_size = 4096;
     itable[0].is_i_process = 1;
-    itable[0].is_sys_process = 0;
+    itable[0].is_sys_process = 1;
 
     itable[1].pid = UART_I_PROCESS_PID;
     itable[1].name = "uart_i_process";
@@ -35,7 +35,7 @@ int main()
     itable[1].start = uart_i_process;
     itable[1].stack_size = 4096;
     itable[1].is_i_process = 1;
-    itable[1].is_sys_process = 0;
+    itable[1].is_sys_process = 1;
 
     itable[2].pid = CCI_PID;
     itable[2].name = "cci";

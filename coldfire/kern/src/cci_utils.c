@@ -127,7 +127,6 @@ int CCI_printTraceBuffers (char* data)
 
 int CCI_setWallClock (MsgEnv *send_env, char* newTime)
 {
-    int status;
     rtx_strcpy(send_env->msg, newTime, 1024);
     send_env->msg_type = CLOCK_SET;
     return send_message(WALLCLOCK_PID, send_env);
