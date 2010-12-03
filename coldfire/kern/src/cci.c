@@ -124,7 +124,9 @@ void start_cci()
                 //terminate RTX
                 else if (rtx_strcmp(cmd,"t") == 0)
                 {
-                    CCI_print("Bye");
+                    CCI_print("Sayonara ");
+                    int i;
+                    for ( i = 0; i < 1000000; i++){}
                     terminate();
                 }
                 //change process priority
