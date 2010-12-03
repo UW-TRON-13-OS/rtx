@@ -39,7 +39,9 @@ void uart_i_process()
             SERIAL1_IMR = 3;
             SERIAL1_WD = '\n';
             SERIAL1_IMR = 2;
+#ifdef _CFSERVER_
             inputIndex--;
+#endif
             InBuffer[inputIndex] = '\0';
             inputIndex++;
             MsgEnv* message = k_request_msg_env();
