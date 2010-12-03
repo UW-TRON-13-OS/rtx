@@ -47,7 +47,7 @@ void start_cci()
         //envelope with characters from console
         if (env->msg_type == CONSOLE_INPUT)
         {
-            char cmd [3];
+            char cmd [100];
             rtx_strtok (env->msg, cmd, " \t");
             if ( *cmd != '\0')
             {
