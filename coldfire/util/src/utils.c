@@ -289,12 +289,19 @@ void strConvert(CHAR * str, const CHAR * con_str)
             j++;
             str[j] = 'r';     
             j++;
-        }        
+        }
         else if(con_str[i] == '\n')
         {
             str[j] = '\\';
             j++;
             str[j] = 'n';     
+            j++;
+        }
+        else if(con_str[i] == '\b')
+        {
+            str[j] = '\\';
+            j++;
+            str[j] = 'b';     
             j++;
         }
         else
