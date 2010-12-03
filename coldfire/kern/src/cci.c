@@ -48,7 +48,7 @@ void start_cci()
         if (env->msg_type == CONSOLE_INPUT)
         {
             char cmd [100];
-            rtx_strtok (env->msg, cmd, " \t");
+            rtx_strtok (env->msg, cmd, " \t\r\n");
             if ( *cmd != '\0')
             {
                 //send empty envelope to process A. should only do so once.
@@ -139,8 +139,8 @@ void start_cci()
                 {
                     int priority, pid, ret; 
                     char priorityStr[6], pidStr[6];
-                    rtx_strtok ( NULL, priorityStr, " \t" );
-                    rtx_strtok ( NULL, pidStr, " \t" );
+                    rtx_strtok ( NULL, priorityStr, " \t\r\n" );
+                    rtx_strtok ( NULL, pidStr, " \t\r\n" );
                     ret = rtx_atoi ( priorityStr, &priority );
                     ret += rtx_atoi ( pidStr, &pid );
 
@@ -172,7 +172,7 @@ void start_cci()
                 else if (rtx_strcmp(cmd,"c") == 0) 
                 {
                     char newTime [9];
-                    rtx_strtok (NULL, newTime, " \t");
+                    rtx_strtok (NULL, newTime, " \t\r\n");
                     if ( *newTime == '\0' )
                     {
 						CCI_print( "c\r\n"
@@ -210,6 +210,7 @@ void start_cci()
             }//end if (*cmd != '\0')
             else
             {
+                CCI_print( cmd );
 				CCI_print( "Please enter a command.\r\n" );
             }
 			
