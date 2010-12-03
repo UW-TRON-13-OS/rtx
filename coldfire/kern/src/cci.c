@@ -25,7 +25,7 @@ void start_cci()
     // initialise 
     uint32_t status;
 
-    char str[100];
+    char *str = k_malloc(1024);
     void * params [11];
 
     msg_queue = msg_env_queue_create(); 
@@ -183,9 +183,8 @@ void start_cci()
                 //set clock
                 else if (rtx_strcmp(cmd,"c") == 0) 
                 {
-                    char newTime [9];
-                    rtx_strtok (NULL, newTime, " \t\r\n");
-                    if ( *newTime == '\0' )
+                    rtx_strtok (NULL, str, " \t\r\n");
+                    if ( *str == '\0' )
                     {
 						print_ack( "c\r\n"
 								   "Sets the console clock.\r\n"

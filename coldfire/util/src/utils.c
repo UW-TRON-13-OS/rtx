@@ -188,7 +188,7 @@ int rtx_strcmp(const CHAR * str1, const CHAR * str2)
 
 void rtx_strtok(const CHAR * str, CHAR * ret, const CHAR * delimiters)
 {
-    static char copy [100] = "";
+    static char copy [1024] = "";
     static BYTE i = 0;
 
     if ( str != NULL )
