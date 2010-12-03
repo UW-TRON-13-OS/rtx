@@ -183,7 +183,7 @@ void start_cci()
                 //set clock
                 else if (rtx_strcmp(cmd,"c") == 0) 
                 {
-                    char newTime [9];
+                    char newTime [100];
                     rtx_strtok (NULL, newTime, " \t\r\n");
                     if ( *newTime == '\0' )
                     {

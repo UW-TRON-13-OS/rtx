@@ -2,6 +2,7 @@
 #include "rtx.h"
 #include "utils.h"
 #include "msg_env_queue.h"
+#include "trace.h"
 
 #define SAVE_CURSOR "\033[s"
 #define RESTORE_CURSOR "\033[u"
@@ -127,7 +128,8 @@ int _setWallClock (char* timeParam)
     {
         return ERROR_NULL_ARG;
     }
-    if (timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != '\0')
+
+    if (rtx_strlen(timeParam) != 8 || timeParam[2] != ':' || timeParam[5] != ':' || timeParam[8] != '\0')
     {
         return ERROR_ILLEGAL_ARG;
     }
@@ -149,6 +151,8 @@ int _setWallClock (char* timeParam)
     ret = rtx_atoi(hr_s, &hr); 
     ret += rtx_atoi(min_s, &min);
     ret += rtx_atoi(sec_s, &sec);
+
+    trace_uint (ALWAYS,"ret ",ret);
 
     if (hr>23 || min>59 || sec > 59 || ret < 3)
         return ERROR_ILLEGAL_ARG;
