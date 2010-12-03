@@ -1,7 +1,8 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
-#include "coldfire.h"
+#include "rtx.h"
+#include "msg_env_queue.h"
 
 CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[]);
 
@@ -16,5 +17,7 @@ int rtx_atoi (const CHAR * str, int *num_p);
 int strLength(CHAR * str);
 
 void strConvert(CHAR * str, const CHAR * con_str);
+
+MsgEnv * print_ack(char * msg, MsgEnv* print_env, msg_env_queue_t *queue);
 
 #endif

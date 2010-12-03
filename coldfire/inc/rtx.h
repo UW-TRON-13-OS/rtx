@@ -12,9 +12,10 @@
 
 #define DISPLAY_ACK    -1
 #define CONSOLE_OUTPUT -2
-#define CONSOLE_INPUT  -3
-#define REQUEST_CHAR   -4
-#define COUNT_REPORT   -5
+#define CONSOLE_OUTPUT_REQUEST_ACK -3
+#define CONSOLE_INPUT  -4
+#define REQUEST_CHAR   -5
+#define COUNT_REPORT   -6
 
 // wakeup codes
 #define WAKEUP_10       -10
@@ -64,7 +65,7 @@ int change_priority(int new_priority, int target_process_id);
 int request_delay(int time_delay, int wakeup_code, MsgEnv *msg_env);
 
 /** 5.5 System Console I/O **/
-int send_console_chars(MsgEnv *msg_env);
+int send_console_chars(MsgEnv *msg_env, bool request_ack);
 
 /** 5.6 Interprocess Message Trace **/
 int get_trace_buffers(MsgEnv* msg_env);
