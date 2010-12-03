@@ -19,7 +19,7 @@ uint32_t offset;
 uint32_t ref;
 char clock_display_en;
 
-MsgEnv *timeout_env, *send_env;
+MsgEnv *timeout_env;
 
 int _setWallClock (char* timeParam);
 void _displayWallClock (int disp_b);
@@ -35,11 +35,11 @@ void start_wallclock()
     ref = 0;
     clock_display_en = 0; //clock not displayed by default
     timeout_env = request_msg_env();
-    send_env = request_msg_env();
 
     status = request_delay ( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env); 
     if (status != CODE_SUCCESS)
     {
+        MsgEnv *send_env = request_msg_env();
         params[0] = &status;
         params[1] = NULL;
         rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
@@ -56,20 +56,26 @@ void start_wallclock()
             status = request_delay( ONE_SECOND_DELAY, WAKEUP_CODE, timeout_env);
             if (status != CODE_SUCCESS)
             {
+                MsgEnv *send_env = request_msg_env();
                 params[0] = &status;
                 params[1] = NULL;
                 rtx_sprintf(send_env->msg, "request_delay failed with status %d\r\n", params);
                 send_console_chars(send_env);       
             }
             //86400 = 24hrs in secs
-            int32_t clock_time = (int32_t)((get_system_time()-ref)/10
+            int32_t clock_time = (int32_t)((get_system_time()-ref)/100
                                  +offset)%SEC_IN_HR;
             if (clock_display_en)
             {
+                MsgEnv *send_env = request_msg_env();
                 int32_t hr, min, sec;
                 hr = clock_time/3600;
                 min = (clock_time%3600)/60;
                 sec = clock_time%60;
+
+                trace_uint (ALWAYS,"hr ",hr);
+                trace_uint (ALWAYS,"min ",min);
+                trace_uint (ALWAYS,"sec ",sec);
 
                 params[0] = &hr;
                 params[1] = &min;
@@ -165,6 +171,7 @@ void _displayWallClock (int disp_b)
     }
     else
     {
+        MsgEnv *send_env = request_msg_env();
         params[0] = NULL;
         rtx_sprintf(send_env->msg, SAVE_CURSOR MOVE_CURSOR EMPTY_CLOCK RESTORE_CURSOR, params);
         send_console_chars(send_env);       
