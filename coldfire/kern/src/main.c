@@ -1,7 +1,9 @@
 #include "rtx.h"
 #include "k_globals.h"
+#include "user_processes.h"
 #include "null_process.h"
 #include "cci.h"
+#include "wallclock.h"
 #include "uart_i_process.h"
 #include "timer_i_process.h"
 #include "k_init.h"
@@ -14,7 +16,7 @@ int __main(void)
 
 int main()
 {
-    pcb_init_t itable[4];
+    pcb_init_t itable[5];
 
     itable[0].pid = NULL_PID;
     itable[0].name = "null";
@@ -48,7 +50,15 @@ int main()
     itable[3].is_i_process = 0;
     itable[3].is_sys_process = 1;
     
-    k_init(itable, 4, TRUE, TRUE);
+    itable[4].pid = WALLCLOCK_PID;
+    itable[4].name = "wallclock";
+    itable[4].priority = 3;
+    itable[4].start = start_wallclock;
+    itable[4].stack_size = 4096;
+    itable[4].is_i_process = 0;
+    itable[4].is_sys_process = 0;
+    
+    k_init(itable, 5, TRUE, TRUE);
 
     return 0;
 }
