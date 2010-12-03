@@ -12,6 +12,12 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 		if(format[k] == '%')
 		{
             k++;
+            bool zero = FALSE;
+            if(format[k] == '0')
+            {
+                k++;
+                zero = TRUE;
+            }
             int spaces = format[k] - '0';
             if(spaces < 10 && spaces > 0)
                 k++;
@@ -38,7 +44,7 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
 				}
 				else if(format[k] == 's')
 				{
-					CHAR * p_str = params[i];
+					CHAR * p_str = ((CHAR *)params[i]);
 					i++;
 					int temp_i = 0;
 					while (p_str[temp_i] != '\0')
@@ -81,7 +87,10 @@ CHAR * rtx_sprintf(CHAR * str, const CHAR * format, void * params[])
                     {	
                         while(spaces > size)
                         {
-                            str[j] = ' ';
+                            if(zero)
+                                str[j] = '0';
+                            else
+                                str[j] = ' ';
                             j++;
                             spaces--;
                         }
