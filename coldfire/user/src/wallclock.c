@@ -67,7 +67,6 @@ void start_wallclock()
                                  +offset)%SEC_IN_HR;
             if (clock_display_en)
             {
-                MsgEnv *send_env = request_msg_env();
                 int32_t hr, min, sec;
                 hr = clock_time/3600;
                 min = (clock_time%3600)/60;
@@ -85,12 +84,14 @@ void start_wallclock()
         else if (env->msg_type == CLOCK_ON)
         {
             _displayWallClock (1);
-            release_msg_env(env);
+            env->msg_type = CLOCK_RET;
+            send_message(env->send_pid,env);
         }
         else if (env->msg_type == CLOCK_OFF)
         {
             _displayWallClock (0);
-            release_msg_env(env);
+            env->msg_type = CLOCK_RET;
+            send_message(env->send_pid,env);
         }
         else if (env->msg_type == CLOCK_SET) 
         {
@@ -113,6 +114,8 @@ void start_wallclock()
                 rtx_sprintf( str, "CCI_setClock failed with status %d\r\n", params);
                 print_ack(str, send_env, msg_q);
             }
+            env->msg_type = CLOCK_RET;
+            send_message(env->send_pid,env);
         }
     }
 }
