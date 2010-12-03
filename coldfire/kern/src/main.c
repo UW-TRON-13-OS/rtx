@@ -55,7 +55,7 @@ int main()
     
     itable[4].pid = WALLCLOCK_PID;
     itable[4].name = "wallclock";
-    itable[4].priority = 2;
+    itable[4].priority = 1;
     itable[4].start = start_wallclock;
     itable[4].stack_size = 4096;
     itable[4].is_i_process = 0;

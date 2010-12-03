@@ -71,9 +71,9 @@ MsgEnv * k_request_msg_env()
         {
             return NULL;
         }
-        trace_str(TRACE, "k_request blocking: ", current_process->name);
         proc_pq_enqueue(blocked_request_env_pq, current_process);
         k_process_switch(P_BLOCKED_ON_ENV_REQUEST);
+        trace_str(ALWAYS, "unblocked ", current_process->name);
     }
 
     MsgEnv *env = msg_env_queue_dequeue(free_env_q);
@@ -93,6 +93,7 @@ int k_release_msg_env(MsgEnv * msg_env)
     pcb_t * blocked_process = proc_pq_dequeue(blocked_request_env_pq);
     if (blocked_process)
     {
+        trace_str(ALWAYS, "unblocking ", blocked_process->name);
         blocked_process->state = P_READY;
         proc_pq_enqueue(ready_pq, blocked_process);
     }
