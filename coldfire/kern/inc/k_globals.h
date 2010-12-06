@@ -53,4 +53,7 @@ extern trace_circle_buf_t recv_trace_buf;
 int find_trace_buf_head(trace_circle_buf_t *tbuf);
 void log_msg_event(trace_circle_buf_t *tbuf, MsgEnv *msg_env);
 
+// pong
+extern bool pong_mode;
+
 #endif

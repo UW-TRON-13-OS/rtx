@@ -178,6 +178,9 @@ int k_init(pcb_init_t processes[], uint32_t num_processes, bool enable_uart,
     trace(DEBUG, "Initializing processes...");
     init_processes(processes, num_processes);
 
+    // Init pong
+    pong_mode = FALSE;
+
     /* Enable all interupts */
     trace(DEBUG, "Enabling Interrupts...");
     asm("move.w #0x2000,%sr");
