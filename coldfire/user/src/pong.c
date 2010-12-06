@@ -7,7 +7,7 @@
 #define PADDLE_LENGTH 5
 #define BOARD_ROWS 24
 #define BOARD_COLS 75
-#define DELAY_AMOUNT 3
+#define DELAY_AMOUNT 10 
 
 char board[BOARD_ROWS][BOARD_COLS];
 int left_paddle_pos; // 0 to 15
@@ -117,11 +117,13 @@ void update_board ()
             {
                 init_pong();// RIGHT PLAYER SCORED
                 print_board();
+                request_delay(DELAY_AMOUNT, WAKEUP_10, message);
             }
             if (ball_c == BOARD_COLS-1)
             {
                 init_pong();// LEFT PLAYER SCORED
                 print_board();
+                request_delay(DELAY_AMOUNT, WAKEUP_10, message);
             }
             
             // bouncing checks
