@@ -5,6 +5,7 @@
 #include "k_globals.h"
 #include "proc_pq.h"
 #include "k_hotkeys.h"
+#include "user_processes.h"
 
 #define INPUT_BUFFER_SIZE 100
 
@@ -34,6 +35,14 @@ void uart_i_process()
     if( temp & 1 )
     {
         CharIn = SERIAL1_RD;
+        if (pong_mode)
+        {
+            MsgEnv* message = k_request_msg_env();
+            message->msg_type = CONSOLE_INPUT;
+            message->msg[0] = CharIn;
+            k_send_message(PONG_PID, message);
+            return;
+        }
         if (CharIn == KB_LINE_END)
         {
             SERIAL1_IMR = 3;
