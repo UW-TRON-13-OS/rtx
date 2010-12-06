@@ -7,7 +7,7 @@
 #define PADDLE_LENGTH 5
 #define BOARD_ROWS 24
 #define BOARD_COLS 75
-#define DELAY_AMOUNT 10 
+#define DELAY_AMOUNT 5 
 
 char board[BOARD_ROWS][BOARD_COLS];
 int left_paddle_pos; // 0 to 15
@@ -95,19 +95,27 @@ void update_board ()
             // Keys for right are K -> UP, L -> DOWN
             if ((message->msg[0] == 'a' || message->msg[0] == 'A') && (left_paddle_pos > 0))
             {
+                board[left_paddle_pos+4][1] = ' ';
                 left_paddle_pos--;
+                board[left_paddle_pos][1] = 'M';
             }
             else if ((message->msg[0] == 's' || message->msg[0] == 'S') && (left_paddle_pos < BOARD_COLS-5))
             {
+                board[left_paddle_pos+4][1] = ' ';
                 left_paddle_pos++;
+                board[left_paddle_pos][1] = 'M';
             }
             else if ((message->msg[0] == 'k' || message->msg[0] == 'K') && (right_paddle_pos > BOARD_COLS-5))
             {
+                board[right_paddle_pos+4][BOARD_COLS-2] = ' ';
                 right_paddle_pos--;
+                board[right_paddle_pos][BOARD_COLS-2] = 'M';
             }
             else if ((message->msg[0] == 'l' || message->msg[0] == 'L') && (right_paddle_pos < 15))
             {
+                board[right_paddle_pos+4][BOARD_COLS-2] = ' ';
                 right_paddle_pos++;
+                board[right_paddle_pos][BOARD_COLS-2] = 'M';
             }
             release_msg_env(message);
         }
@@ -118,12 +126,14 @@ void update_board ()
                 init_pong();// RIGHT PLAYER SCORED
                 print_board();
                 request_delay(DELAY_AMOUNT, WAKEUP_10, message);
+                continue;
             }
             if (ball_c == BOARD_COLS-1)
             {
                 init_pong();// LEFT PLAYER SCORED
                 print_board();
                 request_delay(DELAY_AMOUNT, WAKEUP_10, message);
+                continue;
             }
             
             // bouncing checks
@@ -145,7 +155,7 @@ void update_board ()
             ball_c += c_speed;
             board[ball_r][ball_c] = 'O';
 
-            int prev_r = ball_r - r_speed;
+            /*int prev_r = ball_r - r_speed;
             int prev_c = ball_c - c_speed;
 
             params[0] = &prev_r;
@@ -156,10 +166,10 @@ void update_board ()
             rtx_sprintf(cmd, "\033[%d;%dH \033[%d;%dHO", params);
             MsgEnv* env = request_msg_env();
             env->msg = cmd;
-            send_console_chars(env, FALSE);
+            send_console_chars(env, FALSE);*/
 
             request_delay(DELAY_AMOUNT, WAKEUP_10, message);
         }        
-        //print_board();
+        print_board();
     }
 }
