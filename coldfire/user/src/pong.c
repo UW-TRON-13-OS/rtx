@@ -2,11 +2,12 @@
 #include "dbug.h"
 #include "user_processes.h"
 #include "pong.h"
+#include "utils.h"
 
 #define PADDLE_LENGTH 5
 #define BOARD_ROWS 24
 #define BOARD_COLS 75
-#define DELAY_AMOUNT 10
+#define DELAY_AMOUNT 3
 
 char board[BOARD_ROWS][BOARD_COLS];
 int left_paddle_pos; // 0 to 15
@@ -39,8 +40,8 @@ void init_pong ()
             }
         }
     }
-    left_paddle_pos = 7;
-    right_paddle_pos = 8;
+    left_paddle_pos = BOARD_ROWS/2-2;
+    right_paddle_pos = BOARD_ROWS/2-2;
     
     for (r = 0; r < PADDLE_LENGTH; r++)
     {
@@ -54,12 +55,13 @@ void init_pong ()
     
     r_speed = 1;
     c_speed = 1;
-    MsgEnv* message = request_msg_env();
-    request_delay(DELAY_AMOUNT, WAKEUP_10, message);
 }
 
 void print_board ()
 {
+    MsgEnv* msg = request_msg_env();
+    rtx_strcpy(msg->msg, "\033[0;0H", 1024);
+    send_console_chars(msg, FALSE);
     int r, c;
     for (r = 0; r < BOARD_ROWS; r++)
     {
@@ -77,9 +79,16 @@ void print_board ()
 
 void update_board ()
 {
+    MsgEnv* message = receive_message();
+    //release_msg_env(msg);
+    init_pong();
+    print_board();
+    char cmd[100];
+    void * params [11];
+    request_delay(DELAY_AMOUNT, WAKEUP_10, message);
     while (1)
     {
-        MsgEnv* message = receive_message();
+        /*MsgEnv**/ message = receive_message();
         if (message->msg_type == CONSOLE_INPUT) // people moving their paddles
         {
             // Keys for left are A -> UP, S -> DOWN
@@ -88,11 +97,11 @@ void update_board ()
             {
                 left_paddle_pos--;
             }
-            else if ((message->msg[0] == 's' || message->msg[0] == 'S') && (left_paddle_pos < 15))
+            else if ((message->msg[0] == 's' || message->msg[0] == 'S') && (left_paddle_pos < BOARD_COLS-5))
             {
                 left_paddle_pos++;
             }
-            else if ((message->msg[0] == 'k' || message->msg[0] == 'K') && (right_paddle_pos > 0))
+            else if ((message->msg[0] == 'k' || message->msg[0] == 'K') && (right_paddle_pos > BOARD_COLS-5))
             {
                 right_paddle_pos--;
             }
@@ -107,14 +116,16 @@ void update_board ()
             if (ball_c == 0)
             {
                 init_pong();// RIGHT PLAYER SCORED
+                print_board();
             }
             if (ball_c == BOARD_COLS-1)
             {
                 init_pong();// LEFT PLAYER SCORED
+                print_board();
             }
             
             // bouncing checks
-            if (ball_r == 0 || ball_r == BOARD_ROWS-1)
+            if (ball_r == 1 || ball_r == BOARD_ROWS-2)
             {
                 r_speed = r_speed * -1;
             }
@@ -130,9 +141,23 @@ void update_board ()
             board[ball_r][ball_c] = ' ';
             ball_r += r_speed;
             ball_c += c_speed;
-            board[ball_r][ball_c] = 'X';
+            board[ball_r][ball_c] = 'O';
+
+            int prev_r = ball_r - r_speed;
+            int prev_c = ball_c - c_speed;
+
+            params[0] = &prev_r;
+            params[1] = &prev_c;
+            params[2] = &ball_r;
+            params[3] = &ball_c;
+            params[4] = NULL;
+            rtx_sprintf(cmd, "\033[%d;%dH \033[%d;%dHO", params);
+            MsgEnv* env = request_msg_env();
+            env->msg = cmd;
+            send_console_chars(env, FALSE);
+
             request_delay(DELAY_AMOUNT, WAKEUP_10, message);
         }        
-        print_board();
+        //print_board();
     }
 }

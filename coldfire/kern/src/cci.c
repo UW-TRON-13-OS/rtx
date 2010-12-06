@@ -203,8 +203,10 @@ void start_cci()
                 else if (rtx_strcmp(cmd,"pong") == 0)
                 {
                     trace(ALWAYS, "pong thing started");
-                    init_pong();
-                    print_board();
+                    //init_pong();
+                    //print_board();
+                    MsgEnv* pongMsg = k_request_msg_env();
+                    k_send_message(PONG_PID, pongMsg);
                 }
                 else
                 {

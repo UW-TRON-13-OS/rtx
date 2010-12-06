@@ -8,8 +8,9 @@
 #include "uart_i_process.h"
 #include "timer_i_process.h"
 #include "k_init.h"
+#include "pong.h"
 
-#define NUM_PROCESSES 8
+#define NUM_PROCESSES 9
 
 // We need this function because of gcc
 int __main(void)
@@ -84,6 +85,14 @@ int main()
     itable[7].stack_size = 4096;
     itable[7].is_i_process = 0;
     itable[7].is_sys_process = 0;
+
+    itable[8].pid = PONG_PID;
+    itable[8].name = "PONG";
+    itable[8].priority = 0;
+    itable[8].start = update_board;
+    itable[8].stack_size = 4096;
+    itable[8].is_i_process = 0;
+    itable[8].is_sys_process = 0;
     
     k_init(itable, NUM_PROCESSES, TRUE, TRUE);
 
