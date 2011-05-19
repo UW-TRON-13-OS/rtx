@@ -1,13 +1,11 @@
 RTX Project
 -------------------------
 
-ACE team number, T8 
-
 Group members: 
-Christopher Wu - 20305170
-Maverick Lee - 20312110
-Wien Leung - 20308651
-Hassaan Aamir - 20303200
+Christopher Wu
+Maverick Lee
+Wien Leung
+Hassaan Aamir
 
 The directories contain each module which is built from a top level makefile (or just the module by their own repsective module folder).
 
