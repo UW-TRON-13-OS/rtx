@@ -1,5 +1,5 @@
 RTX Project
--------------------------
+===========
 
 Group members: 
 Christopher Wu
