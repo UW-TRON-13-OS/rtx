@@ -1,0 +1,7 @@
+#!/bin/sh
+
+RTX=rtx.s19
+if [ $# -gt 0 ] ; then
+    RTX=$1
+fi
+cfcp $RTX $USER.s19 && telnet cf-server
