@@ -1,7 +1,8 @@
 RTX Project
 ===========
 
-Group members: 
+Group members:
+
 *   Christopher Wu
 *   Maverick Lee
 *   Wien Leung
