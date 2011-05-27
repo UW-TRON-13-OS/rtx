@@ -2,10 +2,10 @@ RTX Project
 ===========
 
 Group members: 
-* Christopher Wu
-* Maverick Lee
-* Wien Leung
-* Hassaan Aamir
+*   Christopher Wu
+*   Maverick Lee
+*   Wien Leung
+*   Hassaan Aamir
 
 The directories contain each module which is built from a top level makefile (or just the module by their own repsective module folder).
 
